@@ -25,20 +25,20 @@ public class HandPoseManipulation : MonoBehaviour
         if (Input.GetKeyDown("1"))
         {
             //get hand posees
-            loadFromGame();
+            //loadFromGame();
         }
         if (Input.GetKeyDown("2"))
         {
-            StartCoroutine( replayHands());
+            //StartCoroutine( replayHands());
         }
     }
 
     void loadFromGame()
     {
-        rPosArray = handSource.GetComponent<HandRecorder>().rPosVectors.ToArray();
-        rOriArray = handSource.GetComponent<HandRecorder>().rOriQuaternion.ToArray();
-        lPosArray = handSource.GetComponent<HandRecorder>().lPosVectors.ToArray();
-        lOriArray = handSource.GetComponent<HandRecorder>().lOriQuaternion.ToArray();
+        rPosArray = handSource.GetComponent<BodyRecorder>().rPosVectors.ToArray();
+        rOriArray = handSource.GetComponent<BodyRecorder>().rOriQuaternion.ToArray();
+        lPosArray = handSource.GetComponent<BodyRecorder>().lPosVectors.ToArray();
+        lOriArray = handSource.GetComponent<BodyRecorder>().lOriQuaternion.ToArray();
     }
 
     IEnumerator replayHands()
@@ -76,7 +76,7 @@ public class HandPoseManipulation : MonoBehaviour
             {
                 Debug.Log("Positions not loaded");
             }
-            yield return new WaitForSeconds(1/handSource.GetComponent<HandRecorder>().samplingFrequency);
+            yield return new WaitForSeconds(1/handSource.GetComponent<BodyRecorder>().samplingFrequency);
         }
         
     }

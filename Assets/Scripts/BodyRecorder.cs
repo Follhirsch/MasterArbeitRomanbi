@@ -4,12 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
-using RootMotion.Demos;
+//using RootMotion.Demos;
 using Unity.VisualScripting;
 using UnityEngine;
 using Valve.VR;
 
-public class HandRecorder : MonoBehaviour
+
+public class BodyRecorder : MonoBehaviour
 {
     StreamWriter csvWriter;
     public List<Vector3[]> rPosVectors = new List<Vector3[]>();
@@ -24,23 +25,23 @@ public class HandRecorder : MonoBehaviour
     public bool recordRightFoot;
     public bool recordLeftFoot;
     public bool recordHead;
-    
+
     private float timer = 0.0f;
     private float samplingInterval = 1.0f;
     private int samples = 0;
-    
+
     public GameObject rightHand;
     public GameObject leftHand;
     //hands.transform.GetChild(4).gameObject;
-            
+
     //GameObject leftHand = hands.transform.GetChild(1).gameObject;
 
     // Start is called before the first frame update
     void Start()
     {
         samplingInterval = 1 / samplingFrequency;
-        locateObjects(); 
-        
+        locateObjects();
+
 
     }
 
@@ -53,10 +54,9 @@ public class HandRecorder : MonoBehaviour
         }
         if (Input.GetKeyDown("f"))
         {
-            
             locateObjects();
         }
-        
+
         if (recording)
         {
             timer += Time.deltaTime;
@@ -83,35 +83,35 @@ public class HandRecorder : MonoBehaviour
                 Vector3 pos = rightHand.transform.GetChild(ri).position;
                 Quaternion ori = rightHand.transform.GetChild(ri).rotation;
                 string positionString = pos.ToString();
-                string modifiedPositionString = positionString.Substring(1, positionString.Length-2);
-                completeLine += modifiedPositionString+",";
+                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
+                completeLine += modifiedPositionString + ",";
                 rTempArray[ri] = pos;
                 rTempOriArray[ri] = ori;
-                
+
             }
             rPosVectors.Add(rTempArray);
             rOriQuaternion.Add(rTempOriArray);
-            
+
 
             for (int li = 0; li < leftHand.transform.childCount; li++) //get position of left hand
             {
                 Vector3 pos = leftHand.transform.GetChild(li).position;
                 Quaternion ori = leftHand.transform.GetChild(li).rotation;
                 string positionString = pos.ToString();
-                string modifiedPositionString = positionString.Substring(1, positionString.Length-2);
-                completeLine += modifiedPositionString+",";
+                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
+                completeLine += modifiedPositionString + ",";
                 lTempArray[li] = pos;
                 lTempOriArray[li] = ori;
 
             }
             lPosVectors.Add(lTempArray);
             lOriQuaternion.Add(lTempOriArray);
-            
-            
+
+
         }
-        
-        
-        
+
+
+
         csvWriter.WriteLine(completeLine);
     }
 
@@ -127,9 +127,9 @@ public class HandRecorder : MonoBehaviour
         {
             samples = 0;
             samplingInterval = 1 / samplingFrequency;
-            
+
             string header = locateObjects();
-            csvWriter = new StreamWriter("Assets/Recordings"+ "/recoring" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm") + ".csv");
+            csvWriter = new StreamWriter("Assets/Recordings" + "/recoring" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm") + ".csv");
             csvWriter.WriteLine(header);
 
             recording = true;
@@ -147,25 +147,25 @@ public class HandRecorder : MonoBehaviour
 
             rightHand = rightHandObject.transform.GetChild(4).gameObject;
             leftHand = leftHandObject.transform.GetChild(4).gameObject;
-            
-            for (int ri = 0; ri < rightHand.transform.childCount-1; ri++)//right hand header
+
+            for (int ri = 0; ri < rightHand.transform.childCount - 1; ri++)//right hand header
             {
                 string childname = rightHand.transform.GetChild(ri).name;
                 headerconstruction += childname + ".x," + childname + ".y," + childname + ".z,";
             }
-            
-            for (int li = 0; li < leftHand.transform.childCount-1; li++)// left hand header
+
+            for (int li = 0; li < leftHand.transform.childCount - 1; li++)// left hand header
             {
                 string childname = leftHand.transform.GetChild(4).name;
-                headerconstruction +=  childname + ".x," + childname + ".y," + childname + ".z,";
+                headerconstruction += childname + ".x," + childname + ".y," + childname + ".z,";
             }
-            
+
         }
-        
-        
+
+
         //add head,hip and feet tracking
         return headerconstruction;
-        
+
     }
 
 }

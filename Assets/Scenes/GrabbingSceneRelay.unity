@@ -3766,17 +3766,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1023894478 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114182128666879504, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
-  m_PrefabInstance: {fileID: 801629749}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023894473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bbe583322fe95845b0cf01bb13d6daf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1033990597
 GameObject:
   m_ObjectHideFlags: 0
@@ -6198,11 +6187,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1848330097}
-  - component: {fileID: 1848330098}
-  - component: {fileID: 1848330099}
+  - component: {fileID: 1848330101}
   - component: {fileID: 1848330100}
+  - component: {fileID: 1848330099}
+  - component: {fileID: 1848330098}
   m_Layer: 0
-  m_Name: Recorder
+  m_Name: Recorder/Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6232,12 +6222,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1848330096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f4618a42bfbcbd4f96e05503015807c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8045cda548cb7f048ae8ce684cb807a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rod: {fileID: 1650337522}
-  handDimensionScript: {fileID: 1023894478}
-  pos: {x: 0, y: 0, z: 0}
+  loadFromFile: 1
+  replayFile: {fileID: 4900000, guid: be6d6e0ed44fc454e837d8d3d2ec9899, type: 3}
+  recorderSource: {fileID: 1848330096}
+  sceneTarget: {fileID: 1432557206}
+  frame: 0
 --- !u!114 &1848330099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6245,22 +6237,37 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848330096}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffd0492f05a092f4fba945650d87c6d1, type: 3}
+  m_Script: {fileID: 11500000, guid: e79f1b5c105d41a429ffe6899446b585, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handSource: {fileID: 0}
+  handTarget: {fileID: 0}
+  frame: 0
+--- !u!114 &1848330100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848330096}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d678a26edb11ee645a3f18f950f6aa52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hands: {fileID: 1023894473}
   samplingFrequency: 30
   recording: 0
-  recordHands: 1
+  recordHands: 0
   recordHip: 0
   recordRightFoot: 0
   recordLeftFoot: 0
   recordHead: 0
   rightHand: {fileID: 0}
   leftHand: {fileID: 0}
---- !u!114 &1848330100
+--- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6269,12 +6276,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1848330096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e79f1b5c105d41a429ffe6899446b585, type: 3}
+  m_Script: {fileID: 11500000, guid: acb0c460745efba469816fbcb61bc69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handSource: {fileID: 1848330096}
-  handTarget: {fileID: 233067685}
-  frame: 0
+  recordObjects: 1
+  scene: {fileID: 1432557206}
+  objects: []
+  framerate: 30
+  recording: 0
 --- !u!1 &1931152527
 GameObject:
   m_ObjectHideFlags: 0
