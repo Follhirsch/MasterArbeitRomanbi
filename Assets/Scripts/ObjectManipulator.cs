@@ -16,6 +16,8 @@ public class ObjectManipulator : MonoBehaviour
     private Quaternion[][] oriArray;
 
     private int framerate = 30;
+
+    private bool replaying = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,22 +30,18 @@ public class ObjectManipulator : MonoBehaviour
         if (Input.GetKeyDown("1"))
         {
             //get hand posees
-            if(loadFromFile)
-            {
-                loadFromCSVFile();
-            }
-            else
-            {
-                loadFromGame();
-            }
+            if(loadFromFile){loadFromCSVFile();}
+            else { loadFromGame();}
 
         }
         if (Input.GetKeyDown("2"))
         {
+            replaying = true;
             StartCoroutine(replayObjects());
         }
         if (Input.GetKeyDown("3"))
         {
+            replaying = false;
            playFrame();
         }
     }
@@ -69,7 +67,11 @@ public class ObjectManipulator : MonoBehaviour
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
         Vector3[] tempPosFrame = new Vector3[objects];
         Quaternion[] tempOriFrame = new Quaternion[objects];
-
+        string[] debugValues = dataLines[0 + 2].Split(",");
+        int debug = 10;
+        Debug.Log(debugValues[debug*7]);
+        Debug.Log(debugValues[debug*7+1]);
+        Debug.Log(debugValues[debug*7+2]);
         for (int i = 0; i < frames - 1; i++)// starting from second line in code
         {
             string[] dataValues = dataLines[i + 2].Split(",");
@@ -86,10 +88,11 @@ public class ObjectManipulator : MonoBehaviour
             tempPosVectorList.Add(tempPosFrame);
             tempOriList.Add(tempOriFrame);
         }
+        
         posArray = tempPosVectorList.ToArray();
         oriArray = tempOriList.ToArray();
+        Debug.Log(posArray[0][debug]);
         Debug.Log("Replay loaded");
-        Debug.Log(posArray[1][10]);
     }
 
 
@@ -107,30 +110,28 @@ public class ObjectManipulator : MonoBehaviour
         {
             Debug.Log("Positions not loaded");
         }
+        Debug.Log(posArray[1][10]);
     }
 
     IEnumerator replayObjects()
     {
+        Debug.Log("Replay started");
         for (int i = 0; i < posArray.Length; i++)
         {
-
-            // do right hand pose
             if (posArray != null && oriArray != null)
             {
-                Debug.Log("Playframe"+ frame.ToString());
                 for (int ii = 0; ii < sceneTarget.transform.childCount; ii++)
                 {
                     sceneTarget.transform.GetChild(ii).transform.position = posArray[i][ii];
                     sceneTarget.transform.GetChild(ii).transform.rotation = oriArray[i][ii];
                 }
             }
-            else
-            {
-                Debug.Log("Positions not loaded");
-            }
+            else {Debug.Log("Positions not loaded"); }
+            
             yield return new WaitForSeconds(1 / framerate);
             
+            if (!replaying) { break; }
         }
-
+        Debug.Log("Replay stopped");
     }
 }
