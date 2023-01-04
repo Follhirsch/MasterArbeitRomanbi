@@ -13,23 +13,27 @@ using Valve.VR;
 public class ObjectRecorder : MonoBehaviour
 {
     StreamWriter csvWriter;
-    public bool recordObjects = false;
+    public GameObject recorderObject;
     public List<Vector3[]> posVectors = new List<Vector3[]>();
     public List<Quaternion[]> oriQuaternion = new List<Quaternion[]>();
     public GameObject scene;
     public List<GameObject> objects = new List<GameObject>();
-    public int framerate = 30;
+    public int framerate;
     public bool recording = false;
+    DirectoryInfo FolderDirectory;
 
     private float timer = 0.0f;
     private float samplingInterval;
-    private int samples = 0;
+    //private int samples = 0;
 
     private int NrOfObjects;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        recorderObject = this.gameObject;
+        framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
         samplingInterval = 1 / framerate;
         locateObjects();
     }
@@ -37,18 +41,11 @@ public class ObjectRecorder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!recordObjects)
-        {
-            return;
-        }
-        if (Input.GetKeyDown("r"))
-        {
-            toggleRecording();
-        }
-        if (Input.GetKeyDown("l"))
-        {
-            locateObjects();
-        }
+        if (!recorderObject.GetComponent<RecorderMaster>().recordObjects) { return;}
+        
+        if (Input.GetKeyDown("r")) {toggleRecording(); }
+        if (Input.GetKeyDown("l")) { locateObjects(); }
+        
 
         if (recording)
         {
@@ -82,6 +79,7 @@ public class ObjectRecorder : MonoBehaviour
             }
         posVectors.Add(tempArray);
         oriQuaternion.Add(tempOriArray);
+        
 
         completeLine =  completeLine.Substring(0, completeLine.Length - 1);
         csvWriter.WriteLine(completeLine);
@@ -98,10 +96,13 @@ public class ObjectRecorder : MonoBehaviour
         }
         else // start recording
         {
-            samples = 0;
+            //samples = 0;
+            framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
             samplingInterval = 1 / framerate;
             
-            csvWriter = new StreamWriter("Assets/Recordings" + "/recoringObjects" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm") + ".csv");
+            FolderDirectory = Directory.CreateDirectory("Assets/Recources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
+            string dir = FolderDirectory.ToString();
+            csvWriter = new StreamWriter(dir + "/" + "Objects" + ".csv");
             csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString());
             string header = locateObjects();
             
