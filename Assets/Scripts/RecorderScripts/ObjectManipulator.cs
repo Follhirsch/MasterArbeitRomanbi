@@ -26,6 +26,7 @@ public class ObjectManipulator : MonoBehaviour
     {
         recorderSource = this.gameObject;
         frame = 0;
+        replaying = false;
     }
 
     // Update is called once per frame
@@ -54,7 +55,7 @@ public class ObjectManipulator : MonoBehaviour
     public void loadFromCSVFile()
     {
         dir = recorderSource.GetComponent<RecorderMaster>().path + "/Objects";
-        Debug.Log(recorderSource.GetComponent<RecorderMaster>().path);
+        
         replayFile = Resources.Load<TextAsset>(dir);
         
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
@@ -67,9 +68,7 @@ public class ObjectManipulator : MonoBehaviour
 
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
-        string[] debugValues = dataLines[0 + 2].Split(",");
-        int debug = 10;
-        
+
         for (int i = 0; i < frames - 1 ; i++) // 
         {
             string[] dataValues = dataLines[i + 2].Split(","); // starting from second line in csv

@@ -2,11 +2,13 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 //using RootMotion.Demos;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using Valve.VR;
 
 
@@ -24,7 +26,7 @@ public class BodyRecorder : MonoBehaviour
     public List<Vector3[]> lPosVectors = new List<Vector3[]>();
     public List<Quaternion[]> lOriQuaternion = new List<Quaternion[]>();
     public List<Vector3[]> bodyRestPosVectors = new List<Vector3[]>();
-    public List<Quaternion[]> BodyRestOriQuaternion = new List<Quaternion[]>();
+    public List<Quaternion[]> bodyRestOriQuaternions = new List<Quaternion[]>();
     public int framerate;
     public bool recording = false;
     public bool recordBody;
@@ -159,8 +161,8 @@ public class BodyRecorder : MonoBehaviour
                 tempOriArray[i] = ori;
 
             }
-            lPosVectors.Add(tempArray);
-            lOriQuaternion.Add(tempOriArray);
+            bodyRestPosVectors.Add(tempArray);
+            bodyRestOriQuaternions.Add(tempOriArray);
 
             csvWriterBody.WriteLine(completeLineBody);
         }

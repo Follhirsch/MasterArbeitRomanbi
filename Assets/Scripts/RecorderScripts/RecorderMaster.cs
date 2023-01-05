@@ -19,11 +19,13 @@ public class RecorderMaster : MonoBehaviour
 
     private GameObject recorderObject;
 
+    private bool replayObjects;
+    private bool replayHands;
+    private bool replayBodyRest;
     // Start is called before the first frame update
     void Start()
     {
         recorderObject = this.gameObject;
-        Debug.Log(recorderObject);
         recording = false;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
@@ -40,22 +42,25 @@ public class RecorderMaster : MonoBehaviour
             {
                 Debug.Log(recordingFilesDir);
                 path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
-                string[] pathparts = path.Split( "Assets/Resources/");
-                Debug.Log(pathparts[1]);
-                path = pathparts[1];
+                string[] pathParts = path.Split( "Assets/Resources/");
+                path = pathParts[1];
+
                 recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile();
-                //recorderObject.GetComponent<HandPoseManipulation>()
+                recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile();
             }
             else
             {
                 recorderObject.GetComponent<ObjectManipulator>().loadFromGame();
+                recorderObject.GetComponent<HandPoseManipulation>().loadFromGame();
+                recorderObject.GetComponent<PlayerManipulator>().loadFromGame();
             }
         }
 
         if (Input.GetKeyDown("2")) //replay everything
         {
             recorderObject.GetComponent<ObjectManipulator>().startreplay();
-            
+            recorderObject.GetComponent<HandPoseManipulation>().startreplay();
+            recorderObject.GetComponent<PlayerManipulator>().startreplay();
         }
 
         if (Input.GetKeyDown("3")) //replay single frame
