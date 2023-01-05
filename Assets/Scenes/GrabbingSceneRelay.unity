@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -166,6 +166,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4869401655643186, guid: 9e59761c8267b9348963d03c46fde621, type: 3}
   m_PrefabInstance: {fileID: 1654059566}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &179303200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 179303201}
+  m_Layer: 0
+  m_Name: LeftHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &179303201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179303200}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2107576849}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &205996993
 GameObject:
   m_ObjectHideFlags: 0
@@ -5378,6 +5409,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   origin: {fileID: 0}
+--- !u!1 &1573532632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1573532633}
+  m_Layer: 0
+  m_Name: RightHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1573532633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573532632}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2107576849}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1588184872
 GameObject:
   m_ObjectHideFlags: 0
@@ -6664,6 +6726,7 @@ GameObject:
   - component: {fileID: 1848330100}
   - component: {fileID: 1848330099}
   - component: {fileID: 1848330098}
+  - component: {fileID: 1848330101}
   m_Layer: 0
   m_Name: Recorder/Player
   m_TagString: Untagged
@@ -6733,12 +6796,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   framerate: 30
   recording: 0
-  recordBody: 0
+  recordBody: 1
   recordObjects: 1
   rePlaying: 0
   loadFromCsvFile: 0
   recordingFilesDir: 
   path: 
+--- !u!114 &1848330101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848330096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d678a26edb11ee645a3f18f950f6aa52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hands: {fileID: 1023894473}
+  player: {fileID: 2107576848}
+  rightHand: {fileID: 0}
+  leftHand: {fileID: 0}
+  recorderObject: {fileID: 0}
+  framerate: 0
+  recording: 0
+  recordBody: 0
+  recordHands: 1
+  recordHandShadow: 0
+  recordBodyRest: 0
+  recordHip: 1
+  recordRightFoot: 0
+  recordLeftFoot: 0
+  recordHead: 0
 --- !u!1 &1931152527
 GameObject:
   m_ObjectHideFlags: 0
@@ -7204,6 +7294,8 @@ Transform:
   - {fileID: 906505874}
   - {fileID: 1722141391}
   - {fileID: 1554792558}
+  - {fileID: 179303201}
+  - {fileID: 1573532633}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7219,11 +7311,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a28e30620eb4fc4db67057edf8cd6d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lFootTracker: {fileID: 0}
-  lFoot: {fileID: 0}
-  hipBackTracker: {fileID: 0}
-  hipBack: {fileID: 0}
-  controller: {fileID: 0}
-  lFootCalibrated: 0
-  rFootCalibrated: 0
-  hipBackCalibrated: 0

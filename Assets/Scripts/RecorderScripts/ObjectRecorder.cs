@@ -99,9 +99,14 @@ public class ObjectRecorder : MonoBehaviour
             //samples = 0;
             framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
             samplingInterval = 1 / framerate;
+
+            string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
+            if(!Directory.Exists(dir))
+            {
+                FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
+                dir = FolderDirectory.ToString();
+            }
             
-            FolderDirectory = Directory.CreateDirectory("Assets/Recources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
-            string dir = FolderDirectory.ToString();
             csvWriter = new StreamWriter(dir + "/" + "Objects" + ".csv");
             csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString());
             string header = locateObjects();

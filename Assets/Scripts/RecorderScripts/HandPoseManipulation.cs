@@ -76,7 +76,7 @@ public class HandPoseManipulation : MonoBehaviour
             {
                 Debug.Log("Positions not loaded");
             }
-            yield return new WaitForSeconds(1/handSource.GetComponent<BodyRecorder>().samplingFrequency);
+            yield return new WaitForSeconds(1/handSource.GetComponent<BodyRecorder>().framerate);
         }
         
     }
