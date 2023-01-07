@@ -47,6 +47,7 @@ public class RecorderMaster : MonoBehaviour
 
                 recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile();
                 recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile();
+                recorderObject.GetComponent<PlayerManipulator>().loadFromCSVFile();
             }
             else
             {

@@ -50,12 +50,10 @@ public class ObjectManipulator : MonoBehaviour
         framerate = recorderSource.GetComponent<ObjectRecorder>().framerate;
         posArray = recorderSource.GetComponent<ObjectRecorder>().posVectors.ToArray();
         oriArray = recorderSource.GetComponent<ObjectRecorder>().oriQuaternion.ToArray();
-        Debug.Log("Object Files Loaded");
     }
     public void loadFromCSVFile()
     {
         dir = recorderSource.GetComponent<RecorderMaster>().path + "/Objects";
-        
         replayFile = Resources.Load<TextAsset>(dir);
         
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
