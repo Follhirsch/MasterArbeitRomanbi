@@ -85,9 +85,9 @@ public class HandPoseManipulation : MonoBehaviour
         for (int i = 0; i < frames - 1 ; i++) // 
         {
             string[] dataValues = dataLines[i + 2].Split(","); // starting from second line in csv
-            Vector3[] ltempPosFrame = new Vector3[NrOfobjects];
+            Vector3[] ltempPosFrame = new Vector3[NrOfobjects/2];
             Quaternion[] ltempOriFrame = new Quaternion[NrOfobjects];
-            Vector3[] rtempPosFrame = new Vector3[NrOfobjects];
+            Vector3[] rtempPosFrame = new Vector3[NrOfobjects/2];
             Quaternion[] rtempOriFrame = new Quaternion[NrOfobjects];
             for (int ii = 0; ii < NrOfobjects; ii++)
             {
@@ -103,10 +103,14 @@ public class HandPoseManipulation : MonoBehaviour
                 }
                 else
                 {
-                    ltempPosFrame[ii] = positionData;
-                    ltempOriFrame[ii] = orientationData;
+                    ltempPosFrame[ii-NrOfobjects/2] = positionData;
+                    ltempOriFrame[ii-NrOfobjects/2] = orientationData;
+                    
                 }
+                
             }
+            Debug.Log("left");
+            Debug.Log(ltempPosFrame[0]);
             
             ltempPosVectorList.Add(ltempPosFrame);
             rtempPosVectorList.Add(rtempPosFrame);
@@ -117,6 +121,7 @@ public class HandPoseManipulation : MonoBehaviour
         lOriArray = ltempOriList.ToArray();
         rPosArray = rtempPosVectorList.ToArray();
         rOriArray = rtempOriList.ToArray();
+        
         
         Debug.Log("Hands CSV file Loaded");
     }
