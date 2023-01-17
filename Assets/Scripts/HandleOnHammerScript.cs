@@ -11,19 +11,28 @@ public class HandleOnHammerScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(hammerheadCollider.tag)) 
-        { Debug.Log("Hammerhead correctly detected"); }
-
+        if (!other.CompareTag(hammerheadCollider.tag)){return;}
+        
         GameObject handle = gameObject.transform.parent.gameObject;
         GameObject hammer = handle.transform.parent.gameObject;
-        //GameObject hammerHead = hammerheadCollider.transform.parent.gameObject;
-        hammer.SetActive(false);
-        for (int i = 0; i < newHammer.transform.childCount; i++)
-        {
-            newHammer.transform.GetChild(i).transform.position = hammer.transform.GetChild(i).transform.position;
-            newHammer.transform.GetChild(i).transform.rotation = hammer.transform.GetChild(i).transform.rotation;
+        GameObject hammerHead = hammerheadCollider.transform.parent.gameObject;
 
-        }
+        if (handle.transform.localRotation.eulerAngles.x>10 ||handle.transform.localRotation.eulerAngles.y>10){return;}
+
+
+            Debug.Log("Hammerhead correctly detected");
+
+        handle.GetComponent<MovablesCollisionHandler>().enabled = false;
+        hammerHead.GetComponent<MovablesCollisionHandler>().enabled = false;
+        
+       
+        
+        newHammer.transform.GetChild(0).transform.position = hammer.transform.GetChild(0).transform.position;
+        newHammer.transform.GetChild(0).transform.rotation = hammer.transform.GetChild(0).transform.rotation;
+        
+        newHammer.SetActive(true);
+        hammer.SetActive(false);
+        
         
         
         

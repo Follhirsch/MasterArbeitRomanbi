@@ -18,6 +18,7 @@ namespace VRfreePluginUnity {
          */
         public float lowerBound = 0;
         public float upperBound = 0;
+        public float totalMoveDist;
 
         /* the minimum distance of a touch from the axis to be able to turn the knob */
         public float minRadius = 0.02f;
@@ -129,7 +130,7 @@ namespace VRfreePluginUnity {
                 debugMovementAngle = averageMovementAngle;
                 onRotate.Invoke(averageMovementAngle);
 
-                float totalMoveDist = movedDistance + averageMovementAngle;
+                totalMoveDist = movedDistance + averageMovementAngle;
                 // check if staying in bounds
                 if(totalMoveDist < lowerBound) {
                     // clamp lower bound
