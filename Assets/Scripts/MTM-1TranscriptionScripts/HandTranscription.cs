@@ -11,12 +11,15 @@ public class HandTranscription : MonoBehaviour
 
     public bool rightHandOnGrasp;
     public bool leftHandOnGrasp;
+    public GameObject Hands;
     
     // Start is called before the first frame update
     void Start()
     {
         rightHandOnGrasp = false;
         leftHandOnGrasp = false;
+        
+   
     }
 
     // Update is called once per frame

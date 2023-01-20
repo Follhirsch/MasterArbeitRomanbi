@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using Valve.Newtonsoft.Json.Utilities;
 using Valve.VR;
 
 
@@ -37,6 +38,13 @@ public class BodyRecorder : MonoBehaviour
     public bool recordLeftFoot = false;
     public bool recordHead = false;
     
+    public List<int> lHstartGraspFrame = new List<int>();
+    public List<int> lHstopGraspFrame = new List<int>();
+    public List<int> rHstartGraspFrame = new List<int>();
+    public List<int> rHstopGraspFrame = new List<int>();
+    public bool rightHandOnGrasp;
+    public bool leftHandOnGrasp;
+
     DirectoryInfo FolderDirectory;
     //private int samples = 0;
 
@@ -69,90 +77,9 @@ public class BodyRecorder : MonoBehaviour
 
     public void LogData()
     {
-        if (recordHands)
-        {
-            string completeLineHands = "";
-            Vector3[] rTempArray = new Vector3[17];
-            Vector3[] lTempArray = new Vector3[17];
-            Quaternion[] rTempOriArray = new Quaternion[17];
-            Quaternion[] lTempOriArray = new Quaternion[17];
-            //int li = leftHand.transform.childCount;
-        
-            for (int ri = 0; ri < rightHand.transform.childCount; ri++) //get position of right hand
-            {
-                Vector3 pos = rightHand.transform.GetChild(ri).position;
-                Quaternion ori = rightHand.transform.GetChild(ri).rotation;
-                string positionString = pos.ToString("G");
-                string orientationString = ori.ToString("G");
-                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
-                string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
-                completeLineHands += modifiedPositionString + "," + modifiedOrientationString + ",";
-                
-                rTempArray[ri] = pos;
-                rTempOriArray[ri] = ori;
+        if (recordHands) {LogHandData();}
 
-            }
-            rPosVectors.Add(rTempArray);
-            rOriQuaternion.Add(rTempOriArray);
-
-
-            for (int li = 0; li < leftHand.transform.childCount; li++) //get position of left hand
-            {
-                Vector3 pos = leftHand.transform.GetChild(li).position;
-                Quaternion ori = leftHand.transform.GetChild(li).rotation;
-                string positionString = pos.ToString("G");
-                string orientationString = ori.ToString("G");
-                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
-                string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
-                completeLineHands += modifiedPositionString + "," + modifiedOrientationString + ",";
-                lTempArray[li] = pos;
-                lTempOriArray[li] = ori;
-
-            }
-            lPosVectors.Add(lTempArray);
-            lOriQuaternion.Add(lTempOriArray);
-
-            csvWriterHands.WriteLine(completeLineHands);
-        }
-
-        if (recordBodyRest)
-        {
-            string completeLineBody = "";
-            int NrOfObjects = player.transform.childCount;
-            Vector3[] tempArray = new Vector3[NrOfObjects];
-            Quaternion[] tempOriArray = new Quaternion[NrOfObjects];
-            for (int i = 0; i < NrOfObjects; i++) //get position of left hand
-            {
-                GameObject temObj = player.transform.GetChild(i).gameObject;
-                Vector3 pos;
-                Quaternion ori;
-                if (temObj.transform.childCount > 0)
-                {
-                     pos = temObj.transform.GetChild(0).position;
-                     ori = temObj.transform.GetChild(0).rotation;
-                }
-                else
-                {
-                    pos = temObj.transform.position;
-                    ori = temObj.transform.rotation;
-                }
-                string positionString = pos.ToString("G");
-                string orientationString = ori.ToString("G");
-                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
-                string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
-                completeLineBody += modifiedPositionString + "," + modifiedOrientationString + ",";
-                tempArray[i] = pos;
-                tempOriArray[i] = ori;
-
-            }
-            bodyRestPosVectors.Add(tempArray);
-            bodyRestOriQuaternions.Add(tempOriArray);
-
-            csvWriterBody.WriteLine(completeLineBody);
-        }
-
-
-
+        if (recordBodyRest) {LogBodyData();}
         
     }
 
@@ -223,6 +150,8 @@ public class BodyRecorder : MonoBehaviour
                 headerconstruction += childname + ".x," + childname + ".y," + childname + ".z," + childname + ".rx," +
                                       childname + ".ry," + childname + ".rz," + childname + ".rw,";
         }
+
+        headerconstruction += "rHandCollisionObject1" + "," + "grabbed"+"lHandCollisionObject1" + "," + "grabbed"+ "rHandCollisionObject2" + "," + "grabbed"+"lHandCollisionObject2" + "," + "grabbed"; 
         return headerconstruction;
     }
 
@@ -243,6 +172,90 @@ public class BodyRecorder : MonoBehaviour
         }
         
         return headerconstruction;
+    }
+
+    void LogHandData()
+    {
+            string completeLineHands = "";
+            Vector3[] rTempArray = new Vector3[17];
+            Vector3[] lTempArray = new Vector3[17];
+            Quaternion[] rTempOriArray = new Quaternion[17];
+            Quaternion[] lTempOriArray = new Quaternion[17];
+            //int li = leftHand.transform.childCount;
+        
+            for (int ri = 0; ri < rightHand.transform.childCount; ri++) //get position of right hand
+            {
+                Vector3 pos = rightHand.transform.GetChild(ri).position;
+                Quaternion ori = rightHand.transform.GetChild(ri).rotation;
+                string positionString = pos.ToString("G");
+                string orientationString = ori.ToString("G");
+                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
+                string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
+                completeLineHands += modifiedPositionString + "," + modifiedOrientationString + ",";
+                
+                rTempArray[ri] = pos;
+                rTempOriArray[ri] = ori;
+
+            }
+            rPosVectors.Add(rTempArray);
+            rOriQuaternion.Add(rTempOriArray);
+
+
+            for (int li = 0; li < leftHand.transform.childCount; li++) //get position of left hand
+            {
+                Vector3 pos = leftHand.transform.GetChild(li).position;
+                Quaternion ori = leftHand.transform.GetChild(li).rotation;
+                string positionString = pos.ToString("G");
+                string orientationString = ori.ToString("G");
+                string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
+                string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
+                completeLineHands += modifiedPositionString + "," + modifiedOrientationString + ",";
+                lTempArray[li] = pos;
+                lTempOriArray[li] = ori;
+
+            }
+            lPosVectors.Add(lTempArray);
+            lOriQuaternion.Add(lTempOriArray);
+            //write additional Data for hand interactions with interactables
+            completeLineHands += "";
+
+            csvWriterHands.WriteLine(completeLineHands);
+    }
+
+    void LogBodyData()
+    {
+        string completeLineBody = "";
+        int NrOfObjects = player.transform.childCount;
+        Vector3[] tempArray = new Vector3[NrOfObjects];
+        Quaternion[] tempOriArray = new Quaternion[NrOfObjects];
+        for (int i = 0; i < NrOfObjects; i++) //get position of left hand
+        {
+            GameObject temObj = player.transform.GetChild(i).gameObject;
+            Vector3 pos;
+            Quaternion ori;
+            if (temObj.transform.childCount > 0)
+            {
+                pos = temObj.transform.GetChild(0).position;
+                ori = temObj.transform.GetChild(0).rotation;
+            }
+            else
+            {
+                pos = temObj.transform.position;
+                ori = temObj.transform.rotation;
+            }
+            string positionString = pos.ToString("G");
+            string orientationString = ori.ToString("G");
+            string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
+            string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
+            completeLineBody += modifiedPositionString + "," + modifiedOrientationString + ",";
+            tempArray[i] = pos;
+            tempOriArray[i] = ori;
+
+        }
+        bodyRestPosVectors.Add(tempArray);
+        bodyRestOriQuaternions.Add(tempOriArray);
+
+        csvWriterBody.WriteLine(completeLineBody);
     }
 
 }
