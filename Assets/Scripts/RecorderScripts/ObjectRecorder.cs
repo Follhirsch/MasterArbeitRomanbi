@@ -19,11 +19,8 @@ public class ObjectRecorder : MonoBehaviour
     public GameObject scene;
     public List<GameObject> objects = new List<GameObject>();
     public int framerate;
-    public bool recording = false;
     DirectoryInfo FolderDirectory;
-
-    private float timer = 0.0f;
-    private float samplingInterval;
+    
     //private int samples = 0;
 
     private int NrOfObjects;
@@ -34,7 +31,6 @@ public class ObjectRecorder : MonoBehaviour
     {
         recorderObject = this.gameObject;
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
-        samplingInterval = 1 / framerate;
         locateObjects();
     }
 
@@ -43,22 +39,10 @@ public class ObjectRecorder : MonoBehaviour
     {
         if (!recorderObject.GetComponent<RecorderMaster>().recordObjects) { return;}
         
-        if (Input.GetKeyDown("r")) {toggleRecording(); }
         if (Input.GetKeyDown("l")) { locateObjects(); }
-        
-
-        if (recording)
-        {
-            timer += Time.deltaTime;
-            if (timer > samplingInterval)
-            {
-                logData();
-                timer = timer - samplingInterval;
-            }
-        }
     }
 
-    void logData()
+    public void LogData()
     {
         string completeLine = "";
         Vector3[] tempArray = new Vector3[NrOfObjects];
@@ -86,35 +70,28 @@ public class ObjectRecorder : MonoBehaviour
         //syntax csv: object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz,object1.rw ...
     }
 
-    void toggleRecording()
+    public void StopRecording()
     {
-        if (recording) //sto recording
-        {
-            recording = false;
-            csvWriter.Close();
-            Debug.Log("recording stopped");
-        }
-        else // start recording
-        {
-            //samples = 0;
-            framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
-            samplingInterval = 1 / framerate;
+        csvWriter.Close();
+    }
 
-            string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
-            if(!Directory.Exists(dir))
-            {
-                FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
-                dir = FolderDirectory.ToString();
-            }
-            
-            csvWriter = new StreamWriter(dir + "/" + "Objects" + ".csv");
-            csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString());
-            string header = locateObjects();
-            
-            csvWriter.WriteLine(header);
-            recording = true;
-            Debug.Log("recording started");
+    public void StartRecording(string folderDir)
+    {
+        framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
+        
+        /* NOW PERFORMED IN RECORDERMASTER
+        string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
+        if(!Directory.Exists(dir))
+        {
+            FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
+            dir = FolderDirectory.ToString();
         }
+        */
+            
+        csvWriter = new StreamWriter(folderDir + "/" + "Objects" + ".csv");
+        csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString());
+        string header = locateObjects();
+        csvWriter.WriteLine(header);
     }
 
     string locateObjects()

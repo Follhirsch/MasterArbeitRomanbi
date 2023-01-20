@@ -8,14 +8,20 @@ using UnityEngine;
 public class RecorderMaster : MonoBehaviour
 {
     public int framerate = 30;
+    private float timer = 0.0f;
+    private float samplingInterval;
     public bool recording = false;
     public bool recordBody;
     public bool recordObjects;
+    private int recordedSequenceNr;
+    
     
     public bool rePlaying = false;
     public bool loadFromCsvFile = false;
     public string recordingFilesDir;
+    private DirectoryInfo folderDirectory; // folder where a recording is stored
     public string path;
+    
 
     private GameObject recorderObject;
 
@@ -27,6 +33,8 @@ public class RecorderMaster : MonoBehaviour
     {
         recorderObject = this.gameObject;
         recording = false;
+        samplingInterval = 1 / framerate;
+        recordedSequenceNr = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
     }
@@ -34,7 +42,7 @@ public class RecorderMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("r")) { recording = true; }
+        if (Input.GetKeyDown("r")) { ToggleRecording(); }
 
         if (Input.GetKeyDown("1"))//Load all the files
         {
@@ -69,6 +77,58 @@ public class RecorderMaster : MonoBehaviour
             Debug.Log("this is not well implemented in the recorderMaster");
         }
         
+        if (recording)
+        {
+            timer += Time.deltaTime;
+            if (timer > samplingInterval)
+            {
+                if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().LogData();}
+                if (recordBody) {recorderObject.GetComponent<BodyRecorder>().LogData();}
+                
+                timer = timer - samplingInterval;
+            }
+        }
         
+        
+    }
+    
+    void ToggleRecording()
+    {
+        if (recording) //stop recording
+        {
+            recording = false;
+            if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StopRecording(); }
+            if (recordBody){recorderObject.GetComponent<BodyRecorder>().StopRecording();}
+            
+            Debug.Log("recording stopped");
+        }
+        else //start recording
+        {
+            folderDirectory = Directory.CreateDirectory(recordingFilesDir + "/"+"Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm_ss")); // returns a DirectoryInfo object
+            string recordingFolderDir = folderDirectory.ToString();
+            folderDirectory = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
+            string sequenceFolderDir = folderDirectory.ToString();
+            
+            if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StartRecording(sequenceFolderDir); }
+            if (recordBody) {recorderObject.GetComponent<BodyRecorder>().StartRecording(sequenceFolderDir); }
+            
+            recording = true;
+            Debug.Log("recording started");
+        }
+    }
+    
+    void RecordNewSequenceWithoutStopping()
+    {
+        //stop old sequence
+        if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StopRecording(); }
+        if (recordBody){recorderObject.GetComponent<BodyRecorder>().StopRecording();}
+        
+        //start newsequence
+        string recordingFolderDir = folderDirectory.ToString();
+        folderDirectory = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
+        string sequenceFolderDir = folderDirectory.ToString();
+        
+        if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StartRecording(sequenceFolderDir); }
+        if (recordBody) {recorderObject.GetComponent<BodyRecorder>().StartRecording(sequenceFolderDir); }
     }
 }

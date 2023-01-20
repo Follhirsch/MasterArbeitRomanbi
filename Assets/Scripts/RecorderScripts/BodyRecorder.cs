@@ -28,7 +28,6 @@ public class BodyRecorder : MonoBehaviour
     public List<Vector3[]> bodyRestPosVectors = new List<Vector3[]>();
     public List<Quaternion[]> bodyRestOriQuaternions = new List<Quaternion[]>();
     public int framerate;
-    public bool recording = false;
     public bool recordBody;
     public bool recordHands = false;
     public bool recordHandShadow = false;
@@ -39,9 +38,6 @@ public class BodyRecorder : MonoBehaviour
     public bool recordHead = false;
     
     DirectoryInfo FolderDirectory;
-
-    private float timer = 0.0f;
-    private float samplingInterval;
     //private int samples = 0;
 
     
@@ -54,7 +50,6 @@ public class BodyRecorder : MonoBehaviour
     {
         recorderObject = gameObject;
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
-        samplingInterval = 1 / framerate;
         locateHandObjects();
     }
 
@@ -64,26 +59,15 @@ public class BodyRecorder : MonoBehaviour
         
         if (!recorderObject.GetComponent<RecorderMaster>().recordBody) { return;}
         recordBodyRest = recordHip || recordHead || recordLeftFoot || recordRightFoot||recordHandShadow;
-            
-        if (Input.GetKeyDown("r")) { toggleRecording(); }
-        if (Input.GetKeyDown("f"))
+        
+        if (Input.GetKeyDown("l"))
         {
             if (recordHands) {locateHandObjects();}
             if (recordBodyRest) { locateBodyRestObjects(); }
         }
-
-        if (recording)
-        {
-            timer += Time.deltaTime;
-            if (timer > samplingInterval)
-            {
-                logData();
-                timer = timer - samplingInterval;
-            }
-        }
     }
 
-    void logData()
+    public void LogData()
     {
         if (recordHands)
         {
@@ -172,54 +156,48 @@ public class BodyRecorder : MonoBehaviour
         
     }
 
-    void toggleRecording()
+    public void StopRecording()
     {
-        if (recording) //sto recording
+        if (recordHands) { csvWriterHands.Close(); }
+        if (recordBodyRest) { csvWriterBody.Close();}
+    }
+    public void StartRecording(string folderDir)
+    {
+        framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
+        
+        /* NOW DONE IN RECORDERMASTER
+        string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
+        if(!Directory.Exists(dir))
         {
-            recording = false;
-            if (recordHands) { csvWriterHands.Close(); }
+            FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
+            dir = FolderDirectory.ToString();
+        }*/
 
-            if (recordBodyRest) { csvWriterBody.Close();}
-            Debug.Log("recording body stopped");
+        if (recordHands) 
+        {
+            string header = locateHandObjects();
+            csvWriterHands = new StreamWriter(folderDir + "/" + "Hands" + ".csv");
+            csvWriterHands.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfHandObjects,"+"34");
+            csvWriterHands.WriteLine(header);
         }
-        else // start recording
-        {
-            framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
-            samplingInterval = 1 / framerate;
-            string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
-            if(!Directory.Exists(dir))
-            {
-                FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
-                dir = FolderDirectory.ToString();
-            }
 
-            if (recordHands)
-            {
-                string header = locateHandObjects();
-                csvWriterHands = new StreamWriter(dir + "/" + "Hands" + ".csv");
-                csvWriterHands.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfHandObjects,"+"34");
-                csvWriterHands.WriteLine(header);
-            }
-            if (recordBodyRest)
-            {
-                string header = locateBodyRestObjects();
-                csvWriterBody = new StreamWriter(dir + "/" + "BodyRest" + ".csv");
-                int NrOfObjects = 7;
-                    /*Convert.ToInt16(recordHead) + 2 * Convert.ToInt16(recordHandShadow) +
-                                  Convert.ToInt16(recordHip) + Convert.ToInt16(recordLeftFoot) +
-                                  Convert.ToInt16(recordRightFoot);*/
-                string firstline = "FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString();
-                firstline += ",LFoot," + Convert.ToString(recordLeftFoot) + ",RFoot," +
-                             Convert.ToString(recordRightFoot) + ",Hip," +
+        if (recordBodyRest)
+        {
+            string header = locateBodyRestObjects();
+            csvWriterBody = new StreamWriter(folderDir + "/" + "BodyRest" + ".csv");
+            int NrOfObjects = 7;
+            /*Convert.ToInt16(recordHead) + 2 * Convert.ToInt16(recordHandShadow) +
+                              Convert.ToInt16(recordHip) + Convert.ToInt16(recordLeftFoot) +
+                              Convert.ToInt16(recordRightFoot);*/
+            string firstline = "FPS," + framerate.ToString() + "," + "NrOfObjects," + NrOfObjects.ToString();
+            firstline += ",LFoot," + Convert.ToString(recordLeftFoot) + ",RFoot," + Convert.ToString(recordRightFoot) + ",Hip," +
                              Convert.ToString(recordHip) + ",Head," + Convert.ToString(recordHead) + ",HandsShadow," +
                              Convert.ToString(recordHandShadow);
-                csvWriterBody.WriteLine(firstline);
-                csvWriterBody.WriteLine(header);
-            }
-
-            recording = true;
-            Debug.Log("recording body started");
+            csvWriterBody.WriteLine(firstline);
+            csvWriterBody.WriteLine(header);
         }
+
+
     }
 
     string locateHandObjects()
