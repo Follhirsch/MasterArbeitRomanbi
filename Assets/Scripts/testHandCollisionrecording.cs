@@ -20,7 +20,7 @@ public class testHandCollisionrecording : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("p"))
+       /* if (Input.GetKeyDown("p"))
         {
             Debug.Log(leftHand.GetComponent<HandCollisionMaster>().collisionLists[16]);
             
@@ -35,6 +35,7 @@ public class testHandCollisionrecording : MonoBehaviour
                 Debug.Log(touchedObject.gameObject.name);
             }
         }
+        */
 
     }
 }

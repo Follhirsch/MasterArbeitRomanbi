@@ -28,7 +28,7 @@ public class HandTranscription : MonoBehaviour
         
     }
 
-    public void rHGraspChange()
+    public void AddGrasp()
     {
         
     }
