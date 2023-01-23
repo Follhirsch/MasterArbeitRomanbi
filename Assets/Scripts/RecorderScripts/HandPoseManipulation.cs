@@ -109,9 +109,7 @@ public class HandPoseManipulation : MonoBehaviour
                 }
                 
             }
-            Debug.Log("left");
-            Debug.Log(ltempPosFrame[0]);
-            
+
             ltempPosVectorList.Add(ltempPosFrame);
             rtempPosVectorList.Add(rtempPosFrame);
             ltempOriList.Add(ltempOriFrame);
@@ -121,7 +119,6 @@ public class HandPoseManipulation : MonoBehaviour
         lOriArray = ltempOriList.ToArray();
         rPosArray = rtempPosVectorList.ToArray();
         rOriArray = rtempOriList.ToArray();
-        
         
         Debug.Log("Hands CSV file Loaded");
     }

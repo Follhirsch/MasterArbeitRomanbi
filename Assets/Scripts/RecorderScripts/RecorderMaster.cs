@@ -21,7 +21,8 @@ public class RecorderMaster : MonoBehaviour
     public string recordingFilesDir;
     private DirectoryInfo folderDirectory; // folder where a recording is stored
     public string path;
-    
+    public GameObject SceneToRecord;
+
 
     private GameObject recorderObject;
 
@@ -52,6 +53,7 @@ public class RecorderMaster : MonoBehaviour
                 path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
+                Debug.Log(path);
 
                 recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile();
                 recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile();

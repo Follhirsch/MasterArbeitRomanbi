@@ -59,9 +59,7 @@ public class PlayerManipulator : MonoBehaviour
     public void loadFromCSVFile()
     {
         dir = recorderSource.GetComponent<RecorderMaster>().path + "/BodyRest";
-        Debug.Log(dir);
         replayFile = Resources.Load<TextAsset>(dir);
-        Debug.Log(replayFile);
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
@@ -69,7 +67,6 @@ public class PlayerManipulator : MonoBehaviour
         int frames = dataLines.Length - 2;
         framerate = int.Parse(recorderOptionStrings[1]); 
         int objects = int.Parse(recorderOptionStrings[3]);
-        Debug.Log(objects);
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
 
@@ -95,7 +92,7 @@ public class PlayerManipulator : MonoBehaviour
         
         posArray = tempPosVectorList.ToArray();
         oriArray = tempOriList.ToArray();
-        Debug.Log("Objects CSV file Loaded");
+        Debug.Log("Player CSV file Loaded");
     }
     public void playFrame()
     {

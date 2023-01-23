@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.26025453, g: 0.2805894, b: 0.33468404, a: 1}
+  m_IndirectSpecularColor: {r: 0.2601539, g: 0.2804954, b: 0.33460194, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11061,6 +11061,7 @@ MonoBehaviour:
   recorderSource: {fileID: 0}
   sceneTarget: {fileID: 1432557206}
   frame: 0
+  totalNrobjects: 0
 --- !u!114 &1848330099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11075,7 +11076,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recorderObject: {fileID: 1848330096}
   scene: {fileID: 1432557206}
-  objects: []
   framerate: 0
 --- !u!114 &1848330100
 MonoBehaviour:
@@ -11094,9 +11094,10 @@ MonoBehaviour:
   recordBody: 1
   recordObjects: 1
   rePlaying: 0
-  loadFromCsvFile: 0
+  loadFromCsvFile: 1
   recordingFilesDir: 
   path: 
+  SceneToRecord: {fileID: 633928715}
 --- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0

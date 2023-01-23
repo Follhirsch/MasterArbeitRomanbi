@@ -17,6 +17,7 @@ public class ObjectManipulator : MonoBehaviour
     public int frame;
     private Vector3[][] posArray;
     private Quaternion[][] oriArray;
+    public int totalNrobjects;
 
     private int framerate = 30;
 
@@ -24,6 +25,7 @@ public class ObjectManipulator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sceneTarget = gameObject.GetComponent<RecorderMaster>().SceneToRecord;
         recorderSource = this.gameObject;
         frame = 0;
         replaying = false;
@@ -50,6 +52,7 @@ public class ObjectManipulator : MonoBehaviour
         framerate = recorderSource.GetComponent<ObjectRecorder>().framerate;
         posArray = recorderSource.GetComponent<ObjectRecorder>().posVectors.ToArray();
         oriArray = recorderSource.GetComponent<ObjectRecorder>().oriQuaternion.ToArray();
+        totalNrobjects = posArray[0].Length;
     }
     public void loadFromCSVFile()
     {
@@ -60,9 +63,10 @@ public class ObjectManipulator : MonoBehaviour
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
         string[] header = dataLines[1].Split(",");
+        Debug.Log(header[1]);
         int frames = dataLines.Length - 2;
         framerate = int.Parse(recorderOptionStrings[1]); 
-        int objects = int.Parse(recorderOptionStrings[3]);
+        totalNrobjects = int.Parse(recorderOptionStrings[5]);
 
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
@@ -70,9 +74,9 @@ public class ObjectManipulator : MonoBehaviour
         for (int i = 0; i < frames - 1 ; i++) // 
         {
             string[] dataValues = dataLines[i + 2].Split(","); // starting from second line in csv
-            Vector3[] tempPosFrame = new Vector3[objects];
-            Quaternion[] tempOriFrame = new Quaternion[objects];
-            for (int ii = 0; ii < objects; ii++)
+            Vector3[] tempPosFrame = new Vector3[totalNrobjects];
+            Quaternion[] tempOriFrame = new Quaternion[totalNrobjects];
+            for (int ii = 0; ii < totalNrobjects; ii++)
             {
                 int iii = ii * 7;
                 //get data
@@ -113,24 +117,44 @@ public class ObjectManipulator : MonoBehaviour
     IEnumerator ReplayObjects()
     {
         Debug.Log("Replay started");
+        
         for (int i = 0; i < posArray.Length; i++)
         {
-            if (posArray != null && oriArray != null)
+            int globalIndex = 0;
+            for(int ii = 0; ii < sceneTarget.transform.childCount; ii++)
             {
-                for (int ii = 0; ii < sceneTarget.transform.childCount; ii++)
+                
+                GameObject currentObj = sceneTarget.transform.GetChild(ii).gameObject;
+                moveObjcts(i, globalIndex, currentObj);
+                globalIndex++;
+                
+                for (int  iii = 0;  iii < currentObj.transform.childCount;  iii++)
                 {
-                    sceneTarget.transform.GetChild(ii).transform.position = posArray[i][ii];
-                    sceneTarget.transform.GetChild(ii).transform.rotation = oriArray[i][ii];
+                    GameObject currentChild = currentObj.transform.GetChild(iii).gameObject;
+                    moveObjcts(i, globalIndex, currentChild);
+                    globalIndex++;
+                    
+                    for (int iiii = 0; iiii < currentChild.transform.childCount; iiii++)
+                    {
+                        GameObject currentChildsChild = currentChild.transform.GetChild(iiii).gameObject;
+                        moveObjcts(i, globalIndex, currentChildsChild);
+                        globalIndex++;
+                    }
                 }
+                
             }
-            else {Debug.Log("Positions not loaded"); }
-            
+
             yield return new WaitForSeconds(1 / framerate);
             
             if (!replaying) { break; }
         }
         Debug.Log("Replay stopped");
     }
-    
+
+    void moveObjcts(int currentFrame,int currentObjNr ,GameObject currenObj)
+    {
+        currenObj.transform.position = posArray[currentFrame][currentObjNr];
+            currenObj.transform.rotation = oriArray[currentFrame][currentObjNr];
+    }
 
 }
