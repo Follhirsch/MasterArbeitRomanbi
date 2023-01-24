@@ -63,7 +63,6 @@ public class ObjectManipulator : MonoBehaviour
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
         string[] header = dataLines[1].Split(",");
-        Debug.Log(header[1]);
         int frames = dataLines.Length - 2;
         framerate = int.Parse(recorderOptionStrings[1]); 
         totalNrobjects = int.Parse(recorderOptionStrings[5]);
@@ -116,8 +115,6 @@ public class ObjectManipulator : MonoBehaviour
 
     IEnumerator ReplayObjects()
     {
-        Debug.Log("Replay started");
-        
         for (int i = 0; i < posArray.Length; i++)
         {
             int globalIndex = 0;

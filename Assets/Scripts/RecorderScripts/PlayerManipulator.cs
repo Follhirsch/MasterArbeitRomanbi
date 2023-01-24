@@ -113,7 +113,7 @@ public class PlayerManipulator : MonoBehaviour
     
     IEnumerator ReplayObjects()
     {
-        Debug.Log("Replay started");
+        
         for (int i = 0; i < posArray.Length; i++)
         {
             if (posArray != null && oriArray != null)
@@ -130,7 +130,6 @@ public class PlayerManipulator : MonoBehaviour
             
             if (!replaying) { break; }
         }
-        Debug.Log("Replay stopped");
     }
 }
 

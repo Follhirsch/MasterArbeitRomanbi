@@ -72,6 +72,7 @@ public class RecorderMaster : MonoBehaviour
             recorderObject.GetComponent<ObjectManipulator>().startreplay();
             recorderObject.GetComponent<HandPoseManipulation>().startreplay();
             recorderObject.GetComponent<PlayerManipulator>().startreplay();
+            Debug.Log("Replay started");
         }
 
         if (Input.GetKeyDown("3")) //replay single frame

@@ -43,14 +43,14 @@ public class ObjectRecorder : MonoBehaviour
         
         if (Input.GetKeyDown("l")) { locateObjects(); }
 
-        if (Input.GetKeyDown("t"))
+        /*if (Input.GetKeyDown("t"))
         { 
             Vector3 pos; 
             Quaternion ori;
             if (GetValuesFromObj(scene, out pos, out ori) > 0 ) { Debug.Log("obj has childs"); }
             else { Debug.Log("obj has NO childs"); }
             Debug.Log(pos);
-        }
+        }*/
     }
 
     public void LogData()
