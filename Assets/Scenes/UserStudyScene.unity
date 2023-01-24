@@ -2868,7 +2868,7 @@ MonoBehaviour:
   currentlyGraspedLH: []
   currentlyGraspedRH: []
   debugObj: {fileID: 0}
-  TranscriptionDisplay: {fileID: 542628375}
+  TranscriptionDisplay: {fileID: 965855495}
 --- !u!1 &506115539
 GameObject:
   m_ObjectHideFlags: 0
