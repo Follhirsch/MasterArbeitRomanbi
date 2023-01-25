@@ -15,11 +15,12 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject RecorderObject;
     public GameObject TranscriptionCanvas;
 
-    public List<string[]> outputData;//structure: [righthandMTM,lefthandMTM,bodyMTM,RightfootMTM,LeftfootMTM]
+    public List<BasicMotion> MTMTranscription;
     // Start is called before the first frame update
     void Start()
     {
-        outputData = new List<string[,]>();
+        MTMTranscription = new List<BasicMotion>();
+        BasicMotion.initialzeDicts();
     }
 
     // Update is called once per frame
@@ -30,6 +31,15 @@ public class TranscriptionMaster : MonoBehaviour
 
     void updateCanvas()
     {
+        string textOutput = "";
+        for (int i = 0; i < MTMTranscription.Count; i++)
+        {
+            textOutput += MTMTranscription[i].createOutputString() + "\n";
+        }
+        
+        TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutput;
+        
+        /* old implementation
         string textOutputRH = "";
         string textOutputLH = "";
         string textOutputBody = "";
@@ -47,7 +57,18 @@ public class TranscriptionMaster : MonoBehaviour
 
         TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutputRH;
         TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutputLH;
+        */
 
+    }
+
+    public struct MTMCodesHand
+    {
+        public string basicMotion;
+        public string differentiation;
+        public string specification;
+        public int distanceInMeter;
+        public int forceinDaN;
+        
     }
 }
 
