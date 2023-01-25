@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using VRfreePluginUnity;
 
 public class ObjectInteractions : MonoBehaviour
 {
     public List<GameObject> currentlyGraspedLH = new List<GameObject>();
-    public List<GameObject> currentlyGraspedRH = new List<GameObject>();
+    public Dictionary<GameObject, bool> currentlyGraspedRH = new Dictionary<GameObject, bool>();
     public GameObject debugObj;
-    public GameObject TranscriptionDisplay;
+    public GameObject debugObj2;
+    public GameObject transcriptionDisplay;
+    private Dictionary<GameObject, bool> test;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -17,15 +21,16 @@ public class ObjectInteractions : MonoBehaviour
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
+ 
         if (isRightHand)
-        {
-            currentlyGraspedRH.Add(graspedObj);
-            TranscriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n R \n G";
+        {   
+            currentlyGraspedRH.Add(graspedObj,true);
+            transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n R \n G";
         }
         else
         {
             currentlyGraspedLH.Add(graspedObj); 
-            TranscriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n R \nG";
+            transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n R \nG";
         }
     }
     
@@ -34,12 +39,12 @@ public class ObjectInteractions : MonoBehaviour
         if (isRightHand)
         {
             currentlyGraspedRH.Remove(graspedObj); 
-            TranscriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n RL";
+            transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n RL";
         }
         else
         {
             currentlyGraspedLH.Remove(graspedObj); 
-            TranscriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n RL";
+            transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n RL";
         }
     }
 
@@ -52,7 +57,22 @@ public class ObjectInteractions : MonoBehaviour
         }
         if (Input.GetKeyDown("z"))
         {
-            removeGraspedObj(debugObj,true);
+            addGraspedObject(debugObj2,true);
+            //removeGraspedObj(debugObj,true);
+        }
+
+        foreach(GameObject tempObj in currentlyGraspedRH.Keys)
+        {
+            if (currentlyGraspedRH[tempObj])
+            {
+                if (tempObj.transform.TryGetComponent<MovablesCollisionHandler>(
+                        out MovablesCollisionHandler tempHandler))
+                {
+                    currentlyGraspedRH[tempObj] = tempHandler.isGrabbed;
+                }
+                
+            }
         }
     }
+    
 }
