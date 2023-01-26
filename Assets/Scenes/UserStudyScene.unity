@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.2601539, g: 0.2804954, b: 0.33460194, a: 1}
+  m_IndirectSpecularColor: {r: 0.26025453, g: 0.2805894, b: 0.33468404, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -439,9 +439,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '
-
-'
+  m_Text: 
 --- !u!222 &151374000
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2836,6 +2834,7 @@ MonoBehaviour:
   HandsObject: {fileID: 1023894473}
   PlayerObject: {fileID: 2107576848}
   RecorderObject: {fileID: 1848330096}
+  TranscriptionCanvas: {fileID: 965855495}
 --- !u!114 &497665595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2864,9 +2863,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentlyGraspedLH: []
-  currentlyGraspedRH: []
   debugObj: {fileID: 0}
-  TranscriptionDisplay: {fileID: 965855495}
+  debugObj2: {fileID: 0}
 --- !u!1 &506115539
 GameObject:
   m_ObjectHideFlags: 0
@@ -3231,8 +3229,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 542628375}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalScale: {x: 0.4829, y: 1, z: -0.015674556}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 965855496}
@@ -3240,7 +3238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -488, y: -0}
+  m_AnchoredPosition: {x: -48, y: -42}
   m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &542628377
@@ -3268,8 +3266,8 @@ MonoBehaviour:
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 10
-    m_MaxSize: 40
+    m_MinSize: 0
+    m_MaxSize: 20
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -3285,6 +3283,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 542628375}
   m_CullTransparentMesh: 0
+--- !u!114 &559849808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964188186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e9b75a3fe86371408fd0ff4590886b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 0
+  isSmall: 0
+  isCylindrical: 0
+  isInGroup: 0
+--- !u!114 &559849809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964188186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f9323de5c771d0479b70cee18400a29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typesToDisableOnGrab: []
+  immediatelyReapplyConstraints: 0
+  isGrabbed: 0
+  StartGrabCoeff: 2
+  EndGrabCoeff: 1.2
+  debugGrabCoeff: 0
+  onGrab:
+    m_PersistentCalls:
+      m_Calls: []
+  onRelease:
+    m_PersistentCalls:
+      m_Calls: []
+  improveThrowingSpeed: 0
+  drawDebugRays: 0
+  noHandCollisionLayer: 0
 --- !u!1 &567586377
 GameObject:
   m_ObjectHideFlags: 0
@@ -4137,6 +4178,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e9b75a3fe86371408fd0ff4590886b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 0
+  isSmall: 0
+  isCylindrical: 1
+  isInGroup: 0
 --- !u!1 &645586989
 GameObject:
   m_ObjectHideFlags: 0
@@ -5305,6 +5350,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e9b75a3fe86371408fd0ff4590886b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 5
+  isSmall: 0
+  isCylindrical: 0
+  isInGroup: 0
 --- !u!1 &856878319
 GameObject:
   m_ObjectHideFlags: 0
@@ -5690,7 +5739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_Name
-      value: United
+      value: Usable
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_IsActive
@@ -11192,6 +11241,7 @@ MonoBehaviour:
   recording: 0
   recordBody: 1
   recordObjects: 1
+  frame: 0
   rePlaying: 0
   loadFromCsvFile: 1
   recordingFilesDir: 
@@ -11927,7 +11977,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -488, y: -0}
+  m_AnchoredPosition: {x: -179, y: 18}
   m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2045957335
@@ -11957,13 +12007,13 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 2
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: MTM-1 transcription RH, LH
+  m_Text: MTM-1 transcription
 --- !u!222 &2045957336
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12546,6 +12596,7 @@ GameObject:
   - component: {fileID: 595632713}
   - component: {fileID: 9220086914015339452}
   - component: {fileID: 9220086914015339451}
+  - component: {fileID: 9220086914015339454}
   - component: {fileID: 9220086914015339453}
   m_Layer: 0
   m_Name: Handle
@@ -13033,3 +13084,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screwdistance: 25
+--- !u!114 &9220086914015339454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2766212503168196658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e9b75a3fe86371408fd0ff4590886b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 0
+  isSmall: 0
+  isCylindrical: 1
+  isInGroup: 0

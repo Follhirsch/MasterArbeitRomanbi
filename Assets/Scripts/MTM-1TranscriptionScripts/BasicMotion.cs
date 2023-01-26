@@ -14,8 +14,8 @@ public class BasicMotion
 
     public static void initialzeDicts()
     {
-        Grasp.initialiceDict();
-        Reach.initialiceDict();
-        //add all dictionarrys
+        //Grasp.initialiceDict();
+        //Reach.initialiceDict();
+        //Todo: add all dictionarrys
     }
 }

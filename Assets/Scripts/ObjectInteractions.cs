@@ -10,18 +10,20 @@ public class ObjectInteractions : MonoBehaviour
     public Dictionary<GameObject, bool> currentlyGraspedRH = new Dictionary<GameObject, bool>();
     public GameObject debugObj;
     public GameObject debugObj2;
-    public GameObject transcriptionDisplay;
+    //public GameObject transcriptionDisplay;
     private Dictionary<GameObject, bool> test;
+    private TranscriptionMaster transcriptionMaster;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        transcriptionMaster = gameObject.GetComponent<TranscriptionMaster>();
     }
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
- 
+        int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
+        StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
         if (isRightHand)
         {   
             currentlyGraspedRH.Add(graspedObj,true);
@@ -36,6 +38,9 @@ public class ObjectInteractions : MonoBehaviour
     
     public void removeGraspedObj(GameObject graspedObj,bool isRightHand)
     {
+        int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
+        StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, graspedObj, frame));
+        
         if (isRightHand)
         {
             currentlyGraspedRH.Remove(graspedObj); 

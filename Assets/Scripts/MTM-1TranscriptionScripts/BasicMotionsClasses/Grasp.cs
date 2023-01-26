@@ -33,8 +33,8 @@ public class Grasp : BasicMotion
          string side = "";
          if (isRightHand) { side = "Right"; }
          else { side = "Left"; }
-         returnString += differentiation.ToString() + specificationDictionary[specification] + m_object.name;
-         returnString = side + bodyPart + ":     " + returnString;
+         returnString += differentiation.ToString() + specification.ToString() +", "+ m_object.name;
+         returnString = side + bodyPart + ": " + returnString;
         return returnString;
     }
 }

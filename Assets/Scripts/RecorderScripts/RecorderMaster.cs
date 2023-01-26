@@ -14,7 +14,7 @@ public class RecorderMaster : MonoBehaviour
     public bool recordBody;
     public bool recordObjects;
     private int recordedSequenceNr;
-    
+    public int frame;
     
     public bool rePlaying = false;
     public bool loadFromCsvFile = false;
@@ -35,6 +35,7 @@ public class RecorderMaster : MonoBehaviour
         recorderObject = this.gameObject;
         recording = false;
         samplingInterval = 1 / framerate;
+        frame = 0;
         recordedSequenceNr = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
@@ -88,6 +89,7 @@ public class RecorderMaster : MonoBehaviour
                 if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().LogData();}
                 if (recordBody) {recorderObject.GetComponent<BodyRecorder>().LogData();}
                 
+                frame++;
                 timer = timer - samplingInterval;
             }
         }

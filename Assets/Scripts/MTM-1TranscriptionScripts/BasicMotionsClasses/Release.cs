@@ -25,7 +25,7 @@ public class Release : BasicMotion
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }
         returnString += differentiation.ToString();
-        returnString = side + bodyPart + ":     " + returnString + m_object.name;
+        returnString = side + bodyPart + ": " + returnString +", "+ m_object.name;
         return returnString;
     }
     
