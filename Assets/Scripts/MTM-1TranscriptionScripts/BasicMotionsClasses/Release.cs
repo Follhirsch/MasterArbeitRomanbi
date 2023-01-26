@@ -6,20 +6,26 @@ using UnityEngine;
 public class Release : BasicMotion
 {
     public int differentiation;
+    public bool isRightHand;
+    public GameObject m_object;
 
 
-    public Release(string bodyPartIn, int differentiationIn)
+    public Release(bool isRightHandIn,GameObject objectIn, int differentiationIn)
     {
-        bodyPart = bodyPartIn;
+        bodyPart = "Hand";
+        isRightHand = isRightHandIn;
         differentiation = differentiationIn;
-        
+        m_object = objectIn;
     }
     
     public override string createOutputString()
     {
         string returnString = "RL";
+        string side = "";
+        if (isRightHand) { side = "Right"; }
+        else { side = "Left"; }
         returnString += differentiation.ToString();
-        returnString = bodyPart + ":     " + returnString;
+        returnString = side + bodyPart + ":     " + returnString + m_object.name;
         return returnString;
     }
     

@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class Grasp : BasicMotion
 {
+    public bool isRightHand;
     public int differentiation;
     public int specification;
-    public string objectName;
+    public GameObject m_object;
     public static Dictionary<int, string> specificationDictionary;
 
-    public Grasp(string bodyPartIn,int differentiationIn, int specificationIn, string objectNameIn)
+    public Grasp(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn)
     {
-        bodyPart = bodyPartIn;
+        bodyPart = "Hand";
+        isRightHand = isRightHandIn;
         differentiation = differentiationIn;
         specification = specificationIn;
-        objectName = objectNameIn;
+        m_object = objectIn;
     }
     public static void initialiceDict()
     {
@@ -28,8 +30,11 @@ public class Grasp : BasicMotion
      public override string createOutputString()
      {
          string returnString = "G";
-         returnString += differentiation.ToString() + specificationDictionary[specification] + objectName;
-         returnString = bodyPart + ":     " + returnString;
+         string side = "";
+         if (isRightHand) { side = "Right"; }
+         else { side = "Left"; }
+         returnString += differentiation.ToString() + specificationDictionary[specification] + m_object.name;
+         returnString = side + bodyPart + ":     " + returnString;
         return returnString;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasicMotion
 {
-    public float timestamp;
+    public int frame;
     public string bodyPart;
 
     public virtual string createOutputString()

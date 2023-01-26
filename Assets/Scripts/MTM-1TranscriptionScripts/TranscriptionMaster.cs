@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -60,15 +61,50 @@ public class TranscriptionMaster : MonoBehaviour
         */
 
     }
-
-    public struct MTMCodesHand
+    
+    IEnumerator CalculateGraspTransition(bool isRightHand, GameObject obj, int frame)
     {
-        public string basicMotion;
-        public string differentiation;
-        public string specification;
-        public int distanceInMeter;
-        public int forceinDaN;
+        yield return new WaitForSeconds(0f);
+        //calculate Grasp
+        calculateGraspCode(isRightHand,obj,frame);
+        
+        //calculate Calculate Reach
         
     }
+
+    BasicMotion calculateGraspCode(bool isRightHand, GameObject obj, int frame)
+    {
+        //check if regrasp
+        List<Release> recentThisObjReleases = new List<Release>();
+        foreach(BasicMotion mot in MTMTranscription)
+        {
+            if (mot is Release)
+            {
+                Release rl = mot as Release;
+                if (!obj.name.Equals(rl.m_object.name,StringComparison.Ordinal)){}
+                if (frame - rl.frame < ThresholdValues.regraspAllowedFrames) { recentThisObjReleases.Add(rl); }
+            }
+        }
+
+        if (recentThisObjReleases.Count > 0)
+        {
+            //obj was recently grasped
+            foreach (var rl in recentThisObjReleases)
+            {
+                if (isRightHand == rl.isRightHand)
+                {
+                    return new Grasp(isRightHand, 2, 0, obj);// Regrasp
+                } 
+                else
+                {
+                    return new Grasp(isRightHand, 3, 0, obj);//Hand change
+                }
+            }
+        }
+        {
+            
+        }
+    }
+     
 }
 

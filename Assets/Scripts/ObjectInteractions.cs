@@ -25,12 +25,12 @@ public class ObjectInteractions : MonoBehaviour
         if (isRightHand)
         {   
             currentlyGraspedRH.Add(graspedObj,true);
-            transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n R \n G";
+            //transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n R \n G";
         }
         else
         {
             currentlyGraspedLH.Add(graspedObj); 
-            transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n R \nG";
+            //transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n R \nG";
         }
     }
     
@@ -39,12 +39,12 @@ public class ObjectInteractions : MonoBehaviour
         if (isRightHand)
         {
             currentlyGraspedRH.Remove(graspedObj); 
-            transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n RL";
+            //transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n RL";
         }
         else
         {
             currentlyGraspedLH.Remove(graspedObj); 
-            transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n RL";
+            //transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n RL";
         }
     }
 
@@ -60,6 +60,9 @@ public class ObjectInteractions : MonoBehaviour
             addGraspedObject(debugObj2,true);
             //removeGraspedObj(debugObj,true);
         }
+        
+        
+        /* add later for contact grasp
 
         foreach(GameObject tempObj in currentlyGraspedRH.Keys)
         {
@@ -73,6 +76,7 @@ public class ObjectInteractions : MonoBehaviour
                 
             }
         }
+        */
     }
-    
+
 }
