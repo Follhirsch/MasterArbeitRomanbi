@@ -10,9 +10,10 @@ public class Release : BasicMotion
     public GameObject m_object;
 
 
-    public Release(bool isRightHandIn,GameObject objectIn, int differentiationIn)
+    public Release(bool isRightHandIn,GameObject objectIn, int differentiationIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         isRightHand = isRightHandIn;
         differentiation = differentiationIn;
         m_object = objectIn;
@@ -21,9 +22,8 @@ public class Release : BasicMotion
     public override string createOutputString()
     {
         string returnString = "RL";
-        string side = "";
+        string side = "Left";
         if (isRightHand) { side = "Right"; }
-        else { side = "Left"; }
         returnString += differentiation.ToString();
         returnString = side + bodyPart + ": " + returnString +", "+ m_object.name;
         return returnString;

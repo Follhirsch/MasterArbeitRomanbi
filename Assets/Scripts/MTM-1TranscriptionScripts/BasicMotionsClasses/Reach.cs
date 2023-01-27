@@ -12,9 +12,10 @@ public class Reach : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
 
-    public Reach(int differentiationIn, int distanceIn,bool isRightHandIn)
+    public Reach(int differentiationIn, int distanceIn,bool isRightHandIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         differentiation = differentiationIn;
         distance = distanceIn;
         isRightHand = isRightHandIn;
@@ -40,10 +41,12 @@ public class Reach : BasicMotion
     public override string createOutputString()
     {
         string returnString = "R";
+        string side = "Left";
+        if (isRightHand) { side = "Right"; }
         returnString += distance.ToString() + differentiationDictionary[differentiation];
         if (movingAtStart) { returnString = "m" + returnString;}
         if (movingAtEnd) { returnString += "m";}
-        returnString = bodyPart + ": " + returnString;
+        returnString = side+bodyPart + ": " + returnString;
         
         return returnString;
     }

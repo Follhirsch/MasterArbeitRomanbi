@@ -8,6 +8,7 @@ public class InteractableObject : MonoBehaviour
     public bool isSmall;
     public bool isCylindrical;
     public bool isInGroup;
+    public bool isAtKnownLocation;
     
     // Start is called before the first frame update
     void Start()

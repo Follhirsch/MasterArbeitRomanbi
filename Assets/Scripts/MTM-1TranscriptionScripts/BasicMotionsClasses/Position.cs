@@ -11,9 +11,10 @@ public class Position : BasicMotion
     public GameObject interactedObj;
     public static Dictionary<int, string> specificationDictionary;
 
-    public Position(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn, GameObject interactedObjIn)
+    public Position(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn, GameObject interactedObjIn,int frameIn)
     {
     bodyPart = "Hand";
+    frame = frameIn;
     isRightHand = isRightHandIn;
     differentiation = differentiationIn;
     specification = specificationIn;

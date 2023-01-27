@@ -10,9 +10,10 @@ public class Grasp : BasicMotion
     public GameObject m_object;
     public static Dictionary<int, string> specificationDictionary;
 
-    public Grasp(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn)
+    public Grasp(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         isRightHand = isRightHandIn;
         differentiation = differentiationIn;
         specification = specificationIn;

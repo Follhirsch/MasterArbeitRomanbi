@@ -9,9 +9,10 @@ public class Disengage : BasicMotion
     public GameObject m_object;
     public GameObject interactedObj;
 
-    public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn, GameObject interactedObjIn)
+    public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn, GameObject interactedObjIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         isRightHand = isRightHandIn;
         differentiation = differentiationIn;
         m_object = objectIn;

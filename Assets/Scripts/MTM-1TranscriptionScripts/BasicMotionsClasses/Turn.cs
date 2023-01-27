@@ -11,9 +11,10 @@ public class Turn : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
 
-    public Turn(int differentiationIn, int angleIn, bool isRightHandIn,GameObject objectIn)
+    public Turn(int differentiationIn, int angleIn, bool isRightHandIn,GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         differentiation = differentiationIn;
         angle = angleIn;
         isRightHand = isRightHandIn;

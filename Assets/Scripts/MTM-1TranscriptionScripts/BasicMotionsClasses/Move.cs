@@ -14,9 +14,10 @@ public class Move : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
 
-    public Move(int differentiationIn, int distanceIn, int weightIn, bool isRightHandIn,GameObject objectIn)
+    public Move(int differentiationIn, int distanceIn, int weightIn, bool isRightHandIn,GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
+        frame = frameIn;
         differentiation = differentiationIn;
         distance = distanceIn;
         weight = weightIn;

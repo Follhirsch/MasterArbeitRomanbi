@@ -16,10 +16,10 @@ public class HandPoseManipulation : MonoBehaviour
     public bool replaying = false;
     
     public int frame;
-    private Vector3[][] rPosArray;
-    private Quaternion[][] rOriArray;
-    private Vector3[][] lPosArray;
-    private Quaternion[][] lOriArray;
+    public Vector3[][] rPosArray;
+    public Quaternion[][] rOriArray;
+    public Vector3[][] lPosArray;
+    public Quaternion[][] lOriArray;
     // Start is called before the first frame update
     void Start()
     {
