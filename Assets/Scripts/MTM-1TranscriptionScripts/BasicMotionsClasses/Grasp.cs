@@ -5,7 +5,7 @@ using UnityEngine;
 public class Grasp : BasicMotion
 {
     public bool isRightHand;
-    public int differentiation;
+    public int differentiation = 0;
     public int specification;
     public GameObject m_object;
     public static Dictionary<int, string> specificationDictionary;
@@ -18,8 +18,16 @@ public class Grasp : BasicMotion
         specification = specificationIn;
         m_object = objectIn;
     }
-    public static void initialiceDict()
+    public static void initializeDict()
     {
+        if(specificationDictionary == null)
+        {
+            specificationDictionary = new Dictionary<int, string>();
+        }
+        else
+        {
+            specificationDictionary.Clear();
+        }
         specificationDictionary.Add(0,"");
         specificationDictionary.Add(1,"A");
         specificationDictionary.Add(2,"B");
@@ -33,7 +41,7 @@ public class Grasp : BasicMotion
          string side = "";
          if (isRightHand) { side = "Right"; }
          else { side = "Left"; }
-         returnString += differentiation.ToString() + specification.ToString() +", "+ m_object.name;
+         returnString += differentiation.ToString() + specificationDictionary[specification] +", "+ m_object.name;
          returnString = side + bodyPart + ": " + returnString;
         return returnString;
     }

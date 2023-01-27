@@ -2,17 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Disengage : MonoBehaviour
+public class Disengage : BasicMotion
 {
-    // Start is called before the first frame update
-    void Start()
+    public bool isRightHand;
+    public int differentiation;
+    public GameObject m_object;
+    public GameObject interactedObj;
+
+    public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn, GameObject interactedObjIn)
     {
-        
+        bodyPart = "Hand";
+        isRightHand = isRightHandIn;
+        differentiation = differentiationIn;
+        m_object = objectIn;
+        interactedObj = interactedObjIn;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override string createOutputString()
     {
-        
+        string returnString = "D";
+        string side = "";
+        if (isRightHand) { side = "Right"; }
+        else { side = "Left"; }
+
+        returnString += differentiation.ToString() + ", " + m_object.name + "->" + interactedObj.name;
+        returnString = side + bodyPart + ": " + returnString;
+        return returnString;
     }
+    
+    
 }
