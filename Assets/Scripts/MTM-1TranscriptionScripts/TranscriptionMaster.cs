@@ -66,6 +66,8 @@ public class TranscriptionMaster : MonoBehaviour
 
     public IEnumerator CalculateGraspTransition(bool isRightHand, GameObject obj, int frame)
     {
+        if (!transcribeHands) { yield break;}
+        
         yield return new WaitForSeconds(1f);
         BasicMotion gB = CalculateGraspCode(isRightHand, obj, frame);
 
@@ -80,6 +82,7 @@ public class TranscriptionMaster : MonoBehaviour
 
     public IEnumerator CalculateReleaseTransition(bool isRightHand, GameObject obj, int frame)
     {
+        if (!transcribeHands) { yield break;}
         yield return new WaitForSeconds(1f);
         //calculate Release
 
