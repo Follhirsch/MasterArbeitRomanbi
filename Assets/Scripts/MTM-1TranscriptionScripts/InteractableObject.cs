@@ -9,6 +9,9 @@ public class InteractableObject : MonoBehaviour
     public bool isCylindrical;
     public bool isInGroup;
     public bool isAtKnownLocation;
+    public bool gotPositioned;
+    public bool gotDisengaged;
+    public bool isCrank;
     
     // Start is called before the first frame update
     void Start()

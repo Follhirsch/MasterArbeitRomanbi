@@ -69,13 +69,14 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribeHands) { yield break;}
         
         yield return new WaitForSeconds(1f);
-        BasicMotion gB = CalculateGraspCode(isRightHand, obj, frame);
-
-        BasicMotion rB = CalculateReach(gB as Grasp, frame);
-
-        // add Motions to Table
-        MTMTranscription.Add(rB);
-        MTMTranscription.Add(gB);
+        Grasp g = CalculateGrasp(isRightHand, obj, frame);
+        
+        if (g.differentiation == 2) // was regrasp? -> no Reach motion
+        {
+            BasicMotion rB = CalculateReach(g, frame);
+            MTMTranscription.Add(rB);
+        }
+        MTMTranscription.Add(g);
         
         StartCoroutine( updateCanvas());
     }
@@ -85,14 +86,44 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribeHands) { yield break;}
         yield return new WaitForSeconds(1f);
         //calculate Release
+        Release rl = CalculateRelease(isRightHand, obj, frame);
 
-        MTMTranscription.Add(CalculateReleaseCode(isRightHand, obj, frame));
+        InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
+        if (interactionValues.isCrank)
+        {
+            //TODO: add crank encoding
+            
+            MTMTranscription.Add(rl);
+            yield break;
+        }
+
+        bool positioningInvolved = interactionValues.gotPositioned;
+
+        if (positioningInvolved)
+        {
+            //TODO: add positioning encoding;
+            interactionValues.gotPositioned = false;
+        }
+
+        bool disengagingInvolved = interactionValues.gotDisengaged;
+        if (disengagingInvolved)
+        {
+            //TODO: add positioning encoding;
+            interactionValues.gotDisengaged = false;
+        }
+        
+        Move m = CalculateMove(rl,positioningInvolved);
+        
+        //TODO: MTMTranscription.Add(d);
+        MTMTranscription.Add(m);
+        //TODO: MTMTranscription.Add(p);
+        MTMTranscription.Add(rl);
 
         //TODO:  Calculate Move and other things
         StartCoroutine( updateCanvas());
     }
 
-    BasicMotion CalculateGraspCode(bool isRightHand, GameObject obj, int frame)
+    Grasp CalculateGrasp(bool isRightHand, GameObject obj, int frame)
     {
         List<Release> recentThisObjReleases = new List<Release>();
 
@@ -157,7 +188,7 @@ public class TranscriptionMaster : MonoBehaviour
         return new Grasp(isRightHand, 1, 1, obj, frame); //Easy Grasp
     }
 
-    BasicMotion CalculateReleaseCode(bool isRightHand, GameObject obj, int frame)
+    Release CalculateRelease(bool isRightHand, GameObject obj, int frame)
     {
         for (int i = MTMTranscription.Count - 1; i < 0; i--)
         {
@@ -186,13 +217,8 @@ public class TranscriptionMaster : MonoBehaviour
         return new Release(isRightHand, obj, 2, frame);
     }
 
-    BasicMotion CalculateReach(Grasp g, int frame)
+    Reach CalculateReach(Grasp g, int frame)
     {
-        if (g.differentiation == 2) // was regrasp -> no Reach motion
-        {
-            return null;
-        }
-
         // find frames of motion
         List<Release> lastReleases = new List<Release>();
         for (int i = 0; i < MTMTranscription.Count; i++)
@@ -264,8 +290,78 @@ public class TranscriptionMaster : MonoBehaviour
         //Todo: check if moving at start or end
 
         return rOut;
+    }
+    Move CalculateMove(Release rl,bool involvedPositioning)
+    {
+        // find frames of motion
+        List<Grasp> lastGraspsThisH = new List<Grasp>();
+        List<Grasp> lastGraspsOtherH = new List<Grasp>();
+        for (int i = 0; i < MTMTranscription.Count; i++)
+        {
+            if (MTMTranscription[i] is Grasp)
+            {
+                Grasp tempGrasp = MTMTranscription[i] as Grasp;
+                if (tempGrasp.isRightHand == rl.isRightHand)
+                {
+                    lastGraspsThisH.Add(tempGrasp);
+                }
+                else
+                {
+                    lastGraspsOtherH.Add(tempGrasp);
+                }
+            }
+        }
+        int startFrame = 0;
+        if (lastGraspsThisH.Count>0)
+        {
+            startFrame = lastGraspsThisH.Last().frame;
+        }
+        //get data from recorder
+        Vector3[][] recorderData;
+        int column = 1;
+        if (rl.isRightHand)
+        {
+            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+            {
+                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().rPosArray;
+            }
+            else
+            {
+                recorderData = RecorderObject.GetComponent<BodyRecorder>().rPosVectors.ToArray();
+            }
+        }
+        else
+        {
+            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+            {
+                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().lPosArray;
+            }
+            else
+            {
+                recorderData = RecorderObject.GetComponent<BodyRecorder>().lPosVectors.ToArray();
+            }
+        }
+        int[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, rl.frame));
+        int distance = distances.Last();
 
+        if (distance < ThresholdValues.minMoveDistThreshold)
+        {
+            Debug.Log("no Move due to small distance");
+            return null; 
+        }
 
+        int weight = rl.m_object.GetComponent<InteractableObject>().weight;
+        
+        if (involvedPositioning)
+        {
+            return new Move(3, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // precise move
+        }
+        if (!rl.m_object.name.Equals(lastGraspsOtherH.Last().m_object.name, StringComparison.Ordinal))
+        {
+            return new Move(1, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // easy move
+        }
+        
+        return new Move(2, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // move to approximate location
         
     }
 
@@ -300,5 +396,7 @@ public class TranscriptionMaster : MonoBehaviour
         }
         return outputArray;
     }
+
+    
     
 }
