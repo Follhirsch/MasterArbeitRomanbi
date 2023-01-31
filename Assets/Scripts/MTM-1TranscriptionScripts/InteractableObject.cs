@@ -12,12 +12,16 @@ public class InteractableObject : MonoBehaviour
     public bool gotPositioned;
     public bool gotDisengaged;
     public bool isCrank;
+    public bool isInHandRH;
+    public bool isInHandLH;
     
     // Start is called before the first frame update
     void Start()
     {
         gameObject.tag = "InteractableObject";
         weight = (int)gameObject.GetComponent<Rigidbody>().mass;
+        isInHandRH = false;
+        isInHandLH = false;
     }
 
     // Update is called once per frame

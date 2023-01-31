@@ -13,6 +13,7 @@ public class RecorderMaster : MonoBehaviour
     public bool recording = false;
     public bool recordBody;
     public bool recordObjects;
+    public bool transcribeMTM;
     private int recordedSequenceNr;
     public int frame;
     
@@ -22,6 +23,7 @@ public class RecorderMaster : MonoBehaviour
     private DirectoryInfo folderDirectory; // folder where a recording is stored
     public string path;
     public GameObject SceneToRecord;
+    public GameObject MTMobj;
 
 
     private GameObject recorderObject;
@@ -101,10 +103,10 @@ public class RecorderMaster : MonoBehaviour
     {
         if (recording) //stop recording
         {
+            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
             recording = false;
             if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StopRecording(); }
             if (recordBody){recorderObject.GetComponent<BodyRecorder>().StopRecording();}
-            
             Debug.Log("recording stopped");
         }
         else //start recording
@@ -118,7 +120,11 @@ public class RecorderMaster : MonoBehaviour
             if (recordBody) {recorderObject.GetComponent<BodyRecorder>().StartRecording(sequenceFolderDir); }
             
             recording = true;
-            Debug.Log("recording started");
+            if (transcribeMTM)
+            {
+                MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = true;
+            }
+                Debug.Log("recording started");
         }
     }
     

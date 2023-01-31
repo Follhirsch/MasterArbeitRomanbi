@@ -8,9 +8,11 @@ using UnityEngine.UI;
 
 public class TranscriptionMaster : MonoBehaviour
 {
+    public bool transcribtionOn;
     public bool transcribeHands = false;
     public bool transcribeBody = false;
     public bool transcribeFromReplay = false;
+    public bool supressNextHandMotion;
 
     public GameObject HandsObject;
     public GameObject PlayerObject;
@@ -24,6 +26,8 @@ public class TranscriptionMaster : MonoBehaviour
     {
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
+        transcribtionOn = false;
+        supressNextHandMotion = false;
     }
 
     // Update is called once per frame
@@ -33,11 +37,11 @@ public class TranscriptionMaster : MonoBehaviour
 
     IEnumerator updateCanvas()
     {
-        yield return new WaitForSeconds(0.1f);
-        string textOutput = "";
-        for (int i = 0; i < MTMTranscription.Count; i++)
+        yield return new WaitForSeconds(0.2f);
+        string textOutput = ""; 
+        
+        for (int i = Math.Max(MTMTranscription.Count-10,0); i < MTMTranscription.Count; i++)
         {
-            //Debug.Log(MTMTranscription[i].createOutputString());
             textOutput += MTMTranscription[i].createOutputString() + "\n";
         }
 
@@ -66,12 +70,23 @@ public class TranscriptionMaster : MonoBehaviour
 
     public IEnumerator CalculateGraspTransition(bool isRightHand, GameObject obj, int frame)
     {
+        if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
-        
+        if (supressNextHandMotion){yield break;}
+
+        if (isRightHand)
+        {
+            obj.GetComponent<InteractableObject>().isInHandRH = true;
+        }
+        else
+        {
+            obj.GetComponent<InteractableObject>().isInHandLH = true;
+        }
+
         yield return new WaitForSeconds(1f);
         Grasp g = CalculateGrasp(isRightHand, obj, frame);
         
-        if (g.differentiation == 2) // was regrasp? -> no Reach motion
+        if (g.differentiation != 2) // was not regrasp? -> add reach
         {
             BasicMotion rB = CalculateReach(g, frame);
             MTMTranscription.Add(rB);
@@ -83,7 +98,25 @@ public class TranscriptionMaster : MonoBehaviour
 
     public IEnumerator CalculateReleaseTransition(bool isRightHand, GameObject obj, int frame)
     {
+        if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
+
+        if (supressNextHandMotion)
+        {
+            supressNextHandMotion = false;
+            yield break;
+        }
+        
+        // update interactableObject
+        if (isRightHand)
+        {
+            obj.GetComponent<InteractableObject>().isInHandRH = false;
+        }
+        else
+        {
+            obj.GetComponent<InteractableObject>().isInHandLH = false;
+        }
+        
         yield return new WaitForSeconds(1f);
         //calculate Release
         Release rl = CalculateRelease(isRightHand, obj, frame);
@@ -115,7 +148,10 @@ public class TranscriptionMaster : MonoBehaviour
         Move m = CalculateMove(rl,positioningInvolved);
         
         //TODO: MTMTranscription.Add(d);
-        MTMTranscription.Add(m);
+        if (m != null)
+        {
+            MTMTranscription.Add(m);
+        }
         //TODO: MTMTranscription.Add(p);
         MTMTranscription.Add(rl);
 
@@ -125,38 +161,48 @@ public class TranscriptionMaster : MonoBehaviour
 
     Grasp CalculateGrasp(bool isRightHand, GameObject obj, int frame)
     {
-        List<Release> recentThisObjReleases = new List<Release>();
+        List<Release> releasListForPossibleRegrasps = new List<Release>();
+        List<Grasp> graspListOtherH = new List<Grasp>();
 
         foreach (BasicMotion mot in MTMTranscription) // create release List
         {
             if (mot is Release)
             {
                 Release rl = mot as Release;
-                if (!obj.name.Equals(rl.m_object.name, StringComparison.Ordinal))
+                if (obj.name.Equals(rl.m_object.name, StringComparison.Ordinal) && rl.isRightHand == isRightHand)
                 {
-                }
 
-                if (frame - rl.frame < ThresholdValues.regraspAllowedFrames)
-                {
-                    recentThisObjReleases.Add(rl);
+                    if (frame - rl.frame < ThresholdValues.regraspAllowedFrames)
+                    {
+                        releasListForPossibleRegrasps.Add(rl);
+                    }
                 }
+            }
+            else if (mot is Grasp)
+            {
+                Grasp g = mot as Grasp;
+                if (obj.name.Equals(g.m_object.name, StringComparison.Ordinal) && g.isRightHand != isRightHand)
+                {
+                    if (frame - g.frame < ThresholdValues.handChangeAllowedFrames)
+                    {
+                        graspListOtherH.Add(g);
+                    }
+
+                }
+                
             }
         }
 
-        if (recentThisObjReleases.Count > 0)
+
+        if (releasListForPossibleRegrasps.Count > 0)
         {
+            return new Grasp(isRightHand, 2, 0, obj, frame); // Regrasp
             //obj was recently grasped!
-            foreach (var rl in recentThisObjReleases)
-            {
-                if (isRightHand == rl.isRightHand)
-                {
-                    return new Grasp(isRightHand, 2, 0, obj, frame); // Regrasp
-                }
-                else
-                {
-                    return new Grasp(isRightHand, 3, 0, obj, frame); //Hand change
-                }
-            }
+        }
+
+        if (graspListOtherH.Count > 0)
+        {
+            return new Grasp(isRightHand, 3, 0, obj, frame); //Hand change
         }
 
         bool isSmall = obj.GetComponent<InteractableObject>().isSmall;
@@ -295,7 +341,6 @@ public class TranscriptionMaster : MonoBehaviour
     {
         // find frames of motion
         List<Grasp> lastGraspsThisH = new List<Grasp>();
-        List<Grasp> lastGraspsOtherH = new List<Grasp>();
         for (int i = 0; i < MTMTranscription.Count; i++)
         {
             if (MTMTranscription[i] is Grasp)
@@ -304,10 +349,6 @@ public class TranscriptionMaster : MonoBehaviour
                 if (tempGrasp.isRightHand == rl.isRightHand)
                 {
                     lastGraspsThisH.Add(tempGrasp);
-                }
-                else
-                {
-                    lastGraspsOtherH.Add(tempGrasp);
                 }
             }
         }
@@ -356,11 +397,23 @@ public class TranscriptionMaster : MonoBehaviour
         {
             return new Move(3, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // precise move
         }
-        if (!rl.m_object.name.Equals(lastGraspsOtherH.Last().m_object.name, StringComparison.Ordinal))
+        //check if object is in other Hand
+        if (rl.isRightHand)
         {
-            return new Move(1, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // easy move
+            if (rl.m_object.GetComponent<InteractableObject>().isInHandLH)
+            {
+                return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
+            }
+        }
+        else
+        {
+            if (rl.m_object.GetComponent<InteractableObject>().isInHandRH)
+            {
+                return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
+            }
         }
         
+
         return new Move(2, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // move to approximate location
         
     }

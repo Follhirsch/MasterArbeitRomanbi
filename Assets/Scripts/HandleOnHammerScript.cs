@@ -10,6 +10,7 @@ public class HandleOnHammerScript : MonoBehaviour
     // Start is called before the first frame update
     public GameObject hammerheadCollider;
     public GameObject newHammer;
+    public GameObject MTMobj;
     
     GameObject handle;
     GameObject hammer;
@@ -23,13 +24,7 @@ public class HandleOnHammerScript : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown("i"))
-        {
-            Debug.Log("asdf");
-            Debug.Log(handle.transform.localRotation.eulerAngles);
-            Debug.Log(hammerHead.transform.localRotation.eulerAngles);
-            Debug.Log(Quaternion.Angle(handle.transform.localRotation, hammerHead.transform.localRotation));
-        }
+        
     }
 
     void OnTriggerEnter(Collider other)
@@ -40,9 +35,11 @@ public class HandleOnHammerScript : MonoBehaviour
         float dyAngle = handle.transform.localRotation.eulerAngles.y - hammerHead.transform.localRotation.eulerAngles.y;
         
         if (dxAngle > thresholdAngle || dyAngle >thresholdAngle){return;}
-
-
-        Debug.Log("Hammerhead correctly detected");
+        //supress the next hand moton
+        MTMobj.GetComponent<TranscriptionMaster>().supressNextHandMotion = true;
+        newHammer.GetComponent<InteractableObject>().gotPositioned = true;
+        
+        //Debug.Log("Hammerhead correctly detected");
         Vector3 enclavePos = new Vector3(0, -0.5f, 0);//newHammer.transform.position;
         Vector3 newPositionHammerHead = hammer.transform.GetChild(0).transform.position;
         Quaternion newRotHammerHead = hammer.transform.GetChild(0).transform.rotation;

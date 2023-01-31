@@ -45,10 +45,13 @@ public class Move : BasicMotion
     public override string createOutputString()
     {
         string returnString = "M";
+        string side = "";
+        if (isRightHand) { side = "Right"; }
+        else { side = "Left"; }
         returnString += distance.ToString() + differentiationDictionary[differentiation] + weight.ToString();
         if (movingAtStart) { returnString = "m" + returnString;}
         if (movingAtEnd) { returnString += "m";}
-        returnString = bodyPart + ": " + returnString;
+        returnString = side + bodyPart + ": " + returnString + "   "+ m_object.name;
         
         return returnString;
     }

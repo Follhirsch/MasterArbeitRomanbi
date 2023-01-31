@@ -2838,9 +2838,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b350e42e2ab4c747be4c2a24d6f84e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transcribeHands: 0
+  transcribtionOn: 0
+  transcribeHands: 1
   transcribeBody: 0
   transcribeFromReplay: 0
+  supressNextHandMotion: 0
   HandsObject: {fileID: 1023894473}
   PlayerObject: {fileID: 2107576848}
   RecorderObject: {fileID: 1848330096}
@@ -2872,7 +2874,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d758d92d49c6548855387954a4dc91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentlyGraspedLH: []
   debugObj: {fileID: 0}
   debugObj2: {fileID: 0}
 --- !u!1 &506115539
@@ -3286,6 +3287,11 @@ MonoBehaviour:
   isCylindrical: 0
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 0
+  isInHandRH: 0
+  isInHandLH: 0
 --- !u!114 &559849809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3707,7 +3713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.2830189, g: 0.052064802, b: 0.052064802, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4268,6 +4274,11 @@ MonoBehaviour:
   isCylindrical: 1
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 0
+  isInHandRH: 0
+  isInHandLH: 0
 --- !u!1 &645586989
 GameObject:
   m_ObjectHideFlags: 0
@@ -4776,7 +4787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.122641504, g: 0.104708076, b: 0.104708076, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5457,6 +5468,11 @@ MonoBehaviour:
   isCylindrical: 0
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 0
+  isInHandRH: 0
+  isInHandLH: 0
 --- !u!1 &856878319
 GameObject:
   m_ObjectHideFlags: 0
@@ -6986,6 +7002,11 @@ MonoBehaviour:
   isCylindrical: 0
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 0
+  isInHandRH: 0
+  isInHandLH: 0
 --- !u!1 &1184520126
 GameObject:
   m_ObjectHideFlags: 0
@@ -7891,7 +7912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1353422892
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10724,6 +10745,7 @@ MonoBehaviour:
   thresholdAngle: 5
   hammerheadCollider: {fileID: 1294970482}
   newHammer: {fileID: 919132148895466350}
+  MTMobj: {fileID: 497665591}
 --- !u!850595691 &1780964795
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -11199,6 +11221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recorderObject: {fileID: 1848330096}
+  MTMobj: {fileID: 497665591}
   scene: {fileID: 1432557206}
   framerate: 0
 --- !u!114 &1848330100
@@ -11217,12 +11240,14 @@ MonoBehaviour:
   recording: 0
   recordBody: 1
   recordObjects: 1
+  transcribeMTM: 0
   frame: 0
   rePlaying: 0
   loadFromCsvFile: 1
   recordingFilesDir: 
   path: 
   SceneToRecord: {fileID: 633928715}
+  MTMobj: {fileID: 497665591}
 --- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12444,6 +12469,11 @@ MonoBehaviour:
   isCylindrical: 0
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 1
+  isInHandRH: 0
+  isInHandLH: 0
 --- !u!114 &2132689092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13123,3 +13153,8 @@ MonoBehaviour:
   isCylindrical: 1
   isInGroup: 0
   isAtKnownLocation: 0
+  gotPositioned: 0
+  gotDisengaged: 0
+  isCrank: 0
+  isInHandRH: 0
+  isInHandLH: 0
