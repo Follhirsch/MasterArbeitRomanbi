@@ -62,9 +62,9 @@ public class HandPoseManipulation : MonoBehaviour
 
     }
 
-    public void loadFromCSVFile()
+    public void loadFromCSVFile(string pathIn)
     {
-        dir = recorderSource.GetComponent<RecorderMaster>().path + "/Hands";
+        dir = pathIn + "/Hands";
         replayFile = Resources.Load<TextAsset>(dir);
         
 

@@ -52,15 +52,15 @@ public class RecorderMaster : MonoBehaviour
         {
             if (loadFromCsvFile)
             {
-                Debug.Log(recordingFilesDir);
+                //Debug.Log(recordingFilesDir);
                 path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
                 Debug.Log(path);
 
-                recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile();
-                recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile();
-                recorderObject.GetComponent<PlayerManipulator>().loadFromCSVFile();
+                recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile(path);
+                recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile(path);
+                recorderObject.GetComponent<PlayerManipulator>().loadFromCSVFile(path);
             }
             else
             {

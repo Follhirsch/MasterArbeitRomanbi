@@ -56,9 +56,9 @@ public class PlayerManipulator : MonoBehaviour
         Debug.Log("Player Files Loaded");
     }
     
-    public void loadFromCSVFile()
+    public void loadFromCSVFile(string pathIn)
     {
-        dir = recorderSource.GetComponent<RecorderMaster>().path + "/BodyRest";
+        dir = pathIn + "/BodyRest";
         replayFile = Resources.Load<TextAsset>(dir);
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
         string[] dataLines = replayFile.text.Split("\n");

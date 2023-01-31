@@ -54,11 +54,11 @@ public class ObjectManipulator : MonoBehaviour
         oriArray = recorderSource.GetComponent<ObjectRecorder>().oriQuaternion.ToArray();
         totalNrobjects = posArray[0].Length;
     }
-    public void loadFromCSVFile()
+    public void loadFromCSVFile(string pathIn)
     {
-        dir = recorderSource.GetComponent<RecorderMaster>().path + "/Objects";
+        dir = pathIn + "/Objects";
         replayFile = Resources.Load<TextAsset>(dir);
-        
+        Debug.Log(dir);
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
