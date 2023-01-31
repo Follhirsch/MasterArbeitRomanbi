@@ -14,12 +14,13 @@ public class ObjectRecorder : MonoBehaviour
 {
     StreamWriter csvWriter;
     public GameObject recorderObject;
+    public GameObject MTMobj;
     public List<Vector3[]> posVectors = new List<Vector3[]>();
     public List<Quaternion[]> oriQuaternion = new List<Quaternion[]>();
     public GameObject scene;
     //public List<GameObject> objects = new List<GameObject>();
     public int framerate;
-    DirectoryInfo FolderDirectory;
+    string FolderDirectory;
     
     //private int samples = 0;
 
@@ -106,12 +107,42 @@ public class ObjectRecorder : MonoBehaviour
     public void StopRecording()
     {
         csvWriter.Close();
+        csvWriter = new StreamWriter(FolderDirectory + "/" + "Interactions" + ".csv");
+        List<ObjectInteractions.Objectinteraction> interactionsList = MTMobj.GetComponent<ObjectInteractions>().InteractionList;
+        string header = "Frame,IsRightHand,isGRab,HirarchyLevel,objNR,childNr,GrandchildNr";
+        for (int i = 0; i < interactionsList.Count; i++)
+        {
+            string completeline = "";
+            completeline += interactionsList[i].frame.ToString()+",";
+            completeline += Convert.ToInt32(interactionsList[i].isRightHand).ToString();
+            completeline += Convert.ToInt32(interactionsList[i].isGrabingInteraction).ToString();
+            string nrString = "";
+            GameObject tempObj = interactionsList[i].interactedObj;
+            for (int j = 0; j < 3; j++)
+            {
+                if ( tempObj.name.Equals(scene.name))
+                {
+                    nrString = (j-1).ToString() + "," + nrString;
+                    break;
+                }
+
+                nrString = interactionsList[i].interactedObj.transform.GetSiblingIndex().ToString() + "," +
+                           nrString;
+                
+                tempObj = tempObj.transform.parent.gameObject;
+            }
+
+            completeline += nrString;
+            completeline =  completeline.Substring(0, completeline.Length - 1);
+            csvWriter.WriteLine(completeline);
+        }
+        
     }
 
     public void StartRecording(string folderDir)
     {
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
-        
+        FolderDirectory = folderDir;
         /* NOW PERFORMED IN RECORDERMASTER
         string dir = "Assets/Resources/Recordings/Recording" + "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm");
         if(!Directory.Exists(dir))
@@ -200,6 +231,5 @@ public class ObjectRecorder : MonoBehaviour
                               childname + ".ry," + childname + ".rz," + childname + ".rw,";
         return returnString;
     }
-
 }
 

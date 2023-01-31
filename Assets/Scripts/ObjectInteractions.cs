@@ -6,8 +6,7 @@ using VRfreePluginUnity;
 
 public class ObjectInteractions : MonoBehaviour
 {
-    public List<GameObject> currentlyGraspedLH = new List<GameObject>();
-    public Dictionary<GameObject, bool> currentlyGraspedRH = new Dictionary<GameObject, bool>();
+    public List<Objectinteraction> InteractionList = new List<Objectinteraction>();
     public GameObject debugObj;
     public GameObject debugObj2;
     //public GameObject transcriptionDisplay;
@@ -24,34 +23,28 @@ public class ObjectInteractions : MonoBehaviour
     {
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
-        if (isRightHand)
-        {   
-            currentlyGraspedRH.Add(graspedObj,true);
-            //transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n R \n G";
-        }
-        else
-        {
-            currentlyGraspedLH.Add(graspedObj); 
-            //transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n R \nG";
-        }
+        addItemToList(isRightHand,graspedObj,frame,true);
     }
     
     public void removeGraspedObj(GameObject graspedObj,bool isRightHand)
     {
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, graspedObj, frame));
-        
-        if (isRightHand)
-        {
-            currentlyGraspedRH.Remove(graspedObj); 
-            //transcriptionDisplay.transform.GetChild(0).GetComponent<Text>().text += "\n RL";
-        }
-        else
-        {
-            currentlyGraspedLH.Remove(graspedObj); 
-            //transcriptionDisplay.transform.GetChild(1).GetComponent<Text>().text += "\n RL";
-        }
+        addItemToList(isRightHand,graspedObj,frame,false);
     }
+    
+    public void addGraspedObjectReplay(GameObject graspedObj,bool isRightHand,int frame)
+    {
+        StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
+    }
+    
+    public void removeGraspedObjReplay(GameObject graspedObj,bool isRightHand, int frame)
+    {
+        StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, graspedObj, frame));
+    }
+    
+    
+    
 
     // Update is called once per frame
     void Update()
@@ -83,5 +76,25 @@ public class ObjectInteractions : MonoBehaviour
         }
         */
     }
+    
+    void addItemToList(bool isRightHandIn, GameObject objIn,int frameIn,bool isGrabingInteractionIn)
+    {
+        Objectinteraction newInteraction = new Objectinteraction();
+        newInteraction.interactedObj = objIn;
+        newInteraction.frame = frameIn;
+        newInteraction.isRightHand = isRightHandIn;
+        newInteraction.isGrabingInteraction = isGrabingInteractionIn;
+        
+        InteractionList.Add(newInteraction);
+    }
+    
+    public struct Objectinteraction
+    {
+        public GameObject interactedObj;
+        public int frame;
+        public bool isGrabingInteraction;
+        public bool isRightHand;
+    }
+    
 
 }
