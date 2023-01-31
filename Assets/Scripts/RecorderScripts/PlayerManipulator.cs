@@ -113,6 +113,7 @@ public class PlayerManipulator : MonoBehaviour
     
     IEnumerator ReplayObjects()
     {
+        yield return new WaitForSeconds(0.5f);
         
         for (int i = 0; i < posArray.Length; i++)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,14 @@ public class ObjectManipulator : MonoBehaviour
     public void startreplay()
     {
         replaying = true;
-        StartCoroutine(ReplayObjects());
+        StartCoroutine(ReplayObjects(false));
+    }
+
+    public void playShadowhands()
+    {
+        replaying = true;
+        StartCoroutine(ReplayObjects(true));
+
     }
     
     public void loadFromGame()
@@ -113,8 +121,9 @@ public class ObjectManipulator : MonoBehaviour
         frame++;
     }
 
-    IEnumerator ReplayObjects()
+    IEnumerator ReplayObjects(bool rewindAfter)
     {
+        yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < posArray.Length; i++)
         {
             int globalIndex = 0;
@@ -145,7 +154,41 @@ public class ObjectManipulator : MonoBehaviour
             
             if (!replaying) { break; }
         }
-        Debug.Log("Replay stopped");
+
+        if (rewindAfter)
+        {
+            for (int i = posArray.Length-1; i > 0 ; i = i-2)
+            {
+                int globalIndex = 0;
+                for(int ii = 0; ii < sceneTarget.transform.childCount; ii++)
+                {
+                
+                    GameObject currentObj = sceneTarget.transform.GetChild(ii).gameObject;
+                    moveObjcts(i, globalIndex, currentObj);
+                    globalIndex++;
+                
+                    for (int  iii = 0;  iii < currentObj.transform.childCount;  iii++)
+                    {
+                        GameObject currentChild = currentObj.transform.GetChild(iii).gameObject;
+                        moveObjcts(i, globalIndex, currentChild);
+                        globalIndex++;
+                    
+                        for (int iiii = 0; iiii < currentChild.transform.childCount; iiii++)
+                        {
+                            GameObject currentChildsChild = currentChild.transform.GetChild(iiii).gameObject;
+                            moveObjcts(i, globalIndex, currentChildsChild);
+                            globalIndex++;
+                        }
+                    }
+                
+                }
+
+                yield return new WaitForSeconds(1 / framerate);
+            
+                if (!replaying) { break; }
+            }
+        }
+        replaying = false;
     }
 
     void moveObjcts(int currentFrame,int currentObjNr ,GameObject currenObj)

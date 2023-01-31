@@ -1278,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1379119855327034, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_RootOrder
@@ -1290,11 +1290,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.118
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.083
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2839,7 +2839,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transcribtionOn: 0
-  transcribeHands: 0
+  transcribeHands: 1
   transcribeBody: 0
   transcribeFromReplay: 0
   supressNextHandMotion: 0
@@ -11241,7 +11241,7 @@ MonoBehaviour:
   recording: 0
   recordBody: 1
   recordObjects: 1
-  transcribeMTM: 0
+  transcribeMTM: 1
   frame: 0
   rePlaying: 0
   loadFromCsvFile: 1
@@ -11327,6 +11327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d032eb3c0563c3845b8faf335f5f2f9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShadowHands: {fileID: 233067685}
   sequence: 0
   shadowhandFolder: Assets/Resources/ShadowHands
 --- !u!1 &1852407296

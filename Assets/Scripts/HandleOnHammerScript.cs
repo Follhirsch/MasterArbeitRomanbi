@@ -36,8 +36,15 @@ public class HandleOnHammerScript : MonoBehaviour
         
         if (dxAngle > thresholdAngle || dyAngle >thresholdAngle){return;}
         //supress the next hand moton
-        MTMobj.GetComponent<TranscriptionMaster>().supressNextHandMotion = true;
-        newHammer.GetComponent<InteractableObject>().gotPositioned = true;
+        if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
+        {
+            if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
+            {
+                MTMobj.GetComponent<TranscriptionMaster>().supressNextHandMotion = true;
+            }
+        }
+
+        newHammer.transform.GetChild(0).transform.GetChild(0).GetComponent<InteractableObject>().gotPositioned = true;
         
         //Debug.Log("Hammerhead correctly detected");
         Vector3 enclavePos = new Vector3(0, -0.5f, 0);//newHammer.transform.position;

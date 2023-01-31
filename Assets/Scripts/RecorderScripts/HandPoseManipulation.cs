@@ -8,7 +8,7 @@ public class HandPoseManipulation : MonoBehaviour
     public GameObject recorderSource;
 
     public GameObject handTarget;
-    
+
     public string dir;
     private TextAsset replayFile;
     
@@ -51,6 +51,12 @@ public class HandPoseManipulation : MonoBehaviour
     {
         replaying = true;
         StartCoroutine(replayHands());
+    }
+    public void playShadowhands()
+    {
+        replaying = true;
+        StartCoroutine(replayHands());
+
     }
 
     public void loadFromGame()
@@ -126,6 +132,9 @@ public class HandPoseManipulation : MonoBehaviour
 
     IEnumerator replayHands()
     {
+        handTarget.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        
         for (int i = 0; i < rPosArray.Length; i++)
         {
 
@@ -160,7 +169,12 @@ public class HandPoseManipulation : MonoBehaviour
                 Debug.Log("HandPositions not loaded");
             }
             yield return new WaitForSeconds(1/recorderSource.GetComponent<BodyRecorder>().framerate);
+            
         }
+        Debug.Log("end of Handmanipulationroutine");
+        
+        handTarget.SetActive(false);
+        replaying = false;
     }
 
     public void playFrame()

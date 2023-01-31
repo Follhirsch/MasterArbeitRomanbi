@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class ThresholdValues
 {
-    public static int regraspAllowedFrames = 30;
-    public static int handChangeAllowedFrames = 60;
+    public static int regraspAllowedFrames = 5*60;
+    public static int handChangeAllowedFrames = 5*60;
     public static int movementThresholdHands = 1;
 
     public static float minMoveDistThreshold = 0.1f;

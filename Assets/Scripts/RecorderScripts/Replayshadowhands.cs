@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Replayshadowhands : MonoBehaviour
 {
+    public GameObject ShadowHands;
+    private Vector3 enclavePosHands;
     public int sequence;
     public string shadowhandFolder = "Assets/Resources/ShadowHands";
 
@@ -31,7 +33,9 @@ public class Replayshadowhands : MonoBehaviour
         recorderObject.GetComponent<ObjectManipulator>().loadFromCSVFile("ShadowHands/HandPass");
         recorderObject.GetComponent<HandPoseManipulation>().loadFromCSVFile("ShadowHands/HandPass");
         
-        recorderObject.GetComponent<ObjectManipulator>().startreplay();
+        recorderObject.GetComponent<ObjectManipulator>().playShadowhands();
         recorderObject.GetComponent<HandPoseManipulation>().startreplay();
+        
+        
     }
 }
