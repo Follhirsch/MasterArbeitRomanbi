@@ -7,12 +7,21 @@ public class NailConstrain : MonoBehaviour
     public GameObject TargetCollider;
     public GameObject fixedNail;
     public GameObject MTMobj;
-    GameObject Nail;
+    public GameObject Nail;
+    public float reenterTimeDelay = 1f;
+    public float exitTime; 
     // Start is called before the first frame update
     void Start()
     {
         Nail = gameObject.transform.parent.gameObject;
-        TargetCollider = GameObject.Find("NailHole");
+        TargetCollider = GameObject.Find("TriggerForNail");
+        Debug.Log(TargetCollider.tag);
+        exitTime = Time.realtimeSinceStartup;
+    }
+
+    void OnEnable()
+    {
+        exitTime = Time.realtimeSinceStartup;
     }
 
     // Update is called once per frame
@@ -22,7 +31,7 @@ public class NailConstrain : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other);
+        if (exitTime+reenterTimeDelay>Time.realtimeSinceStartup){return;}
         if (!other.CompareTag(TargetCollider.tag)){return;}
         
         //supress the next hand moton
@@ -37,29 +46,16 @@ public class NailConstrain : MonoBehaviour
         //fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
         
         Debug.Log("Nail in Hole detected");
-        //Debug.Log("Hammerhead correctly detected");
+        
         Vector3 enclavePos = new Vector3(1, -0.5f, 0);
 
-        // Nail.transform.position = enclavePos;
+        
+        //GameObject triggerNailObj = Nail.transform.GetChild(2).transform.gameObject;
+        //triggerNailObj.SetActive(false);
+        exitTime = exitTime * 1000;
         Nail.SetActive(false);
         fixedNail.SetActive(true);
+        fixedNail.GetComponent<ConstrainedNailToMovable>().inputNail = Nail;
         
-        /*Vector3 newPositionHammerHead = hammer.transform.GetChild(0).transform.position;
-        Quaternion newRotHammerHead = hammer.transform.GetChild(0).transform.rotation;
-
-        handle.GetComponent<MovablesCollisionHandler>().enabled = false;
-        hammerHead.GetComponent<MovablesCollisionHandler>().enabled = false;
-        
-        hammer.SetActive(false);
-        
-        
-        hammer.transform.position = enclavePos;
-        
-        newHammer.transform.GetChild(0).transform.position = newPositionHammerHead;
-        newHammer.transform.GetChild(0).transform.rotation = newRotHammerHead;
-        
-        newHammer.SetActive(true);
-        */
-
     }
 }
