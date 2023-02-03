@@ -15,7 +15,6 @@ public class NailConstrain : MonoBehaviour
     {
         Nail = gameObject.transform.parent.gameObject;
         TargetCollider = GameObject.Find("TriggerForNail");
-        Debug.Log(TargetCollider.tag);
         exitTime = Time.realtimeSinceStartup;
     }
 
@@ -44,9 +43,7 @@ public class NailConstrain : MonoBehaviour
         }
         
         //fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
-        
-        Debug.Log("Nail in Hole detected");
-        
+
         Vector3 enclavePos = new Vector3(1, -0.5f, 0);
 
         

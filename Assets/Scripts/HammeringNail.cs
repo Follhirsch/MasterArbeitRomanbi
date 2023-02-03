@@ -36,12 +36,9 @@ public class HammeringNail : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag(hammerhead.tag)){return;}
-        Debug.Log(hammerTime + timeBetweenHammering);
-        Debug.Log(Time.realtimeSinceStartup);
         if (hammerTime + timeBetweenHammering > Time.realtimeSinceStartup){return;}
         hammerTime = Time.realtimeSinceStartup;
-        Debug.Log("good");
-        
+
         Vector3 pos = movable.transform.position;
         float positionchange = -deltaHammerhit;
         
