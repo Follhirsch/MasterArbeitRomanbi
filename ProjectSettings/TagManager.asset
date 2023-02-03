@@ -6,6 +6,7 @@ TagManager:
   tags:
   - HammerHeadTrigger
   - InteractableObject
+  - NailHole
   layers:
   - Default
   - TransparentFX

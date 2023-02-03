@@ -11,7 +11,6 @@ public class HandleOnHammerScript : MonoBehaviour
     public GameObject hammerheadCollider;
     public GameObject newHammer;
     public GameObject MTMobj;
-    
     GameObject handle;
     GameObject hammer;
     GameObject hammerHead;
