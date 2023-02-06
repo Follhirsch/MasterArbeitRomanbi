@@ -209,6 +209,11 @@ public class TranscriptionMaster : MonoBehaviour
             return new Grasp(isRightHand, 4, specification, obj, frame); // Choosing Grasp
         }
 
+        if (!interactionValues.isFullyGrasped)
+        {
+            return new Grasp(isRightHand, 5, 0, obj, frame); //contact Grip
+        }
+
         if (isSmall)
         {
             return new Grasp(isRightHand, 1, 2, obj, frame); //Difficult Grasp
@@ -224,31 +229,42 @@ public class TranscriptionMaster : MonoBehaviour
 
     Release CalculateRelease(bool isRightHand, GameObject obj, int frame)
     {
-        for (int i = MTMTranscription.Count - 1; i < 0; i--)
+        bool graspfound = false;
+        int tempFrame = 0;
+        Grasp g = null;
+        foreach (BasicMotion mot in MTMTranscription)
         {
-            if (MTMTranscription[i] is not Grasp)
+            if (mot is Grasp)
             {
-                continue;
-            }
-
-            Grasp g = MTMTranscription[i] as Grasp;
-            if (!obj.name.Equals(g.m_object.name, StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            if (g.differentiation == 5)
-            {
-                return new Release(isRightHand, obj, 2, frame);
-            }
-            else
-            {
-                return new Release(isRightHand, obj, 1, frame);
+                Grasp tempG = mot as Grasp;
+                if (tempG.isRightHand!=isRightHand){continue;}
+                if (!obj.name.Equals(tempG.m_object.name, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                if (tempG.frame > tempFrame)
+                {
+                    g = tempG;
+                    tempFrame = g.frame;
+                    graspfound = true;
+                }
             }
         }
 
-        Debug.Log("No matching Grasp Found, RL2 added");
-        return new Release(isRightHand, obj, 2, frame);
+        if (!graspfound)
+        {
+            Debug.Log("no grasp found");
+            return new Release(isRightHand, obj, 2, frame);
+        }
+
+        if (g.differentiation == 5)
+        {
+            return new Release(isRightHand, obj, 2, frame);
+        }
+        else
+        {
+            return new Release(isRightHand, obj, 1, frame);
+        }
     }
 
     Reach CalculateReach(Grasp g, int frame)

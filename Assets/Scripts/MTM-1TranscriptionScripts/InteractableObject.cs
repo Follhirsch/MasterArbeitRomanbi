@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using VRfreePluginUnity;
 
@@ -24,8 +25,8 @@ public class InteractableObject : MonoBehaviour
     public bool isInHandRH;
     public bool isInHandLH;
     public bool isFullyGrasped;
-    public bool isConstrainedMovable;
-    public bool istheScrewingHandle;
+    public bool isConstrainedMovable = false;
+    public bool isHammerHandleScrew = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,17 @@ public class InteractableObject : MonoBehaviour
         isInHandRH = false;
         isInHandLH = false;
         isFullyGrasped = false;
+        ConstrainedMovablesCollisionHandler handler1 = gameObject.GetComponent(typeof(ConstrainedMovablesCollisionHandler)) as ConstrainedMovablesCollisionHandler;
+        if (handler1 != null)
+        {
+            isConstrainedMovable = true;
+        }
+        KnobCollisionHandler handler2 = gameObject.GetComponent(typeof(KnobCollisionHandler)) as KnobCollisionHandler;
+        if (handler2 != null)
+        {
+            isHammerHandleScrew = true;
+        }
+        
     }
 
     // Update is called once per frame
@@ -46,9 +58,13 @@ public class InteractableObject : MonoBehaviour
         {
             isFullyGrasped = gameObject.GetComponent<ConstrainedMovablesCollisionHandler>().isGrabbed;
         }
-        else if (expr)
+        else if (isHammerHandleScrew)
         {
-            
+            //TODO what am I doing with the knob collision Hanldler for grasping;
+        }
+        else
+        {
+            isFullyGrasped = gameObject.GetComponent<MovablesCollisionHandler>().isGrabbed;
         }
     }
 
