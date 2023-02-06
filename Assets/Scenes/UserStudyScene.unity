@@ -12965,7 +12965,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   StartGrabCoeff: 0.5
-  EndGrabCoeff: 0.1
+  EndGrabCoeff: 0.4
   debugGrabCoeff: 0
   constrainedMovable: {fileID: 0}
   onGrab:
@@ -13048,7 +13048,7 @@ MonoBehaviour:
   isAtKnownLocation: 1
   gotPositioned: 1
   positionForce: 2
-  positioningSpecification: 0
+  positioningSpecification: 2
   gotDisengaged: 0
   disengagingforce: 0
   isCrank: 0

@@ -37,6 +37,7 @@ public class ConstrainedNailToMovable : MonoBehaviour
             Quaternion ori = fixedNail.transform.rotation;
             fixedNail.transform.position = startPos;
             fixedNail.GetComponent<ConstrainedMovable>().movedDistance = 0;
+            fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
             fixedNail.SetActive(false);
             
             inputNail.SetActive(true);

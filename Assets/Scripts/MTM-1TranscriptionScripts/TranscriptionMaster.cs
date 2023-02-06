@@ -112,26 +112,29 @@ public class TranscriptionMaster : MonoBehaviour
         }
 
         bool positioningInvolved = interactionValues.gotPositioned;
+        interactionValues.gotPositioned = false;
         bool disengagingInvolved = interactionValues.gotDisengaged;
-        
+
         if (disengagingInvolved)
         {
             Disengage d = CalculateDisengage(rl);
             MTMTranscription.Add(d);
         }
 
-        if (positioningInvolved)
-        {
-            Position p = CalculatePositioning(rl);
-            MTMTranscription.Add(p);
-            //TODO: how to takkle positioning and disengaging
-        }
+        
         
         Move m = CalculateMove(rl,positioningInvolved);
         
         if (m != null)
         {
             MTMTranscription.Add(m);
+        }
+        
+        if (positioningInvolved)
+        {
+            Position p = CalculatePositioning(rl);
+            MTMTranscription.Add(p);
+            //TODO: how to takkle positioning and disengaging
         }
         
         
