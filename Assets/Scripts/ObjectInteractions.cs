@@ -22,16 +22,7 @@ public class ObjectInteractions : MonoBehaviour
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
         //update InteractableObject
-        InteractableObject interactionValues = graspedObj.GetComponent<InteractableObject>();
-        if (isRightHand)
-        {
-            interactionValues.isInHandRH = true;
-        }
-        else
-        {
-            interactionValues.isInHandLH = true;
-        }
-        interactionValues.UpdateValues();
+        graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
 
         //TranscribeMTM
         
@@ -43,17 +34,7 @@ public class ObjectInteractions : MonoBehaviour
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
         // update interactableObject
-        InteractableObject interactionValues = releasedObj.GetComponent<InteractableObject>();
-        
-        if (isRightHand)
-        {
-            interactionValues.isInHandRH = false;
-        }
-        else
-        {
-            interactionValues.isInHandLH = false;
-        }
-        interactionValues.UpdateValues();
+        releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
         
         
         

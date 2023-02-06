@@ -105,7 +105,7 @@ public class TranscriptionMaster : MonoBehaviour
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         if (interactionValues.isCrank)
         {
-            //TODO: add crank encoding
+            Crank c = CalculateCrank()
             
             MTMTranscription.Add(rl);
             yield break;
@@ -400,6 +400,16 @@ public class TranscriptionMaster : MonoBehaviour
         return new Move(2, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // move to approximate location
         
     }
+
+    Crank CalculateCrank(bool isRightHand,Release rl, int frame)
+    {
+        InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
+        InteractionValues.crankAngle
+        //Crank(bool isRightHandIn,int crankSizeIn, int crankRotationAngleIn, GameObject objectIn,int frameIn)
+    }
+    
+    
+    
 
     int[] DistanceClassification(Vector3[] path) //TODO:basic distance should be improved
     {
