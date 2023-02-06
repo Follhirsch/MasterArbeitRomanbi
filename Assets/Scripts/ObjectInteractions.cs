@@ -21,16 +21,47 @@ public class ObjectInteractions : MonoBehaviour
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
+        //update InteractableObject
+        InteractableObject interactionValues = graspedObj.GetComponent<InteractableObject>();
+        if (isRightHand)
+        {
+            interactionValues.isInHandRH = true;
+        }
+        else
+        {
+            interactionValues.isInHandLH = true;
+        }
+        interactionValues.UpdateValues();
+
+        //TranscribeMTM
+        
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
         addItemToList(isRightHand,graspedObj,frame,true);
     }
     
-    public void removeGraspedObj(GameObject graspedObj,bool isRightHand)
+    public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
+        // update interactableObject
+        InteractableObject interactionValues = releasedObj.GetComponent<InteractableObject>();
+        
+        if (isRightHand)
+        {
+            interactionValues.isInHandRH = false;
+        }
+        else
+        {
+            interactionValues.isInHandLH = false;
+        }
+        interactionValues.UpdateValues();
+        
+        
+        
+        //TranscribeMTM
+        
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
-        StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, graspedObj, frame));
-        addItemToList(isRightHand,graspedObj,frame,false);
+        StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
+        addItemToList(isRightHand,releasedObj,frame,false);
     }
     
     public void addGraspedObjectReplay(GameObject graspedObj,bool isRightHand,int frame)

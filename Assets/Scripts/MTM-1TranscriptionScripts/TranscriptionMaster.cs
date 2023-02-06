@@ -74,15 +74,6 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribeHands) { yield break;}
         if (supressNextHandMotion){yield break;}
 
-        if (isRightHand)
-        {
-            obj.GetComponent<InteractableObject>().isInHandRH = true;
-        }
-        else
-        {
-            obj.GetComponent<InteractableObject>().isInHandLH = true;
-        }
-
         yield return new WaitForSeconds(1f);
         Grasp g = CalculateGrasp(isRightHand, obj, frame);
         
@@ -105,16 +96,6 @@ public class TranscriptionMaster : MonoBehaviour
         {
             supressNextHandMotion = false;
             yield break;
-        }
-        
-        // update interactableObject
-        if (isRightHand)
-        {
-            obj.GetComponent<InteractableObject>().isInHandRH = false;
-        }
-        else
-        {
-            obj.GetComponent<InteractableObject>().isInHandLH = false;
         }
         
         yield return new WaitForSeconds(1f);
@@ -204,9 +185,10 @@ public class TranscriptionMaster : MonoBehaviour
         {
             return new Grasp(isRightHand, 3, 0, obj, frame); //Hand change
         }
+        InteractableObject interactionValues = obj.GetComponent<InteractableObject>();
 
-        bool isSmall = obj.GetComponent<InteractableObject>().isSmall;
-        if (obj.GetComponent<InteractableObject>().isInGroup)
+        bool isSmall = interactionValues.isSmall;
+        if (interactionValues.isInGroup)
         {
             int specification = 0;
             if (isSmall)
@@ -226,7 +208,7 @@ public class TranscriptionMaster : MonoBehaviour
             return new Grasp(isRightHand, 1, 2, obj, frame); //Difficult Grasp
         }
 
-        if (obj.GetComponent<InteractableObject>().isCylindrical)
+        if (interactionValues.isCylindrical)
         {
             return new Grasp(isRightHand, 1, 3, obj, frame); //Cylindric grasp
         }
@@ -390,8 +372,9 @@ public class TranscriptionMaster : MonoBehaviour
             Debug.Log("no Move due to small distance");
             return null; 
         }
+        InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
 
-        int weight = rl.m_object.GetComponent<InteractableObject>().weight;
+        int weight = interactionValues.weight;
         
         if (involvedPositioning)
         {
@@ -400,14 +383,14 @@ public class TranscriptionMaster : MonoBehaviour
         //check if object is in other Hand
         if (rl.isRightHand)
         {
-            if (rl.m_object.GetComponent<InteractableObject>().isInHandLH)
+            if (interactionValues.isInHandLH)
             {
                 return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
             }
         }
         else
         {
-            if (rl.m_object.GetComponent<InteractableObject>().isInHandRH)
+            if (interactionValues.isInHandRH)
             {
                 return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
             }

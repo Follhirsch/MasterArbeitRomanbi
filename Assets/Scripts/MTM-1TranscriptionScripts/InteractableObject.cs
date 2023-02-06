@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRfreePluginUnity;
 
 public class InteractableObject : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class InteractableObject : MonoBehaviour
     public bool gotPositioned;
     public bool gotDisengaged;
     public bool isCrank;
+    public int crankAngle;
     public bool isInHandRH;
     public bool isInHandLH;
     
@@ -28,5 +30,13 @@ public class InteractableObject : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void UpdateValues()
+    {
+        if (isCrank)
+        {
+            crankAngle = (int)gameObject.GetComponent<ConstrainedMovable>().movedDistance;
+        }
     }
 }
