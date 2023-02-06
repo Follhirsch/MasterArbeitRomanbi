@@ -9,6 +9,8 @@ public class ObjectInteractions : MonoBehaviour
     public List<Objectinteraction> InteractionList = new List<Objectinteraction>();
     public GameObject debugObj;
     public GameObject debugObj2;
+
+    public bool supressNextHandMotion = false;
     //public GameObject transcriptionDisplay;
     private Dictionary<GameObject, bool> test;
     private TranscriptionMaster transcriptionMaster;
@@ -21,11 +23,13 @@ public class ObjectInteractions : MonoBehaviour
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
+        
         //update InteractableObject
         graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
-
-        //TranscribeMTM
         
+        //TranscribeMTM
+        if (supressNextHandMotion){return;}
+        graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
         addItemToList(isRightHand,graspedObj,frame,true);
@@ -33,16 +37,22 @@ public class ObjectInteractions : MonoBehaviour
     
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
+        
         // update interactableObject
         releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
         
-        
-        
         //TranscribeMTM
+        if (supressNextHandMotion)
+        {
+            supressNextHandMotion = false;
+            return;
+        }
         
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
         addItemToList(isRightHand,releasedObj,frame,false);
+        
+        
     }
     
     public void addGraspedObjectReplay(GameObject graspedObj,bool isRightHand,int frame)

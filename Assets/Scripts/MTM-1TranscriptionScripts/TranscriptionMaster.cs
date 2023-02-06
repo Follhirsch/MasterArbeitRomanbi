@@ -12,7 +12,7 @@ public class TranscriptionMaster : MonoBehaviour
     public bool transcribeHands = false;
     public bool transcribeBody = false;
     public bool transcribeFromReplay = false;
-    public bool supressNextHandMotion;
+    //public bool supressNextHandMotion;
 
     public GameObject HandsObject;
     public GameObject PlayerObject;
@@ -27,7 +27,7 @@ public class TranscriptionMaster : MonoBehaviour
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
         transcribtionOn = false;
-        supressNextHandMotion = false;
+        //supressNextHandMotion = false;
     }
 
     // Update is called once per frame
@@ -72,7 +72,7 @@ public class TranscriptionMaster : MonoBehaviour
     {
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
-        if (supressNextHandMotion){yield break;}
+        //if (supressNextHandMotion){yield break;}
 
         yield return new WaitForSeconds(1f);
         Grasp g = CalculateGrasp(isRightHand, obj, frame);
@@ -92,11 +92,12 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
 
-        if (supressNextHandMotion)
+        /*if (supressNextHandMotion)
         {
             supressNextHandMotion = false;
             yield break;
         }
+        */
         
         yield return new WaitForSeconds(1f);
         //calculate Release
@@ -105,39 +106,44 @@ public class TranscriptionMaster : MonoBehaviour
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         if (interactionValues.isCrank)
         {
-            Crank c = CalculateCrank()
-            
+            Crank c = CalculateCrank(rl);
             MTMTranscription.Add(rl);
             yield break;
         }
 
         bool positioningInvolved = interactionValues.gotPositioned;
+        bool disengagingInvolved = interactionValues.gotDisengaged;
+        
+        if (disengagingInvolved)
+        {
+            Disengage d = CalculateDisengage(rl);
+            MTMTranscription.Add(d);
+        }
 
         if (positioningInvolved)
         {
-            //TODO: add positioning encoding;
-            interactionValues.gotPositioned = false;
-        }
-
-        bool disengagingInvolved = interactionValues.gotDisengaged;
-        if (disengagingInvolved)
-        {
-            //TODO: add positioning encoding;
-            interactionValues.gotDisengaged = false;
+            Position p = CalculatePositioning(rl);
+            MTMTranscription.Add(p);
+            //TODO: how to takkle positioning and disengaging
         }
         
         Move m = CalculateMove(rl,positioningInvolved);
         
-        //TODO: MTMTranscription.Add(d);
         if (m != null)
         {
             MTMTranscription.Add(m);
         }
-        //TODO: MTMTranscription.Add(p);
+        
+        
         MTMTranscription.Add(rl);
-
-        //TODO:  Calculate Move and other things
+        
         StartCoroutine( updateCanvas());
+    }
+
+    Disengage CalculateDisengage(Release rl)
+    {
+        InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
+        return new Disengage(rl.isRightHand, InteractionValues.disengagingforce, rl.m_object, rl.frame);
     }
 
     Grasp CalculateGrasp(bool isRightHand, GameObject obj, int frame)
@@ -401,11 +407,20 @@ public class TranscriptionMaster : MonoBehaviour
         
     }
 
-    Crank CalculateCrank(bool isRightHand,Release rl, int frame)
+    Crank CalculateCrank(Release rl)
     {
         InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
-        InteractionValues.crankAngle
-        //Crank(bool isRightHandIn,int crankSizeIn, int crankRotationAngleIn, GameObject objectIn,int frameIn)
+        return new Crank(rl.isRightHand, InteractionValues.CrankSize, InteractionValues.crankAngleGrasp,
+            InteractionValues.crankAngleRelease, rl.m_object, rl.frame);
+        
+    }
+
+    Position CalculatePositioning(Release rl)
+    {
+        InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
+            
+        return new Position(rl.isRightHand,InteractionValues.positionForce,InteractionValues.positioningSpecification,rl.m_object,rl.frame);
+        //Position(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn,int frameIn)
     }
     
     

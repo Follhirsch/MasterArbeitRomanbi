@@ -32,15 +32,15 @@ public class NailConstrain : MonoBehaviour
     {
         if (exitTime+reenterTimeDelay>Time.realtimeSinceStartup){return;}
         if (!other.CompareTag(TargetCollider.tag)){return;}
-        
-        //supress the next hand moton
+
+        //suppress the next hand moton
         if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
         {
             if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
             {
-                MTMobj.GetComponent<TranscriptionMaster>().supressNextHandMotion = true;
+                MTMobj.GetComponent<ObjectInteractions>().supressNextHandMotion = true;
             }
-        }
+        }//suppress next transcription
         
         //fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
 

@@ -8,10 +8,10 @@ public class Position : BasicMotion
     public int differentiation;
     public int specification = 0;
     public GameObject m_object;
-    public GameObject interactedObj;
+    //public GameObject interactedObj;
     public static Dictionary<int, string> specificationDictionary;
 
-    public Position(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn, GameObject interactedObjIn,int frameIn)
+    public Position(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn,int frameIn)
     {
     bodyPart = "Hand";
     frame = frameIn;
@@ -19,7 +19,7 @@ public class Position : BasicMotion
     differentiation = differentiationIn;
     specification = specificationIn;
     m_object = objectIn;
-    interactedObj = interactedObjIn;
+    //interactedObj = interactedObjIn;
     }
 public static void initializeDict()
 {
@@ -44,8 +44,7 @@ public override string createOutputString()
     if (isRightHand) { side = "Right"; }
     else { side = "Left"; }
 
-    returnString += differentiation.ToString() + specificationDictionary[specification] + ", " + m_object.name + "->" +
-                    interactedObj.name;
+    returnString += differentiation.ToString() +"/"+ specificationDictionary[specification] + ", " + m_object.name; //interactedObj.name;
     returnString = side + bodyPart + ": " + returnString;
     return returnString;
 }

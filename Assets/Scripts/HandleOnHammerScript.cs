@@ -39,7 +39,7 @@ public class HandleOnHammerScript : MonoBehaviour
         {
             if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
             {
-                MTMobj.GetComponent<TranscriptionMaster>().supressNextHandMotion = true;
+                MTMobj.GetComponent<ObjectInteractions>().supressNextHandMotion = true;
             }
         }
 
@@ -60,9 +60,9 @@ public class HandleOnHammerScript : MonoBehaviour
         
         newHammer.transform.GetChild(0).transform.position = newPositionHammerHead;
         newHammer.transform.GetChild(0).transform.rotation = newRotHammerHead;
-        
+
         newHammer.SetActive(true);
-        
+        newHammer.GetComponent<InteractableObject>().AddPositioning(1,1);
     }
     
     

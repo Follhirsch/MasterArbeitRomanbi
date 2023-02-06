@@ -7,16 +7,16 @@ public class Disengage : BasicMotion
     public bool isRightHand;
     public int differentiation;
     public GameObject m_object;
-    public GameObject interactedObj;
+    //public GameObject interactedObj;
 
-    public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn, GameObject interactedObjIn,int frameIn)
+    public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
         frame = frameIn;
         isRightHand = isRightHandIn;
         differentiation = differentiationIn;
         m_object = objectIn;
-        interactedObj = interactedObjIn;
+        //interactedObj = interactedObjIn;
     }
 
     public override string createOutputString()
@@ -26,7 +26,7 @@ public class Disengage : BasicMotion
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }
 
-        returnString += differentiation.ToString() + ", " + m_object.name + "->" + interactedObj.name;
+        returnString += differentiation.ToString() + ", " + m_object.name;// + "->" + interactedObj.name;
         returnString = side + bodyPart + ": " + returnString;
         return returnString;
     }

@@ -9,6 +9,7 @@ public class ConstrainedNailToMovable : MonoBehaviour
     public GameObject inputNail;
     public GameObject fixedNail;
     private Vector3 startPos;
+    public GameObject MTMobj;
 
     public ConstrainedMovable fixedNailMovableHandler;
     // Start is called before the first frame update
@@ -22,8 +23,16 @@ public class ConstrainedNailToMovable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (fixedNailMovableHandler.movedDistance == fixedNailMovableHandler.upperBound)
+        if (fixedNailMovableHandler.movedDistance >= fixedNailMovableHandler.upperBound)
         {
+            if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
+            {
+                if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
+                {
+                    MTMobj.GetComponent<ObjectInteractions>().supressNextHandMotion = true;
+                }
+            }//supress next transcription
+            
             Vector3 pos = fixedNail.transform.position;
             Quaternion ori = fixedNail.transform.rotation;
             fixedNail.transform.position = startPos;
@@ -34,6 +43,8 @@ public class ConstrainedNailToMovable : MonoBehaviour
             inputNail.transform.position = pos;
             inputNail.transform.rotation = ori;
             inputNail.transform.GetChild(2).GetComponent<NailConstrain>().exitTime = Time.realtimeSinceStartup;
+            inputNail.GetComponent<InteractableObject>().gotDisengaged = true;
+            inputNail.GetComponent<InteractableObject>().disengagingforce = 2;
             //Debug.Log(inputNail.GetComponent<NailConstrain>().exitTime);
         }
         
