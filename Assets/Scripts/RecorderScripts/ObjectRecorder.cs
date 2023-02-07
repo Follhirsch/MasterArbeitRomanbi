@@ -18,6 +18,10 @@ public class ObjectRecorder : MonoBehaviour
     public List<Vector3[]> posVectors = new List<Vector3[]>();
     public List<Quaternion[]> oriQuaternion = new List<Quaternion[]>();
     public GameObject scene;
+
+    public string searchTag = "InteractableObject";
+    public List<GameObject> ObjectsTorecord = new List<GameObject>();
+
     //public List<GameObject> objects = new List<GameObject>();
     public int framerate;
     string FolderDirectory;
@@ -57,13 +61,24 @@ public class ObjectRecorder : MonoBehaviour
     public void LogData()
     {
         string completeLine = "";
+        totalNrOfObjects = ObjectsTorecord.Count;
         Vector3[] tempArray = new Vector3[totalNrOfObjects]; // dont forget to add children
         Quaternion[] tempOriArray = new Quaternion[totalNrOfObjects];
-        int tempGlobalIndex = 0; 
+
+        for (int i = 0; i < totalNrOfObjects; i++)
+        {
+            Vector3 pos;
+            Quaternion ori;
+            
+        }
+        /*int tempGlobalIndex = 0; 
+        
         
             for (int i = 0; i < NrOfObjects; i++) //get position and orientation of objects, maximum 3 layers in scene
             {
+                
                 GameObject tempObj = scene.transform.GetChild(i).gameObject;
+                
                 Vector3 pos;
                 Quaternion ori;
                 int nrOfChildrenInObj = GetValuesFromObj(tempObj, out pos, out ori);
@@ -71,6 +86,7 @@ public class ObjectRecorder : MonoBehaviour
                 tempArray[tempGlobalIndex] = pos;
                 tempOriArray[tempGlobalIndex] = ori;
                 tempGlobalIndex++;
+                
                 if (nrOfChildrenInObj > 0)
                 {
                     for (int ii = 0; ii < nrOfChildrenInObj; ii++)
@@ -96,6 +112,8 @@ public class ObjectRecorder : MonoBehaviour
                     }
                 }
             }
+            */
+        
         posVectors.Add(tempArray);
         oriQuaternion.Add(tempOriArray);
         
@@ -171,48 +189,52 @@ public class ObjectRecorder : MonoBehaviour
        {
            string tempHeader = "";
            //objects.Add(scene.transform.GetChild(i).gameObject);
+           
            GameObject tempObj = scene.transform.GetChild(i).gameObject;
-           tempHeader = headerStringSingleObj(tempObj,"");
-           headerconstruction += tempHeader;
+           if (tempObj.CompareTag(searchTag))
+           {
+               ObjectsTorecord.Add(tempObj);
+           }
            int nrOfChildren = tempObj.transform.childCount;
-           totalNrOfObjects += nrOfChildren;
            if ( nrOfChildren > 0)
            {
                for (int ii = 0; ii < nrOfChildren; ii++)
                {
                    GameObject tempChild = tempObj.transform.GetChild(ii).gameObject;
-                   tempHeader = headerStringSingleObj(tempChild,"/");
-                   headerconstruction += tempHeader;
+                   if (tempChild.CompareTag(searchTag))
+                   {
+                       ObjectsTorecord.Add(tempChild);
+                   }
                    int nrOfChildrensChildren = tempChild.transform.childCount;
-                   totalNrOfObjects += nrOfChildrensChildren;
-                   
                    if (nrOfChildrensChildren > 0)
                    {
                        for (int iii = 0; iii < nrOfChildrensChildren; iii++)
                        {
                            GameObject tempChildsChild = tempChild.transform.GetChild(iii).gameObject;
-                           tempHeader = headerStringSingleObj(tempChildsChild,"//");
-                           headerconstruction += tempHeader;
+                           if (tempChildsChild.CompareTag(searchTag))
+                           {
+                               ObjectsTorecord.Add(tempChildsChild);
+                           }
                        }
                    }
                }
            }
-           headerAddonForInteractions += "";
        }
+       
        return headerconstruction;
 
     }
 
-    int GetValuesFromObj(GameObject obj,out Vector3 pos,out Quaternion ori)
+    string CreateStringSingleObj(GameObject obj,out Vector3 pos,out Quaternion ori)
     {
         int nrOfChildren = obj.transform.childCount;
         pos = obj.transform.position;
         ori = obj.transform.rotation;
         
-        return nrOfChildren;
+        return null;
     }
 
-    string creatStringSingleObj(Vector3 pos,Quaternion ori)
+    string po(Vector3 pos,Quaternion ori)
     {
         string returnString = "";
         string positionString = pos.ToString("G");
@@ -220,16 +242,35 @@ public class ObjectRecorder : MonoBehaviour
         string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
         string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
         returnString = modifiedPositionString + "," + modifiedOrientationString + ",";
+        //returnString += CreateInteractableString(obj)
         return returnString;
     }
+    string CreateHeader()
+    {
+        string outputHeader = "";
+        for (int i = 0; i < ObjectsTorecord.Count; i++)
+        {
+            outputHeader += headerStringSingleObj(ObjectsTorecord[i], "");
+        }
+        outputHeader = outputHeader.Substring(0, outputHeader.Length - 1);
 
+        return outputHeader;
+    }
     string headerStringSingleObj(GameObject obj,string prefix)
     {
         string childname = prefix;
         childname += obj.name;
         string returnString = childname + ".x," + childname + ".y," + childname + ".z," + childname + ".rx," +
-                              childname + ".ry," + childname + ".rz," + childname + ".rw,";
+                              childname + ".ry," + childname + ".rz," + childname + ".rw," + childname +
+                              ".Interactable,";
         return returnString;
+    }
+
+    string CreateInteractableString(GameObject obj)
+    {
+        InteractableObject interactionValues = obj.GetComponent<InteractableObject>() as InteractableObject;
+        //if (interactionValues == null) { return "noData,"; }
+        
     }
 }
 

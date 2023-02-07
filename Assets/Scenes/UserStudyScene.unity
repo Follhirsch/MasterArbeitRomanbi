@@ -4415,9 +4415,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: -6482123304077139137, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_Name
+      value: hammerhead-separated
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_Name
-      value: separated
+      value: Hammer-separated
+      objectReference: {fileID: 0}
+    - target: {fileID: 2766212503428324877, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_Name
+      value: Handle-separated
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
@@ -6162,7 +6170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_Name
-      value: Usable
+      value: Hammer-Usable
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_IsActive
@@ -12233,6 +12241,17 @@ MonoBehaviour:
   recorderObject: {fileID: 1848330096}
   MTMobj: {fileID: 497665591}
   scene: {fileID: 1432557206}
+  recObj1: {fileID: 0}
+  recObj2: {fileID: 0}
+  recObj3: {fileID: 0}
+  recObj4: {fileID: 0}
+  recObj5: {fileID: 0}
+  recObj6: {fileID: 0}
+  recObj7: {fileID: 0}
+  recObj8: {fileID: 0}
+  recObj9: {fileID: 0}
+  recObj10: {fileID: 0}
+  recObj11: {fileID: 0}
   framerate: 0
 --- !u!114 &1848330100
 MonoBehaviour:
@@ -14228,7 +14247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 543450652886309332}
   m_Layer: 0
-  m_Name: Complete
+  m_Name: Hammer-Complete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
