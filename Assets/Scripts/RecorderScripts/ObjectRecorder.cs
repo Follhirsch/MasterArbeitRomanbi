@@ -8,7 +8,11 @@ using System.Security.Cryptography.X509Certificates;
 //using RootMotion.Demos;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Valve.VR;
+using VRfree;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class ObjectRecorder : MonoBehaviour
 {
@@ -19,17 +23,27 @@ public class ObjectRecorder : MonoBehaviour
     public List<Quaternion[]> oriQuaternion = new List<Quaternion[]>();
     public GameObject scene;
 
+    public GameObject recObj1;
+    public GameObject recObj2;
+    public GameObject recObj3;
+    public GameObject recObj4;
+    public GameObject recObj5;
+    public GameObject recObj6;
+    public GameObject recObj7;
+    public GameObject recObj8;
+    public GameObject recObj9;
+    public GameObject recObj10;
+
     public string searchTag = "InteractableObject";
-    public List<GameObject> ObjectsTorecord = new List<GameObject>();
+    [FormerlySerializedAs("ObjectsTorecord")] public List<GameObject> ObjectsToRecord = new List<GameObject>();
 
     //public List<GameObject> objects = new List<GameObject>();
     public int framerate;
     string FolderDirectory;
     
     //private int samples = 0;
-
-    private int NrOfObjects;
-    private int totalNrOfObjects; //with children
+    
+    private int totalNrOfObjects;
 
 
     // Start is called before the first frame update
@@ -61,65 +75,28 @@ public class ObjectRecorder : MonoBehaviour
     public void LogData()
     {
         string completeLine = "";
-        totalNrOfObjects = ObjectsTorecord.Count;
+        totalNrOfObjects = ObjectsToRecord.Count;
         Vector3[] tempArray = new Vector3[totalNrOfObjects]; // dont forget to add children
         Quaternion[] tempOriArray = new Quaternion[totalNrOfObjects];
 
         for (int i = 0; i < totalNrOfObjects; i++)
         {
-            Vector3 pos;
-            Quaternion ori;
-            
+            string tempString = "";
+            Vector3 pos = ObjectsToRecord[i].transform.position;
+            Quaternion ori = ObjectsToRecord[i].transform.rotation;
+            tempArray[i] = pos;
+            tempOriArray[i] = ori;
+            tempString += posOriString(pos, ori);
+            tempString +=CreateInteractableString(ObjectsToRecord[i]);
+            completeLine += tempString;
         }
-        /*int tempGlobalIndex = 0; 
-        
-        
-            for (int i = 0; i < NrOfObjects; i++) //get position and orientation of objects, maximum 3 layers in scene
-            {
-                
-                GameObject tempObj = scene.transform.GetChild(i).gameObject;
-                
-                Vector3 pos;
-                Quaternion ori;
-                int nrOfChildrenInObj = GetValuesFromObj(tempObj, out pos, out ori);
-                completeLine += creatStringSingleObj(pos,ori);
-                tempArray[tempGlobalIndex] = pos;
-                tempOriArray[tempGlobalIndex] = ori;
-                tempGlobalIndex++;
-                
-                if (nrOfChildrenInObj > 0)
-                {
-                    for (int ii = 0; ii < nrOfChildrenInObj; ii++)
-                    {
-                        GameObject tempChild = tempObj.transform.GetChild(ii).gameObject;
-                        int nrOfChildrenInChild = GetValuesFromObj(tempChild, out pos, out ori);
-                        completeLine += creatStringSingleObj(pos, ori);
-                        tempArray[tempGlobalIndex] = pos;
-                        tempOriArray[tempGlobalIndex] = ori;
-                        tempGlobalIndex++;
-                        if (nrOfChildrenInChild > 0)
-                        {
-                            for (int iii = 0; iii < nrOfChildrenInChild; iii++)
-                            {
-                                GameObject tempChildesChild = tempChild.transform.GetChild(iii).gameObject;
-                                int uslesReturn = GetValuesFromObj(tempChildesChild, out pos, out ori);
-                                completeLine += creatStringSingleObj(pos, ori);
-                                tempArray[tempGlobalIndex] = pos;
-                                tempOriArray[tempGlobalIndex] = ori;
-                                tempGlobalIndex++;
-                            }
-                        }
-                    }
-                }
-            }
-            */
-        
+
         posVectors.Add(tempArray);
         oriQuaternion.Add(tempOriArray);
         
         completeLine =  completeLine.Substring(0, completeLine.Length - 1);//remove , from the end
         csvWriter.WriteLine(completeLine);
-        //syntax csv: object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz,object1.rw ...
+        //syntax csv: object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz,object1.rw,object1.Interactionvalues ...
     }
 
     public void StopRecording()
@@ -171,58 +148,63 @@ public class ObjectRecorder : MonoBehaviour
         */
             
         csvWriter = new StreamWriter(folderDir + "/" + "Objects" + ".csv");
-        csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+NrOfObjects.ToString()+","+"TotalNrOfObjects,"+totalNrOfObjects.ToString());
+        csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+totalNrOfObjects.ToString());
         string header = locateObjects();
         csvWriter.WriteLine(header);
     }
 
     string locateObjects()
     {
+        ObjectsToRecord = new List<GameObject>();
+        /*for (int i = 0; i < scene.transform.childCount; i++)
+        {
+            GameObject tempObj = scene.transform.GetChild(i).gameObject;
+            if (tempObj.CompareTag(searchTag))
+            {
+                ObjectsToRecord.Add(tempObj);
+            }
 
-        string headerconstruction = "";
-        NrOfObjects = scene.transform.childCount;
-        totalNrOfObjects = NrOfObjects;
-        //cout children 
-        string headerAddonForInteractions = "";
+            int nrOfChildren = tempObj.transform.childCount;
+            if (nrOfChildren > 0)
+            {
+                for (int ii = 0; ii < nrOfChildren; ii++)
+                {
+                    GameObject tempChild = tempObj.transform.GetChild(ii).gameObject;
+                    if (tempChild.CompareTag(searchTag))
+                    {
+                        ObjectsToRecord.Add(tempChild);
+                    }
 
-       for (int i = 0; i < NrOfObjects; i++)
-       {
-           string tempHeader = "";
-           //objects.Add(scene.transform.GetChild(i).gameObject);
-           
-           GameObject tempObj = scene.transform.GetChild(i).gameObject;
-           if (tempObj.CompareTag(searchTag))
-           {
-               ObjectsTorecord.Add(tempObj);
-           }
-           int nrOfChildren = tempObj.transform.childCount;
-           if ( nrOfChildren > 0)
-           {
-               for (int ii = 0; ii < nrOfChildren; ii++)
-               {
-                   GameObject tempChild = tempObj.transform.GetChild(ii).gameObject;
-                   if (tempChild.CompareTag(searchTag))
-                   {
-                       ObjectsTorecord.Add(tempChild);
-                   }
-                   int nrOfChildrensChildren = tempChild.transform.childCount;
-                   if (nrOfChildrensChildren > 0)
-                   {
-                       for (int iii = 0; iii < nrOfChildrensChildren; iii++)
-                       {
-                           GameObject tempChildsChild = tempChild.transform.GetChild(iii).gameObject;
-                           if (tempChildsChild.CompareTag(searchTag))
-                           {
-                               ObjectsTorecord.Add(tempChildsChild);
-                           }
-                       }
-                   }
-               }
-           }
-       }
-       
-       return headerconstruction;
+                    int nrOfChildrensChildren = tempChild.transform.childCount;
+                    if (nrOfChildrensChildren > 0)
+                    {
+                        for (int iii = 0; iii < nrOfChildrensChildren; iii++)
+                        {
+                            GameObject tempChildsChild = tempChild.transform.GetChild(iii).gameObject;
+                            if (tempChildsChild.CompareTag(searchTag))
+                            {
+                                ObjectsToRecord.Add(tempChildsChild);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        */
+        ObjectsToRecord.Add(recObj1);
+        ObjectsToRecord.Add(recObj2);
+        ObjectsToRecord.Add(recObj3);
+        ObjectsToRecord.Add(recObj4);
+        ObjectsToRecord.Add(recObj5);
+        ObjectsToRecord.Add(recObj6);
+        ObjectsToRecord.Add(recObj7);
+        ObjectsToRecord.Add(recObj8);
+        ObjectsToRecord.Add(recObj9);
+        ObjectsToRecord.Add(recObj10);
 
+
+        totalNrOfObjects = ObjectsToRecord.Count;
+        return CreateHeader();
     }
 
     string CreateStringSingleObj(GameObject obj,out Vector3 pos,out Quaternion ori)
@@ -234,7 +216,7 @@ public class ObjectRecorder : MonoBehaviour
         return null;
     }
 
-    string po(Vector3 pos,Quaternion ori)
+    string posOriString(Vector3 pos,Quaternion ori)
     {
         string returnString = "";
         string positionString = pos.ToString("G");
@@ -248,9 +230,9 @@ public class ObjectRecorder : MonoBehaviour
     string CreateHeader()
     {
         string outputHeader = "";
-        for (int i = 0; i < ObjectsTorecord.Count; i++)
+        for (int i = 0; i < ObjectsToRecord.Count; i++)
         {
-            outputHeader += headerStringSingleObj(ObjectsTorecord[i], "");
+            outputHeader += headerStringSingleObj(ObjectsToRecord[i], "");
         }
         outputHeader = outputHeader.Substring(0, outputHeader.Length - 1);
 
@@ -268,9 +250,11 @@ public class ObjectRecorder : MonoBehaviour
 
     string CreateInteractableString(GameObject obj)
     {
-        InteractableObject interactionValues = obj.GetComponent<InteractableObject>() as InteractableObject;
-        //if (interactionValues == null) { return "noData,"; }
+        //InteractableObject interactionValues = obj.GetComponent<InteractableObject>() as InteractableObject;
         
+        return "no DataImplemented,";
+        //if (interactionValues == null) { return "noData,"; }
+
     }
 }
 

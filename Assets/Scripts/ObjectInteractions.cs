@@ -9,9 +9,11 @@ public class ObjectInteractions : MonoBehaviour
     public List<Objectinteraction> InteractionList = new List<Objectinteraction>();
 
     public bool supressNextHandMotion = false;
+    public bool suppressGroupedObjectMotions;
     //public GameObject transcriptionDisplay;
     private Dictionary<GameObject, bool> test;
     private TranscriptionMaster transcriptionMaster;
+    private GameObject groupSuppressionObj;
     
     // Start is called before the first frame update
     void Start()
@@ -24,6 +26,13 @@ public class ObjectInteractions : MonoBehaviour
         
         //update InteractableObject
         graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
+        
+        if (graspedObj.GetComponent<InteractableObject>().isInGroup)
+        {
+            if (suppressGroupedObjectMotions) {return;}
+            suppressGroupedObjectMotions = true;
+            groupSuppressionObj = graspedObj;
+        }
         
         //TranscribeMTM
         if (supressNextHandMotion){return;}
@@ -38,6 +47,14 @@ public class ObjectInteractions : MonoBehaviour
         
         // update interactableObject
         releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
+        
+        if (suppressGroupedObjectMotions)
+        {
+            if (releasedObj.name == groupSuppressionObj.name) { suppressGroupedObjectMotions = false;}
+            else if (releasedObj.GetComponent<InteractableObject>().isInGroup){return;}
+        }
+        
+        
         
         //TranscribeMTM
         if (supressNextHandMotion)

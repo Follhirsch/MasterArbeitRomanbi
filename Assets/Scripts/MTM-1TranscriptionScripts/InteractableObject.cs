@@ -27,6 +27,7 @@ public class InteractableObject : MonoBehaviour
     public bool isFullyGrasped;
     public bool isConstrainedMovable = false;
     public bool isHammerHandleScrew = false;
+    public bool isnotParticipating = false;
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +63,10 @@ public class InteractableObject : MonoBehaviour
         {
             //TODO what am I doing with the knob collision Hanldler for grasping;
         }
+        else if (isnotParticipating)
+        {
+            
+        }
         else
         {
             isFullyGrasped = gameObject.GetComponent<MovablesCollisionHandler>().isGrabbed;
@@ -89,6 +94,16 @@ public class InteractableObject : MonoBehaviour
             {
                 crankAngleRelease = (int)gameObject.GetComponent<ConstrainedMovable>().movedDistance;
             }
+        }
+
+        if (gameObject.transform.childCount > 3)
+        {
+            GameObject testObj = gameObject.transform.GetChild(3).gameObject;
+            if (testObj.CompareTag("NailGroupTrigger"))
+            {
+                testObj.GetComponent<NailGroupingchange>().UpdateInteractableObject();
+            }
+                
         }
     }
 

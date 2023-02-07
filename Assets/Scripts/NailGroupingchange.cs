@@ -23,7 +23,7 @@ public class NailGroupingchange : MonoBehaviour
 
     }
 
-    void UpdateInteractableObject()
+    public void UpdateInteractableObject()
     {
         Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, 0.03f);
         bool isNowInGroup = false;
@@ -38,7 +38,7 @@ public class NailGroupingchange : MonoBehaviour
                 }
             }
         }
-        Debug.Log(isNowInGroup);
+        //Debug.Log(isNowInGroup);
         gameObject.transform.parent.GetComponent<InteractableObject>().isInGroup = isNowInGroup;
     }
 }
