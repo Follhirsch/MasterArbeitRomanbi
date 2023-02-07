@@ -7,8 +7,6 @@ using VRfreePluginUnity;
 public class ObjectInteractions : MonoBehaviour
 {
     public List<Objectinteraction> InteractionList = new List<Objectinteraction>();
-    public GameObject debugObj;
-    public GameObject debugObj2;
 
     public bool supressNextHandMotion = false;
     //public GameObject transcriptionDisplay;
@@ -71,17 +69,8 @@ public class ObjectInteractions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("t"))
-        {
-            addGraspedObject(debugObj,true);
-        }
-        if (Input.GetKeyDown("z"))
-        {
-            addGraspedObject(debugObj2,true);
-            //removeGraspedObj(debugObj,true);
-        }
-        
-        
+
+
         /* add later for contact grasp
 
         foreach(GameObject tempObj in currentlyGraspedRH.Keys)

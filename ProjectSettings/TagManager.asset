@@ -8,6 +8,7 @@ TagManager:
   - InteractableObject
   - NailHole
   - hand
+  - NailGroupTrigger
   layers:
   - Default
   - TransparentFX
