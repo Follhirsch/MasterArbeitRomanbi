@@ -25,6 +25,9 @@ public class RecorderMaster : MonoBehaviour
     public GameObject SceneToRecord;
     public GameObject MTMobj;
 
+    public List<GameObject> triggersToDeactivate;
+    public List<Component> componentsToDeactivate;
+
 
     private GameObject recorderObject;
 
@@ -41,11 +44,38 @@ public class RecorderMaster : MonoBehaviour
         recordedSequenceNr = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
+        
+        triggersToDeactivate = new List<GameObject>();
+        string[] tags = new [] { "HammerHeadTrigger","NailHole","NailGroupTrigger" };
+        for (int i = 0; i < tags.Length; i++)
+        {
+            GameObject[] tempobjs = GameObject.FindGameObjectsWithTag(tags[i]);
+            for (int j = 0; j < tempobjs.Length; j++)
+            {
+                triggersToDeactivate.Add(tempobjs[j]);
+            }
+        }
+        componentsToDeactivate.Add(Component.FindObjectOfType<HammeringNail>()); 
+        componentsToDeactivate.Add(Component.FindObjectOfType<ConstrainedNailToMovable>());
+        componentsToDeactivate.Add(Component.FindObjectOfType<HandleScrewing>());
+        Component[] components = Component.FindObjectsOfType<ButtonPress>();
+        for (int i = 0; i < components.Length; i++)
+        {
+            componentsToDeactivate.Add(components[i]);
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("y"))
+        {
+            deactivateTriggersAndComponentsForReplay();
+            Component comp = componentsToDeactivate[0];
+            comp.gameObject.SetActive(false);
+
+        }
         if (Input.GetKeyDown("r")) { ToggleRecording(); }
 
         if (Input.GetKeyDown("1"))//Load all the files
@@ -124,10 +154,18 @@ public class RecorderMaster : MonoBehaviour
             {
                 MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = true;
             }
-                Debug.Log("recording started");
+            Debug.Log("recording started");
         }
     }
-    
+
+    void deactivateTriggersAndComponentsForReplay()
+    {
+        foreach (GameObject obj in triggersToDeactivate)
+        {
+            obj.SetActive(false);
+        }
+    }
+
     void RecordNewSequenceWithoutStopping()
     {
         //stop old sequence

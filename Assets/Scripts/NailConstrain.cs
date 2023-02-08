@@ -9,7 +9,7 @@ public class NailConstrain : MonoBehaviour
     public GameObject MTMobj;
     public GameObject Nail;
     public float reenterTimeDelay = 1f;
-    public float exitTime; 
+    public float exitTime;
     // Start is called before the first frame update
     void Start()
     {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.26025453, g: 0.2805894, b: 0.33468404, a: 1}
+  m_IndirectSpecularColor: {r: 0.2601539, g: 0.2804954, b: 0.33460194, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -161,7 +161,7 @@ Transform:
   - {fileID: 155231429}
   - {fileID: 1445314322}
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &15790216
 GameObject:
@@ -864,7 +864,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_LocalScale.x
@@ -1344,7 +1344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4393786670678388, guid: 45ea02f235a87eb44a53bdc193de2307, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3091,7 +3091,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 07cf52e3631708648beb89b0b04a19a8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07cf52e3631708648beb89b0b04a19a8, type: 3}
@@ -4385,7 +4385,7 @@ Transform:
   - {fileID: 2055397731}
   - {fileID: 1349905451}
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &636121637 stripped
 Transform:
@@ -7345,7 +7345,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_LocalScale.x
@@ -10811,7 +10811,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1618020683
 GameObject:
@@ -11059,7 +11059,7 @@ Transform:
   - {fileID: 150546335}
   - {fileID: 2136784346}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1648257834 stripped
 GameObject:
@@ -12515,7 +12515,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1848330098
 MonoBehaviour:
@@ -12587,6 +12587,8 @@ MonoBehaviour:
   path: 
   SceneToRecord: {fileID: 633928715}
   MTMobj: {fileID: 497665591}
+  triggersToDeactivate: []
+  componentsToDeactivate: []
 --- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14507,7 +14509,7 @@ Transform:
   - {fileID: 179303201}
   - {fileID: 1573532633}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2107576850
 MonoBehaviour:
@@ -14677,7 +14679,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905793480517927714, guid: 183bfde1b9778bf4a933f395f133d550, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2905793480517927714, guid: 183bfde1b9778bf4a933f395f133d550, type: 3}
       propertyPath: m_LocalPosition.x
