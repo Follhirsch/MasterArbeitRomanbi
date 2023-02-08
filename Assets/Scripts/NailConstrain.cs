@@ -26,13 +26,17 @@ public class NailConstrain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     void OnTriggerEnter(Collider other)
     {
         if (exitTime+reenterTimeDelay>Time.realtimeSinceStartup){return;}
         if (!other.CompareTag(TargetCollider.tag)){return;}
+        swapNails();
+    }
 
+    void swapNails()
+    {
         //suppress the next hand moton
         if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
         {
@@ -50,9 +54,10 @@ public class NailConstrain : MonoBehaviour
         //GameObject triggerNailObj = Nail.transform.GetChild(2).transform.gameObject;
         //triggerNailObj.SetActive(false);
         exitTime = exitTime * 1000;
-        Nail.SetActive(false);
-        fixedNail.SetActive(true);
-        fixedNail.GetComponent<ConstrainedNailToMovable>().inputNail = Nail;
-        
+        Nail.transform.position = enclavePos;
+
+        ConstrainedNailScript fixNailScript = fixedNail.GetComponent<ConstrainedNailScript>();
+        fixNailScript.MoveToHole();
+        fixNailScript.inputNail = Nail;
     }
 }

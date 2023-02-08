@@ -20,6 +20,8 @@ public class ObjectManipulator : MonoBehaviour
     private Vector3[][] posArray;
     private Quaternion[][] oriArray;
     public int totalNrobjects;
+    public List<GameObject> triggersToDeactivate;
+    public List<MonoBehaviour> componentsToDeactivate;
 
     private int framerate = 30;
 
@@ -33,6 +35,17 @@ public class ObjectManipulator : MonoBehaviour
         replaying = false;
         objectsToReplay = gameObject.GetComponent<ObjectRecorder>().ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
+        
+        triggersToDeactivate = new List<GameObject>();
+        string[] tags = new [] { "HammerHeadTrigger","NailHole","NailGroupTrigger" };
+        for (int i = 0; i < tags.Length; i++)
+        {
+            triggersToDeactivate.AddRange(GameObject.FindGameObjectsWithTag(tags[i]));
+        }
+        componentsToDeactivate.AddRange(FindObjectsOfType<HammeringNail>());
+        componentsToDeactivate.AddRange(FindObjectsOfType<ConstrainedNailScript>());
+        componentsToDeactivate.AddRange(FindObjectsOfType<HandleScrewing>());
+        componentsToDeactivate.AddRange(FindObjectsOfType<ButtonPress>());
     }
 
     // Update is called once per frame
@@ -47,6 +60,7 @@ public class ObjectManipulator : MonoBehaviour
 
     public void startreplay()
     {
+        activateTriggersAndComponentsForReplay(false);
         replaying = true;
         StartCoroutine(ReplayObjects(false));
     }
@@ -60,10 +74,11 @@ public class ObjectManipulator : MonoBehaviour
     
     public void loadFromGame()
     {
-        framerate = recorderSource.GetComponent<ObjectRecorder>().framerate;
-        posArray = recorderSource.GetComponent<ObjectRecorder>().posVectors.ToArray();
-        oriArray = recorderSource.GetComponent<ObjectRecorder>().oriQuaternion.ToArray();
-        objectsToReplay = gameObject.GetComponent<ObjectRecorder>().ObjectsToRecord;
+        ObjectRecorder objRec = recorderSource.GetComponent<ObjectRecorder>();
+        framerate = objRec.framerate;
+        posArray = objRec.posVectors.ToArray();
+        oriArray = objRec.oriQuaternion.ToArray();
+        objectsToReplay = objRec.ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
     }
     public void loadFromCSVFile(string pathIn)
@@ -140,6 +155,7 @@ public class ObjectManipulator : MonoBehaviour
 
             if (!replaying)
             {
+                activateTriggersAndComponentsForReplay(true);
                 Debug.Log("replay stopped");
                 yield break;
             }
@@ -154,18 +170,32 @@ public class ObjectManipulator : MonoBehaviour
 
                 if (!replaying)
                 {
+                    activateTriggersAndComponentsForReplay(true);
                     Debug.Log("replay stopped");
                     yield break;
                 }
             }
         }
         replaying = false;
+        activateTriggersAndComponentsForReplay(true);
     }
 
     void moveObjcts(int currentFrame,int currentObjNr ,GameObject currenObj)
     {
         currenObj.transform.position = posArray[currentFrame][currentObjNr];
             currenObj.transform.rotation = oriArray[currentFrame][currentObjNr];
+    }
+    void activateTriggersAndComponentsForReplay(bool activate)
+    {
+        foreach (GameObject obj in triggersToDeactivate)
+        {
+            obj.SetActive(activate);
+        }
+
+        foreach (MonoBehaviour component in componentsToDeactivate)
+        {
+            component.enabled = activate;
+        }
     }
 
 }

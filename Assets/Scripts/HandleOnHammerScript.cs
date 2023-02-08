@@ -23,13 +23,20 @@ public class HandleOnHammerScript : MonoBehaviour
     }
     void Update()
     {
-        
+        if (Input.GetKeyDown("y"))
+        {
+            SwapHammers();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag(hammerheadCollider.tag)){return;}
+        SwapHammers();
+    }
 
+    void SwapHammers()
+    {
         float dxAngle = handle.transform.localRotation.eulerAngles.x - hammerHead.transform.localRotation.eulerAngles.x;
         float dyAngle = handle.transform.localRotation.eulerAngles.y - hammerHead.transform.localRotation.eulerAngles.y;
         
@@ -43,26 +50,25 @@ public class HandleOnHammerScript : MonoBehaviour
             }
         }
 
-        newHammer.transform.GetChild(0).transform.GetChild(0).GetComponent<InteractableObject>().gotPositioned = true;
+        //newHammer.transform.GetChild(0).transform.GetChild(0).GetComponent<InteractableObject>().gotPositioned = true;
         
         //Debug.Log("Hammerhead correctly detected");
         Vector3 enclavePos = new Vector3(0, -0.5f, 0);//newHammer.transform.position;
         Vector3 newPositionHammerHead = hammer.transform.GetChild(0).transform.position;
         Quaternion newRotHammerHead = hammer.transform.GetChild(0).transform.rotation;
 
-        handle.GetComponent<MovablesCollisionHandler>().enabled = false;
-        hammerHead.GetComponent<MovablesCollisionHandler>().enabled = false;
-        
-        hammer.SetActive(false);
-        
-        
+        //handle.GetComponent<MovablesCollisionHandler>().enabled = false;
+        //hammerHead.GetComponent<MovablesCollisionHandler>().enabled = false;
         hammer.transform.position = enclavePos;
+        
+        //hammer.SetActive(false);
+        
         
         newHammer.transform.GetChild(0).transform.position = newPositionHammerHead;
         newHammer.transform.GetChild(0).transform.rotation = newRotHammerHead;
 
-        newHammer.SetActive(true);
-        newHammer.GetComponent<InteractableObject>().AddPositioning(1,1);
+        //newHammer.SetActive(true);
+        newHammer.transform.GetChild(0).transform.GetChild(0).GetComponent<InteractableObject>().AddPositioning(1,1);
     }
     
     
