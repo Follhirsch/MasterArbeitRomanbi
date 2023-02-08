@@ -23,10 +23,7 @@ public class HandleOnHammerScript : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown("y"))
-        {
-            SwapHammers();
-        }
+        
     }
 
     void OnTriggerEnter(Collider other)

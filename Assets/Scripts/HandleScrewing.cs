@@ -22,11 +22,7 @@ public class HandleScrewing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("x"))
-        {
-            SwapHammers();
-        }
-        
+
         angle = gameObject.GetComponent<KnobCollisionHandler>().totalMoveDist;
         Vector3 localpositionvector = transform.localPosition;
         if (angle >= maxAngle)

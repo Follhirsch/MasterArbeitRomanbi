@@ -33,6 +33,8 @@ public class ObjectRecorder : MonoBehaviour
     public GameObject recObj8;
     public GameObject recObj9;
     public GameObject recObj10;
+    public List<string[]> IntaractinValuesList = new List<string[]>();
+    public List<float[]> velocityList = new List<float[]>();
 
     public string searchTag = "InteractableObject";
     [FormerlySerializedAs("ObjectsTorecord")] public List<GameObject> ObjectsToRecord = new List<GameObject>();
@@ -78,21 +80,28 @@ public class ObjectRecorder : MonoBehaviour
         totalNrOfObjects = ObjectsToRecord.Count;
         Vector3[] tempArray = new Vector3[totalNrOfObjects]; // dont forget to add children
         Quaternion[] tempOriArray = new Quaternion[totalNrOfObjects];
+        float[] tempVeloArray = new float[totalNrOfObjects];
+        string[] tempInteractionArray = new string[totalNrOfObjects];
 
         for (int i = 0; i < totalNrOfObjects; i++)
         {
             string tempString = "";
             Vector3 pos = ObjectsToRecord[i].transform.position;
             Quaternion ori = ObjectsToRecord[i].transform.rotation;
+            float velo = ObjectsToRecord[i].GetComponent<Rigidbody>().velocity.magnitude;
             tempArray[i] = pos;
             tempOriArray[i] = ori;
-            tempString += posOriString(pos, ori);
-            tempString +=CreateInteractableString(ObjectsToRecord[i]);
+            tempVeloArray[i] = velo;
+            tempInteractionArray[i] = CreateInteractableString(ObjectsToRecord[i]);
+            tempString += posOriVelString(pos, ori, velo);
+            tempString += tempInteractionArray[i]+",";
             completeLine += tempString;
         }
 
         posVectors.Add(tempArray);
         oriQuaternion.Add(tempOriArray);
+        IntaractinValuesList.Add(tempInteractionArray);
+        velocityList.Add(tempVeloArray);
         
         completeLine =  completeLine.Substring(0, completeLine.Length - 1);//remove , from the end
         csvWriter.WriteLine(completeLine);
@@ -156,41 +165,6 @@ public class ObjectRecorder : MonoBehaviour
     string locateObjects()
     {
         ObjectsToRecord = new List<GameObject>();
-        /*for (int i = 0; i < scene.transform.childCount; i++)
-        {
-            GameObject tempObj = scene.transform.GetChild(i).gameObject;
-            if (tempObj.CompareTag(searchTag))
-            {
-                ObjectsToRecord.Add(tempObj);
-            }
-
-            int nrOfChildren = tempObj.transform.childCount;
-            if (nrOfChildren > 0)
-            {
-                for (int ii = 0; ii < nrOfChildren; ii++)
-                {
-                    GameObject tempChild = tempObj.transform.GetChild(ii).gameObject;
-                    if (tempChild.CompareTag(searchTag))
-                    {
-                        ObjectsToRecord.Add(tempChild);
-                    }
-
-                    int nrOfChildrensChildren = tempChild.transform.childCount;
-                    if (nrOfChildrensChildren > 0)
-                    {
-                        for (int iii = 0; iii < nrOfChildrensChildren; iii++)
-                        {
-                            GameObject tempChildsChild = tempChild.transform.GetChild(iii).gameObject;
-                            if (tempChildsChild.CompareTag(searchTag))
-                            {
-                                ObjectsToRecord.Add(tempChildsChild);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
         ObjectsToRecord.Add(recObj1);
         ObjectsToRecord.Add(recObj2);
         ObjectsToRecord.Add(recObj3);
@@ -216,14 +190,14 @@ public class ObjectRecorder : MonoBehaviour
         return null;
     }
 
-    string posOriString(Vector3 pos,Quaternion ori)
+    string posOriVelString(Vector3 pos,Quaternion ori,float velocity)
     {
         string returnString = "";
         string positionString = pos.ToString("G");
         string orientationString = ori.ToString("G");
         string modifiedPositionString = positionString.Substring(1, positionString.Length - 2);
         string modifiedOrientationString = orientationString.Substring(1, orientationString.Length - 2);
-        returnString = modifiedPositionString + "," + modifiedOrientationString + ",";
+        returnString = modifiedPositionString + "," + modifiedOrientationString + ","+velocity+",";
         //returnString += CreateInteractableString(obj)
         return returnString;
     }
@@ -243,18 +217,14 @@ public class ObjectRecorder : MonoBehaviour
         string childname = prefix;
         childname += obj.name;
         string returnString = childname + ".x," + childname + ".y," + childname + ".z," + childname + ".rx," +
-                              childname + ".ry," + childname + ".rz," + childname + ".rw," + childname +
-                              ".Interactable,";
+                              childname + ".ry," + childname + ".rz," + childname + ".rw," + childname + ".velocity," +
+                              childname + ".Interactable,";
         return returnString;
     }
 
     string CreateInteractableString(GameObject obj)
-    {
-        //InteractableObject interactionValues = obj.GetComponent<InteractableObject>() as InteractableObject;
-        
-        return "no DataImplemented,";
-        //if (interactionValues == null) { return "noData,"; }
-
+    { 
+        return obj.GetComponent<InteractableObject>().CreateStringToRecord();
     }
 }
 

@@ -28,10 +28,15 @@ public class InteractableObject : MonoBehaviour
     public bool isConstrainedMovable = false;
     public bool isHammerHandleScrew = false;
     public bool isnotParticipating = false;
-
+    public RecorderMaster recMaster;
+    public string debugstring1;
+    public string debugstring2;
+    
     // Start is called before the first frame update
     void Start()
     {
+        debugstring1 = "1/1/1/1/1/1/1/1/1/1/1/1/1";
+        debugstring2 = "0/0/0/0/0/0/0/0/0/0/0/0/0";
         gameObject.tag = "InteractableObject";
         weight = (int)gameObject.GetComponent<Rigidbody>().mass;
         isInHandRH = false;
@@ -47,12 +52,27 @@ public class InteractableObject : MonoBehaviour
         {
             isHammerHandleScrew = true;
         }
-        
-    }
+        recMaster = GameObject.Find("Recorder/Player").GetComponent<RecorderMaster>();
+
+}
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("y"))
+        {
+            ReplayFromRecording(debugstring1);
+        }
+        if (Input.GetKeyDown("x"))
+        {
+            ReplayFromRecording(debugstring2);
+        }
+        if (Input.GetKeyDown("c"))
+        {
+            Debug.Log(isInGroup);
+        }
+        
+        
         //var handler = gameObject.GetComponent(typeof(CollisionHandler)) as MovablesCollisionHandler;
 
         if (isConstrainedMovable || isCrank)
@@ -69,7 +89,10 @@ public class InteractableObject : MonoBehaviour
         }
         else
         {
-            isFullyGrasped = gameObject.GetComponent<MovablesCollisionHandler>().isGrabbed;
+            if (!recMaster.rePlaying)
+            {
+                isFullyGrasped = gameObject.GetComponent<MovablesCollisionHandler>().isGrabbed;
+            }
         }
     }
 
@@ -131,5 +154,77 @@ public class InteractableObject : MonoBehaviour
     {
         gotDisengaged = false;
         disengagingforce = 0;
+    }
+
+    public string CreateStringToRecord()
+    {
+        // syntax weight/isSmall/
+        string returnString = "";
+        returnString += weight.ToString() +"/" ;
+        returnString += ((isSmall)? "1" : "0") + "/";
+        returnString += ((isCylindrical)? "1" : "0") + "/"; 
+        returnString += ((isInGroup)? "1" : "0") + "/";
+        returnString += ((isAtKnownLocation)? "1" : "0") + "/"; 
+        returnString += ((gotPositioned)? "1" : "0") + "/";
+        returnString += positionForce.ToString()+ "/";
+        returnString += positioningSpecification.ToString()+ "/";
+        returnString += ((gotDisengaged)? "1" : "0") + "/";
+        returnString += disengagingforce.ToString() + "/";
+        returnString += crankAngleGrasp.ToString()+ "/";
+        returnString += crankAngleRelease.ToString()+ "/";
+        returnString += ((isInHandRH)? "1" : "0") + "/";
+        returnString += ((isInHandLH)? "1" : "0") + "/";
+        returnString += ((isFullyGrasped)? "1" : "0");
+        return returnString;
+    }
+
+    public void ReplayFromRecording(string interactionString)
+    {
+        
+        string[] values = interactionString.Split("/");
+        if (values.Length != 13)
+        {
+            Debug.Log("Invalid InteractionString");
+            return;
+        }
+
+        bool outBool = false;
+
+        if (!int.TryParse(values[0], out weight)){Debug.Log("error in parse1");}
+        if (!ParseBool(values[1], out outBool)){Debug.Log("error in parse4");}
+        else{ isInGroup = outBool;}
+        if (!ParseBool(values[2], out outBool)){Debug.Log("error in parse5");}
+        else{ isAtKnownLocation = outBool;}
+        if (!ParseBool(values[3], out outBool)){Debug.Log("error in parse6");}
+        else{ gotPositioned = outBool;}
+        if(!int.TryParse(values[4], out positionForce)){Debug.Log("error in parse7");}
+        if(!int.TryParse(values[5], out positioningSpecification)){Debug.Log("error in parse8");}
+        if (!ParseBool(values[6], out outBool)){Debug.Log("error in parse9");}
+        else{ gotDisengaged = outBool;}
+        if(!int.TryParse(values[7], out disengagingforce)){Debug.Log("error in parse10");}
+        if(!int.TryParse(values[8], out crankAngleGrasp)){Debug.Log("error in parse11");}
+        if(!int.TryParse(values[9], out crankAngleRelease)){Debug.Log("error in parse12");}
+        if (!ParseBool(values[10], out outBool)){Debug.Log("error in parse13");}
+        else{ isInHandRH = outBool;}
+        if (!ParseBool(values[11], out outBool)){Debug.Log("error in parse14");}
+        else{ isInHandLH = outBool;}
+        if (!ParseBool(values[12], out outBool)){Debug.Log("error in parse15");}
+        else{ isFullyGrasped = outBool;}
+    }
+
+    private bool ParseBool(string str, out bool value)
+    {
+        value = new bool();
+        bool returnBool = false;
+        if (str == "1")
+        {
+            returnBool = true;
+            value = true;}
+        else if (str == "0")
+        {
+            returnBool = true;
+            value = false;
+        }
+        return returnBool;
     }
 }

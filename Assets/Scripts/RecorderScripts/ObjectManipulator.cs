@@ -17,11 +17,13 @@ public class ObjectManipulator : MonoBehaviour
     public GameObject sceneTarget;
     public List<GameObject> objectsToReplay;
     public int frame;
-    private Vector3[][] posArray;
-    private Quaternion[][] oriArray;
+    public Vector3[][] posArray;
+    public Quaternion[][] oriArray;
     public int totalNrobjects;
     public List<GameObject> triggersToDeactivate;
     public List<MonoBehaviour> componentsToDeactivate;
+    public float[][] veloArray;
+    public string[][] interactionStringArray;
 
     private int framerate = 30;
 
@@ -78,6 +80,8 @@ public class ObjectManipulator : MonoBehaviour
         framerate = objRec.framerate;
         posArray = objRec.posVectors.ToArray();
         oriArray = objRec.oriQuaternion.ToArray();
+        veloArray = objRec.velocityList.ToArray();
+        interactionStringArray = objRec.IntaractinValuesList.ToArray();
         objectsToReplay = objRec.ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
     }
@@ -96,27 +100,39 @@ public class ObjectManipulator : MonoBehaviour
 
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
+        List<float[]> tempVeloList = new List<float[]>();
+        List<string[]> tempInteractionList = new List<string[]>();
 
         for (int i = 0; i < frames-1; i++)
         {
             string[] dataValues = dataLines[i + 2].Split(","); // starting from second line in csv
             Vector3[] tempPosFrame = new Vector3[totalNrobjects];
             Quaternion[] tempOriFrame = new Quaternion[totalNrobjects];
+            float[] tempVeloFrame = new float[totalNrobjects];
+            string[] tempInteractionFrame = new string[totalNrobjects];
+
             for (int j = 0; j < totalNrobjects; j++)
             {
-                int k = j * 8;
-                Vector3 positionData = new Vector3(float.Parse(dataValues[k]),float.Parse(dataValues[k+1]),float.Parse(dataValues[k+2]));
-                Quaternion orientationData = new Quaternion(float.Parse(dataValues[k+3]),
-                    float.Parse(dataValues[k + 4]), float.Parse(dataValues[k + 5]),float.Parse(dataValues[k + 6]));
+                int k = j * 9;
+                Vector3 positionData = new Vector3(float.Parse(dataValues[k]), float.Parse(dataValues[k + 1]),
+                    float.Parse(dataValues[k + 2]));
+                Quaternion orientationData = new Quaternion(float.Parse(dataValues[k + 3]),
+                    float.Parse(dataValues[k + 4]), float.Parse(dataValues[k + 5]), float.Parse(dataValues[k + 6]));
                 tempPosFrame[j] = positionData;
                 tempOriFrame[j] = orientationData;
+                tempVeloFrame[i] = float.Parse(dataValues[k + 7]);
+                tempInteractionFrame[i] = dataValues[k + 8];
             }
             tempPosVectorList.Add(tempPosFrame);
             tempOriList.Add(tempOriFrame);
+            tempVeloList.Add(tempVeloFrame);
+            tempInteractionList.Add(tempInteractionFrame);
         }
 
         posArray = tempPosVectorList.ToArray();
         oriArray = tempOriList.ToArray();
+        interactionStringArray = tempInteractionList.ToArray();
+        veloArray = tempVeloList.ToArray();
         objectsToReplay = gameObject.GetComponent<ObjectRecorder>().ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
         Debug.Log("Objects CSV file Loaded");
@@ -141,7 +157,9 @@ public class ObjectManipulator : MonoBehaviour
         {
             objectsToReplay[i].transform.position = posArray[frameToPlay][i];
             objectsToReplay[i].transform.rotation = oriArray[frameToPlay][i];
-            //TODO: object interaction values;
+
+            objectsToReplay[i].GetComponent<InteractableObject>()
+                .ReplayFromRecording(interactionStringArray[frameToPlay][i]);
         }
     }
 
