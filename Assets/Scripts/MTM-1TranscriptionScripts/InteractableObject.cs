@@ -161,8 +161,6 @@ public class InteractableObject : MonoBehaviour
         // syntax weight/isSmall/
         string returnString = "";
         returnString += weight.ToString() +"/" ;
-        returnString += ((isSmall)? "1" : "0") + "/";
-        returnString += ((isCylindrical)? "1" : "0") + "/"; 
         returnString += ((isInGroup)? "1" : "0") + "/";
         returnString += ((isAtKnownLocation)? "1" : "0") + "/"; 
         returnString += ((gotPositioned)? "1" : "0") + "/";
@@ -184,7 +182,7 @@ public class InteractableObject : MonoBehaviour
         string[] values = interactionString.Split("/");
         if (values.Length != 13)
         {
-            Debug.Log("Invalid InteractionString");
+            Debug.Log("Invalid InteractionString:" + interactionString);
             return;
         }
 
@@ -199,7 +197,7 @@ public class InteractableObject : MonoBehaviour
         else{ gotPositioned = outBool;}
         if(!int.TryParse(values[4], out positionForce)){Debug.Log("error in parse7");}
         if(!int.TryParse(values[5], out positioningSpecification)){Debug.Log("error in parse8");}
-        if (!ParseBool(values[6], out outBool)){Debug.Log("error in parse9");}
+        if (!ParseBool(values[6], out outBool)){Debug.Log("error in parse9" +values[6]);}
         else{ gotDisengaged = outBool;}
         if(!int.TryParse(values[7], out disengagingforce)){Debug.Log("error in parse10");}
         if(!int.TryParse(values[8], out crankAngleGrasp)){Debug.Log("error in parse11");}

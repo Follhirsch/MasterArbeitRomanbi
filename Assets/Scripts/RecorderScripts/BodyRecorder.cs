@@ -9,6 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using Valve.Newtonsoft.Json.Utilities;
 using Valve.VR;
 
@@ -31,7 +32,7 @@ public class BodyRecorder : MonoBehaviour
     public int framerate;
     public bool recordBody;
     public bool recordHands = false;
-    public bool recordHandShadow = false;
+    public bool recordHandPlayer = false;
     public bool recordBodyRest = false;
     public bool recordHip= false;
     public bool recordRightFoot = false;
@@ -66,7 +67,7 @@ public class BodyRecorder : MonoBehaviour
     {
         
         if (!recorderObject.GetComponent<RecorderMaster>().recordBody) { return;}
-        recordBodyRest = recordHip || recordHead || recordLeftFoot || recordRightFoot||recordHandShadow;
+        recordBodyRest = recordHip || recordHead || recordLeftFoot || recordRightFoot||recordHandPlayer;
         
         if (Input.GetKeyDown("l"))
         {
@@ -118,8 +119,8 @@ public class BodyRecorder : MonoBehaviour
                               Convert.ToInt16(recordRightFoot);*/
             string firstline = "FPS," + framerate.ToString() + "," + "NrOfObjects," + NrOfObjects.ToString();
             firstline += ",LFoot," + Convert.ToString(recordLeftFoot) + ",RFoot," + Convert.ToString(recordRightFoot) + ",Hip," +
-                             Convert.ToString(recordHip) + ",Head," + Convert.ToString(recordHead) + ",HandsShadow," +
-                             Convert.ToString(recordHandShadow);
+                             Convert.ToString(recordHip) + ",Head," + Convert.ToString(recordHead) + ",HandsPLayer," +
+                             Convert.ToString(recordHandPlayer);
             csvWriterBody.WriteLine(firstline);
             csvWriterBody.WriteLine(header);
         }

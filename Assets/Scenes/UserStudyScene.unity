@@ -3526,6 +3526,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!114 &559849809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4610,6 +4613,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!1 &645586989
 GameObject:
   m_ObjectHideFlags: 0
@@ -5126,6 +5132,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!114 &700162524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5211,6 +5220,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!114 &763385013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6159,6 +6171,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!1 &856878319
 GameObject:
   m_ObjectHideFlags: 0
@@ -7025,7 +7040,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024484636}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.5, z: 0}
+  m_LocalPosition: {x: 18.1, y: 4.5, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7699,6 +7714,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!1 &1184520126
 GameObject:
   m_ObjectHideFlags: 0
@@ -8914,6 +8932,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!1 &1349905450
 GameObject:
   m_ObjectHideFlags: 0
@@ -12535,6 +12556,8 @@ MonoBehaviour:
   objectsToReplay: []
   frame: 0
   totalNrobjects: 0
+  triggersToDeactivate: []
+  componentsToDeactivate: []
 --- !u!114 &1848330099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12581,14 +12604,17 @@ MonoBehaviour:
   recordObjects: 1
   transcribeMTM: 1
   frame: 0
+  objMani: {fileID: 0}
+  handMani: {fileID: 0}
+  playerMani: {fileID: 0}
+  bodyRec: {fileID: 0}
+  objRec: {fileID: 0}
   rePlaying: 0
-  loadFromCsvFile: 1
+  loadFromCsvFile: 0
   recordingFilesDir: 
   path: 
   SceneToRecord: {fileID: 633928715}
   MTMobj: {fileID: 497665591}
-  triggersToDeactivate: []
-  componentsToDeactivate: []
 --- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12607,10 +12633,10 @@ MonoBehaviour:
   leftHand: {fileID: 0}
   recorderObject: {fileID: 0}
   framerate: 0
-  recordBody: 0
+  recordBody: 1
   recordHands: 1
-  recordHandShadow: 0
-  recordBodyRest: 0
+  recordHandPlayer: 0
+  recordBodyRest: 1
   recordHip: 1
   recordRightFoot: 0
   recordLeftFoot: 0
@@ -12654,7 +12680,9 @@ MonoBehaviour:
   dir: 
   recorderSource: {fileID: 0}
   PlayerTarget: {fileID: 1630301150}
+  ReplayHuman: {fileID: 1590521661}
   frame: 0
+  showHuman: 1
 --- !u!114 &1848330104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13420,6 +13448,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!54 &1948999766
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13754,6 +13785,7 @@ MonoBehaviour:
   inputNail: {fileID: 0}
   fixedNail: {fileID: 0}
   MTMobj: {fileID: 497665591}
+  enclavepos: {x: 0, y: 0, z: 0}
   fixedNailMovableHandler: {fileID: 0}
 --- !u!114 &2045878629
 MonoBehaviour:
@@ -13787,6 +13819,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!1 &2045957333
 GameObject:
   m_ObjectHideFlags: 0
@@ -14217,6 +14252,9 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 
 --- !u!65 &2082276303
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15186,3 +15224,6 @@ MonoBehaviour:
   isConstrainedMovable: 0
   isHammerHandleScrew: 0
   isnotParticipating: 0
+  recMaster: {fileID: 0}
+  debugstring1: 
+  debugstring2: 

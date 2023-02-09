@@ -22,10 +22,11 @@ public class Replayshadowhands : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            PlayShadow();
+            //PlayShadow();
         }
     }
 
+    /*
     void PlayShadow()
     {
         string animationFolder = shadowhandFolder+animationFolderDict[sequence];
@@ -38,4 +39,5 @@ public class Replayshadowhands : MonoBehaviour
         
         
     }
+    */
 }

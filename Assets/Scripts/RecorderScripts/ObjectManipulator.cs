@@ -53,26 +53,24 @@ public class ObjectManipulator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("3"))
-        {
-            replaying = false;
-           playFrame(frame);
-        }
+        
     }
 
-    public void startreplay()
+    /*
+    public void startreplay() 
     {
         activateTriggersAndComponentsForReplay(false);
         replaying = true;
         StartCoroutine(ReplayObjects(false));
     }
-
-    public void playShadowhands()
+    
+     public void playShadowhands()
     {
         replaying = true;
         StartCoroutine(ReplayObjects(true));
 
     }
+    */
     
     public void loadFromGame()
     {
@@ -85,10 +83,11 @@ public class ObjectManipulator : MonoBehaviour
         objectsToReplay = objRec.ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
     }
-    public void loadFromCSVFile(string pathIn)
+    public bool loadFromCSVFile(string pathIn)
     {
         dir = pathIn + "/Objects";
         replayFile = Resources.Load<TextAsset>(dir);
+        if (replayFile == null) { return false;}
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz,interactionvalues...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
@@ -120,8 +119,8 @@ public class ObjectManipulator : MonoBehaviour
                     float.Parse(dataValues[k + 4]), float.Parse(dataValues[k + 5]), float.Parse(dataValues[k + 6]));
                 tempPosFrame[j] = positionData;
                 tempOriFrame[j] = orientationData;
-                tempVeloFrame[i] = float.Parse(dataValues[k + 7]);
-                tempInteractionFrame[i] = dataValues[k + 8];
+                tempVeloFrame[j] = float.Parse(dataValues[k + 7]);
+                tempInteractionFrame[j] = dataValues[k + 8];
             }
             tempPosVectorList.Add(tempPosFrame);
             tempOriList.Add(tempOriFrame);
@@ -136,6 +135,7 @@ public class ObjectManipulator : MonoBehaviour
         objectsToReplay = gameObject.GetComponent<ObjectRecorder>().ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
         Debug.Log("Objects CSV file Loaded");
+        return true;
     }
 
 
@@ -143,7 +143,7 @@ public class ObjectManipulator : MonoBehaviour
     {
         if (frame < 0 || frame > posArray.Length) 
         {
-            Debug.Log("invald Frame: " + frameToPlay.ToString());
+            Debug.Log("Invalid Frame: " + frameToPlay.ToString());
             return;
         }
 
@@ -163,6 +163,7 @@ public class ObjectManipulator : MonoBehaviour
         }
     }
 
+    /*
     IEnumerator ReplayObjects(bool rewindAfter)
     {
         yield return new WaitForSeconds(0.5f);
@@ -197,13 +198,14 @@ public class ObjectManipulator : MonoBehaviour
         replaying = false;
         activateTriggersAndComponentsForReplay(true);
     }
+    */
 
     void moveObjcts(int currentFrame,int currentObjNr ,GameObject currenObj)
     {
         currenObj.transform.position = posArray[currentFrame][currentObjNr];
             currenObj.transform.rotation = oriArray[currentFrame][currentObjNr];
     }
-    void activateTriggersAndComponentsForReplay(bool activate)
+    public void activateTriggersAndComponentsForReplay(bool activate)
     {
         foreach (GameObject obj in triggersToDeactivate)
         {

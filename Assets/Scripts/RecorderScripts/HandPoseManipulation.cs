@@ -40,13 +40,8 @@ public class HandPoseManipulation : MonoBehaviour
         {
             //StartCoroutine( replayHands());
         }*/
-        if (Input.GetKeyDown("3"))
-        {
-            replaying = false;
-            playFrame();
-        }
     }
-    
+    /*
     public void startreplay()
     {
         replaying = true;
@@ -56,8 +51,8 @@ public class HandPoseManipulation : MonoBehaviour
     {
         replaying = true;
         StartCoroutine(replayHands());
-
     }
+    */
 
     public void loadFromGame()
     {
@@ -68,12 +63,11 @@ public class HandPoseManipulation : MonoBehaviour
 
     }
 
-    public void loadFromCSVFile(string pathIn)
+    public bool loadFromCSVFile(string pathIn)
     {
         dir = pathIn + "/Hands";
         replayFile = Resources.Load<TextAsset>(dir);
-        
-
+        if (replayFile == null) { return false;}
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
@@ -127,6 +121,7 @@ public class HandPoseManipulation : MonoBehaviour
         rOriArray = rtempOriList.ToArray();
         
         Debug.Log("Hands CSV file Loaded");
+        return true;
     }
     
 
@@ -177,20 +172,30 @@ public class HandPoseManipulation : MonoBehaviour
         replaying = false;
     }
 
-    public void playFrame()
+    public void playFrame(int frameToPlay)
     {
-        // do right hand pose
-        if (rPosArray != null && rOriArray != null)
+        if (frame < 0 || frame > rPosArray.Length) 
         {
-            GameObject rightHandObject = handTarget.transform.GetChild(0).gameObject;
-            GameObject rightHandTarget = rightHandObject.transform.GetChild(4).gameObject;
-                
-            for (int ri = 0; ri < rightHandTarget.transform.childCount; ri++)
-            {
-                rightHandTarget.transform.GetChild(ri).transform.position = rPosArray[frame][ri];
-                rightHandTarget.transform.GetChild(ri).transform.rotation = rOriArray[frame][ri];
-            }
+            Debug.Log("Invalid Frame: " + frameToPlay.ToString());
+            return;
         }
+        
+        if (!(rPosArray != null || rOriArray != null || lPosArray != null || lOriArray != null))
+        {
+            Debug.Log("Positions not loaded"); 
+            return;
+        }
+
+        // do right hand pose
+        GameObject rightHandObject = handTarget.transform.GetChild(0).gameObject;
+        GameObject rightHandTarget = rightHandObject.transform.GetChild(4).gameObject;
+
+        for (int ri = 0; ri < rightHandTarget.transform.childCount; ri++)
+        {
+            rightHandTarget.transform.GetChild(ri).transform.position = rPosArray[frameToPlay][ri];
+            rightHandTarget.transform.GetChild(ri).transform.rotation = rOriArray[frameToPlay][ri];
+        }
+
         // do left hand pose
         if (lPosArray != null && lOriArray != null)
         {
@@ -199,15 +204,14 @@ public class HandPoseManipulation : MonoBehaviour
             GameObject lefthandTarget = leftHandObject.transform.GetChild(4).gameObject;
             for (int li = 0; li < lefthandTarget.transform.childCount; li++)
             {
-                lefthandTarget.transform.GetChild(li).transform.position = lPosArray[frame][li];
-                lefthandTarget.transform.GetChild(li).transform.rotation = lOriArray[frame][li];
+                lefthandTarget.transform.GetChild(li).transform.position = lPosArray[frameToPlay][li];
+                lefthandTarget.transform.GetChild(li).transform.rotation = lOriArray[frameToPlay][li];
             }
         }
-            
-            
-        else
-        {
-            Debug.Log("Positions not loaded");
-        }
+    }
+
+    public void EnableReplayHands(bool enable)
+    {
+        handTarget.SetActive(enable);
     }
 }

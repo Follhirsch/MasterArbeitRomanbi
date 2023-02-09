@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -66,21 +68,30 @@ public class RecorderMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("r")) { ToggleRecording(); }
+        if (Input.GetKeyDown("r"))
+        {
+            if (rePlaying){return;}
+            ToggleRecording();
+        }
 
         if (Input.GetKeyDown("1"))//Load all the files
         {
+            if(recording){return;}
             if (loadFromCsvFile)
             {
                 //Debug.Log(recordingFilesDir);
                 path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
-                Debug.Log(path);
 
-                objMani.loadFromCSVFile(path);
-                handMani.loadFromCSVFile(path);
-                playerMani.loadFromCSVFile(path);
+                bool objLoaded = objMani.loadFromCSVFile(path);
+                bool handsLoaded = handMani.loadFromCSVFile(path);
+                bool playerLoaded = playerMani.loadFromCSVFile(path);
+
+                if (!(objLoaded && handsLoaded && playerLoaded))
+                {
+                    Debug.Log("no file found");
+                }
             }
             else
             {
@@ -92,15 +103,32 @@ public class RecorderMaster : MonoBehaviour
 
         if (Input.GetKeyDown("2")) //replay everything
         {
-            objMani.startreplay();
-            handMani.startreplay();
-            playerMani.startreplay();
+            if(recording){return;}
             Debug.Log("Replay started");
+            StartCoroutine(replayEveryting());
         }
 
         if (Input.GetKeyDown("3")) //replay single frame
         {
-            
+            if(recording){return;}
+            stopReplay();
+            EnableEverything(true);
+            objMani.playFrame(frame);
+            playerMani.playFrame(frame);
+            handMani.playFrame(frame);
+        }
+        if (Input.GetKeyDown("4")) 
+        {
+            if(recording){return;}
+            loadFromCsvFile = !loadFromCsvFile;
+        }
+        if (Input.GetKeyDown("x")) 
+        {
+            EnableEverything(true);
+        }
+        if (Input.GetKeyDown("y")) 
+        {
+            EnableEverything(false);
         }
         
         if (recording)
@@ -110,13 +138,11 @@ public class RecorderMaster : MonoBehaviour
             {
                 if (recordObjects) {objRec.LogData();}
                 if (recordBody) {bodyRec.LogData();}
-                
+                frame++;
                 //frame++;
                 timer = timer - samplingInterval;
             }
         }
-        
-        
     }
     
     void ToggleRecording()
@@ -131,6 +157,7 @@ public class RecorderMaster : MonoBehaviour
         }
         else //start recording
         {
+            frame = 0;
             folderDirectory = Directory.CreateDirectory(recordingFilesDir + "/"+"Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm_ss")); // returns a DirectoryInfo object
             string recordingFolderDir = folderDirectory.ToString();
             folderDirectory = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
@@ -147,9 +174,49 @@ public class RecorderMaster : MonoBehaviour
             Debug.Log("recording started");
         }
     }
-    
-    
 
+    IEnumerator replayEveryting()
+    {
+        EnableEverything(true);
+        yield return new WaitForSeconds(0.5f);
+        
+        int lengthObjects = objMani.posArray.Length;
+        int lengthPlayer = playerMani.posArray.Length;
+        int lengthHands = handMani.lPosArray.Length;
+        int maxlength = new[] { lengthObjects, lengthPlayer, lengthHands }.Max();
+        
+        rePlaying = true;
+        for (int i = 0; i < maxlength; i++)
+        {
+            if (i < lengthObjects ) { objMani.playFrame(i); }
+            if (i < lengthPlayer) {playerMani.playFrame(i); }
+            if (i < lengthHands) { handMani.playFrame(i); }
+            
+            
+            yield return new WaitForSeconds(1 / framerate);
+
+            if (!rePlaying)
+            {
+                stopReplay();
+                yield break;
+            }
+        }
+        stopReplay();
+        EnableEverything(false);
+    }
+
+    void stopReplay()
+    {
+        rePlaying = false;
+        Debug.Log("replay stopped");
+    }
+
+    void EnableEverything(bool enable)
+    {
+        objMani.activateTriggersAndComponentsForReplay(!enable);
+        playerMani.EnablePlayer(enable);
+        handMani.EnableReplayHands(enable);
+    }
     void RecordNewSequenceWithoutStopping()
     {
         //stop old sequence

@@ -10,14 +10,15 @@ public class PlayerManipulator : MonoBehaviour
     public GameObject recorderSource;
 
     public GameObject PlayerTarget;
-    
+    public GameObject ReplayHuman;
     public int frame;
-    private Vector3[][] posArray;
-    private Quaternion[][] oriArray;
+    public Vector3[][] posArray;
+    public Quaternion[][] oriArray;
 
     private int framerate = 30;
 
     private bool replaying = false;
+    public bool showHuman = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +36,7 @@ public class PlayerManipulator : MonoBehaviour
             playFrame();
         }
     }
+    /*
     public void startreplay()
     {
         if (posArray != null)
@@ -47,6 +49,7 @@ public class PlayerManipulator : MonoBehaviour
             Debug.Log("no player replay file");
         }
     }
+    */
     
     public void loadFromGame()
     {
@@ -56,10 +59,11 @@ public class PlayerManipulator : MonoBehaviour
         Debug.Log("Player Files Loaded");
     }
     
-    public void loadFromCSVFile(string pathIn)
+    public bool loadFromCSVFile(string pathIn)
     {
         dir = pathIn + "/BodyRest";
         replayFile = Resources.Load<TextAsset>(dir);
+        if (replayFile == null) { return false;}
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
@@ -93,6 +97,7 @@ public class PlayerManipulator : MonoBehaviour
         posArray = tempPosVectorList.ToArray();
         oriArray = tempOriList.ToArray();
         Debug.Log("Player CSV file Loaded");
+        return true;
     }
     public void playFrame()
     {
@@ -109,6 +114,27 @@ public class PlayerManipulator : MonoBehaviour
             Debug.Log("Positions not loaded");
         }
         frame++;
+    }
+
+    public void playFrame(int frameToPlay)
+    {
+        if (frame < 0 || frame > posArray.Length) 
+        {
+            Debug.Log("Invalid Frame: " + frameToPlay.ToString());
+            return;
+        }
+        if(posArray == null && oriArray == null)
+        {
+            Debug.Log("Positions not loaded"); 
+            return;
+        }
+        
+        for (int i = 0; i < PlayerTarget.transform.childCount; i++)
+        {
+            PlayerTarget.transform.GetChild(i).GetChild(0).transform.position = posArray[frameToPlay][i];
+            PlayerTarget.transform.GetChild(i).GetChild(0).transform.rotation = oriArray[frameToPlay][i];
+        }
+        
     }
     
     IEnumerator ReplayObjects()
@@ -130,6 +156,15 @@ public class PlayerManipulator : MonoBehaviour
             yield return new WaitForSeconds(1 / framerate);
             
             if (!replaying) { break; }
+        }
+    }
+    public void EnablePlayer(bool enable)
+    {
+        PlayerTarget.SetActive(enable);
+        if (showHuman)
+        {
+            ReplayHuman.SetActive(enable);
+            //TODO adabt player dimensions
         }
     }
 }
