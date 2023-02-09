@@ -199,14 +199,14 @@ public class InteractableObject : MonoBehaviour
         if(!int.TryParse(values[5], out positioningSpecification)){Debug.Log("error in parse8");}
         if (!ParseBool(values[6], out outBool)){Debug.Log("error in parse9" +values[6]);}
         else{ gotDisengaged = outBool;}
-        if(!int.TryParse(values[7], out disengagingforce)){Debug.Log("error in parse10");}
-        if(!int.TryParse(values[8], out crankAngleGrasp)){Debug.Log("error in parse11");}
-        if(!int.TryParse(values[9], out crankAngleRelease)){Debug.Log("error in parse12");}
-        if (!ParseBool(values[10], out outBool)){Debug.Log("error in parse13");}
+        if(!int.TryParse(values[7], out disengagingforce)){Debug.Log("error in parse10"+values[7]);}
+        if(!int.TryParse(values[8], out crankAngleGrasp)){Debug.Log("error in parse11"+values[8]);}
+        if(!int.TryParse(values[9], out crankAngleRelease)){Debug.Log("error in parse12"+values[9]);}
+        if (!ParseBool(values[10], out outBool)){Debug.Log("error in parse13"+values[10]);}
         else{ isInHandRH = outBool;}
-        if (!ParseBool(values[11], out outBool)){Debug.Log("error in parse14");}
+        if (!ParseBool(values[11], out outBool)){Debug.Log("error in parse11 "+values[11]);}
         else{ isInHandLH = outBool;}
-        if (!ParseBool(values[12], out outBool)){Debug.Log("error in parse15");}
+        if (!ParseBool(values[12], out outBool)){Debug.Log("error in parse12 " +values[12]);}
         else{ isFullyGrasped = outBool;}
     }
 
@@ -214,11 +214,11 @@ public class InteractableObject : MonoBehaviour
     {
         value = new bool();
         bool returnBool = false;
-        if (str == "1")
+        if (str.Contains("1"))
         {
             returnBool = true;
             value = true;}
-        else if (str == "0")
+        else if (str.Contains("0"))
         {
             returnBool = true;
             value = false;
