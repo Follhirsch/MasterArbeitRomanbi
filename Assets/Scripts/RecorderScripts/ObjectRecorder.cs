@@ -35,6 +35,7 @@ public class ObjectRecorder : MonoBehaviour
     public GameObject recObj10;
     public List<string[]> IntaractinValuesList = new List<string[]>();
     public List<float[]> velocityList = new List<float[]>();
+    public string folderdir;
 
     public string searchTag = "InteractableObject";
     [FormerlySerializedAs("ObjectsTorecord")] public List<GameObject> ObjectsToRecord = new List<GameObject>();
@@ -111,40 +112,12 @@ public class ObjectRecorder : MonoBehaviour
     public void StopRecording()
     {
         csvWriter.Close();
-        csvWriter = new StreamWriter(FolderDirectory + "/" + "Interactions" + ".csv");
-        List<ObjectInteractions.Objectinteraction> interactionsList = MTMobj.GetComponent<ObjectInteractions>().InteractionList;
-        string header = "Frame,IsRightHand,isGRab,HirarchyLevel,objNR,childNr,GrandchildNr";
-        for (int i = 0; i < interactionsList.Count; i++)
-        {
-            string completeline = "";
-            completeline += interactionsList[i].frame.ToString()+",";
-            completeline += Convert.ToInt32(interactionsList[i].isRightHand).ToString();
-            completeline += Convert.ToInt32(interactionsList[i].isGrabingInteraction).ToString();
-            string nrString = "";
-            GameObject tempObj = interactionsList[i].interactedObj;
-            for (int j = 0; j < 3; j++)
-            {
-                if ( tempObj.name.Equals(scene.name))
-                {
-                    nrString = (j-1).ToString() + "," + nrString;
-                    break;
-                }
-
-                nrString = interactionsList[i].interactedObj.transform.GetSiblingIndex().ToString() + "," +
-                           nrString;
-                
-                tempObj = tempObj.transform.parent.gameObject;
-            }
-
-            completeline += nrString;
-            completeline =  completeline.Substring(0, completeline.Length - 1);
-            csvWriter.WriteLine(completeline);
-        }
-        
+        MTMobj.GetComponent<ObjectInteractions>().WriteInteractionCSV(folderdir,ObjectsToRecord);
     }
 
     public void StartRecording(string folderDir)
     {
+        folderdir = folderDir;
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
         FolderDirectory = folderDir;
         /* NOW PERFORMED IN RECORDERMASTER

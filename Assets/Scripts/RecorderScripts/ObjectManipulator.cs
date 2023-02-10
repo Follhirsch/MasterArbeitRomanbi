@@ -95,7 +95,6 @@ public class ObjectManipulator : MonoBehaviour
         int frames = dataLines.Length - 2;
         framerate = int.Parse(recorderOptionStrings[1]); 
         totalNrobjects = int.Parse(recorderOptionStrings[3]);
-        Debug.Log(totalNrobjects.ToString()+"numberofobj");
 
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
@@ -134,6 +133,13 @@ public class ObjectManipulator : MonoBehaviour
         veloArray = tempVeloList.ToArray();
         objectsToReplay = gameObject.GetComponent<ObjectRecorder>().ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
+
+        if (!GameObject.Find("MTM-transcription").GetComponent<ObjectInteractions>().ReadInteractionsCSV(pathIn,objectsToReplay))
+        {
+            Debug.Log("Interactions not loaded");
+            return false;
+        }
+
         Debug.Log("Objects CSV file Loaded");
         return true;
     }

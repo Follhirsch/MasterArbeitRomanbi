@@ -122,14 +122,7 @@ public class RecorderMaster : MonoBehaviour
             if(recording){return;}
             loadFromCsvFile = !loadFromCsvFile;
         }
-        if (Input.GetKeyDown("x")) 
-        {
-            EnableEverything(true);
-        }
-        if (Input.GetKeyDown("y")) 
-        {
-            EnableEverything(false);
-        }
+        
         
         if (recording)
         {
