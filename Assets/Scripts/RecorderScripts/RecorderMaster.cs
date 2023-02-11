@@ -170,6 +170,7 @@ public class RecorderMaster : MonoBehaviour
                 string basefolderpath = recordingFilesDir + "/" + "Recording" + "_" +
                                         System.DateTime.Now.ToString("yyyyMMdd_HHmm_ss");
                 BaseFolderDir = Directory.CreateDirectory(basefolderpath);
+                replayFolderCreated = true;
             }
 
             string recordingFolderDir = BaseFolderDir.ToString();
