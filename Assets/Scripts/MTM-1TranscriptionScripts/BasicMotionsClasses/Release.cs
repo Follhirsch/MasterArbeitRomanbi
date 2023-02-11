@@ -19,14 +19,23 @@ public class Release : BasicMotion
         m_object = objectIn;
     }
     
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "RL";
-        string side = "Left";
+        string BasicMotion = "RL";
+        string side = "";
         if (isRightHand) { side = "Right"; }
-        returnString += differentiation.ToString();
-        returnString = side + bodyPart + ": " + returnString +", "+ m_object.name;
-        return returnString;
+        else { side = "Left"; }
+        string diff = differentiation.ToString();
+        string obj = m_object.name;
+         
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ obj);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + diff +" ,"+ obj);
+        }
     }
     
     

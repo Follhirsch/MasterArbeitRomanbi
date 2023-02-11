@@ -36,15 +36,24 @@ public class Grasp : BasicMotion
         specificationDictionary.Add(4,"D");
     }
     
-     public override string createOutputString()
+     public override string createOutputString(bool forCSV)
      {
-         string returnString = "G";
+         string BasicMotion = "G";
          string side = "";
          if (isRightHand) { side = "Right"; }
          else { side = "Left"; }
-         returnString += differentiation.ToString() + specificationDictionary[specification] +", "+ m_object.name;
-         returnString = side + bodyPart + ": " + returnString;
-        return returnString;
-    }
+         string diff = differentiation.ToString();
+         string spec = specificationDictionary[specification];
+         string obj = m_object.name;
+         
+         if (forCSV)
+         {
+             return (side + bodyPart + "," + BasicMotion +","+ diff +","+ spec +","+ obj);
+         }
+         else
+         {
+             return (side + bodyPart + ": " + BasicMotion + diff + spec +" ,"+ obj);
+         }
+     }
 }
 

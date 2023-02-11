@@ -38,16 +38,23 @@ public class Reach : BasicMotion
         differentiationDictionary.Add(5, "E");
     }
 
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "R";
-        string side = "Left";
+        string BasicMotion = "R";
+        string side = "";
         if (isRightHand) { side = "Right"; }
-        returnString += distance.ToString() + differentiationDictionary[differentiation];
-        if (movingAtStart) { returnString = "m" + returnString;}
-        if (movingAtEnd) { returnString += "m";}
-        returnString = side+bodyPart + ": " + returnString;
-        
-        return returnString;
+        else { side = "Left"; }
+
+        string dist = distance.ToString();
+        string diff = differentiationDictionary[differentiation];
+
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +"," +dist+ "," + diff);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + dist + diff);
+        }
     }
 }

@@ -104,7 +104,8 @@ public class BodyRecorder : MonoBehaviour
         if (recordHands) 
         {
             string header = locateHandObjects();
-            csvWriterHands = new StreamWriter(folderDir + "/" + "Hands" + ".csv");
+            string newpath1 = CreateUniqueFilePath(folderDir, "Hands", ".csv");
+            csvWriterHands = new StreamWriter(newpath1);
             csvWriterHands.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfHandObjects,"+"34");
             csvWriterHands.WriteLine(header);
         }
@@ -112,7 +113,8 @@ public class BodyRecorder : MonoBehaviour
         if (recordBodyRest)
         {
             string header = locateBodyRestObjects();
-            csvWriterBody = new StreamWriter(folderDir + "/" + "BodyRest" + ".csv");
+            string newpath2 = CreateUniqueFilePath(folderDir, "BodyRest", ".csv");
+            csvWriterBody = new StreamWriter(newpath2);
             int NrOfObjects = 7;
             /*Convert.ToInt16(recordHead) + 2 * Convert.ToInt16(recordHandShadow) +
                               Convert.ToInt16(recordHip) + Convert.ToInt16(recordLeftFoot) +
@@ -258,5 +260,18 @@ public class BodyRecorder : MonoBehaviour
 
         csvWriterBody.WriteLine(completeLineBody);
     }
-
+    
+    string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
+    {
+        string fullpath = pathIn + "/" + nameIn + filetypeIn;
+        DirectoryInfo tempdirASDF = new DirectoryInfo(fullpath);
+        //FileInfo[] info = tempdirASDF.GetFiles(filetypeIn);
+        FileInfo file = new FileInfo(fullpath);
+        bool alreadyExists = file.Exists;
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFilePath(pathIn, (nameIn + "I"), filetypeIn);
+        }
+        return fullpath;
+    }
 }

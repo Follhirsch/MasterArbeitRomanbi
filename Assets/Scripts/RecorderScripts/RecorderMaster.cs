@@ -30,7 +30,8 @@ public class RecorderMaster : MonoBehaviour
     public bool rePlaying = false;
     public bool loadFromCsvFile = false;
     public string recordingFilesDir;
-    private DirectoryInfo folderDirectory; // folder where a recording is stored
+    private DirectoryInfo folderDir; // folder where a recording is stored
+    private DirectoryInfo BaseFolderDir;
     public string path;
     public GameObject SceneToRecord;
     public GameObject MTMobj;
@@ -43,9 +44,11 @@ public class RecorderMaster : MonoBehaviour
     private bool replayObjects;
     private bool replayHands;
     private bool replayBodyRest;
+    private bool replayFolderCreated;
     // Start is called before the first frame update
     void Start()
     {
+        replayFolderCreated = false;
         recorderObject = this.gameObject;
         objMani = recorderObject.GetComponent<ObjectManipulator>();
         handMani = recorderObject.GetComponent<HandPoseManipulation>();
@@ -83,6 +86,8 @@ public class RecorderMaster : MonoBehaviour
                 path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
+                folderDir = new DirectoryInfo("Assets/Resources/" + path);
+                Debug.Log("fromreplayloading: "+folderDir);
 
                 bool objLoaded = objMani.loadFromCSVFile(path);
                 bool handsLoaded = handMani.loadFromCSVFile(path);
@@ -137,25 +142,41 @@ public class RecorderMaster : MonoBehaviour
             }
         }
     }
+
     
+
     void ToggleRecording()
     {
         if (recording) //stop recording
         {
-            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
+            if (transcribeMTM)
+            {
+                MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
+                string sequenceFolderDir = folderDir.ToString();
+                MTMobj.GetComponent<TranscriptionMaster>().WriteMTMCSV(sequenceFolderDir);
+            }
+            
             recording = false;
             if (recordObjects) {objRec.StopRecording(); }
             if (recordBody){bodyRec.StopRecording();}
+            AssetDatabase.Refresh();
             Debug.Log("recording stopped");
         }
         else //start recording
         {
             frame = 0;
-            folderDirectory = Directory.CreateDirectory(recordingFilesDir + "/"+"Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm_ss")); // returns a DirectoryInfo object
-            string recordingFolderDir = folderDirectory.ToString();
-            folderDirectory = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
-            string sequenceFolderDir = folderDirectory.ToString();
-            
+            if (!replayFolderCreated)
+            {
+                string basefolderpath = recordingFilesDir + "/" + "Recording" + "_" +
+                                        System.DateTime.Now.ToString("yyyyMMdd_HHmm_ss");
+                BaseFolderDir = Directory.CreateDirectory(basefolderpath);
+            }
+
+            string recordingFolderDir = BaseFolderDir.ToString();
+            string tempdir = CreateUniqueFolderPath(recordingFolderDir, ("Sequence" + recordedSequenceNr.ToString()));
+            folderDir = Directory.CreateDirectory(tempdir); // returns a DirectoryInfo object
+            string sequenceFolderDir = folderDir.ToString();
+
             if (recordObjects) {objRec.StartRecording(sequenceFolderDir); }
             if (recordBody) {bodyRec.StartRecording(sequenceFolderDir); }
             
@@ -172,6 +193,10 @@ public class RecorderMaster : MonoBehaviour
     {
         EnableEverything(true);
         yield return new WaitForSeconds(0.5f);
+        if(transcribeMTM)
+        {
+            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = true;
+        }
         
         int lengthObjects = objMani.posArray.Length;
         int lengthPlayer = playerMani.posArray.Length;
@@ -184,7 +209,7 @@ public class RecorderMaster : MonoBehaviour
             if (i < lengthObjects ) { objMani.playFrame(i); }
             if (i < lengthPlayer) {playerMani.playFrame(i); }
             if (i < lengthHands) { handMani.playFrame(i); }
-            
+            frame = i;
             
             yield return new WaitForSeconds(1 / framerate);
 
@@ -200,6 +225,13 @@ public class RecorderMaster : MonoBehaviour
 
     void stopReplay()
     {
+        if(transcribeMTM)
+        {
+            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
+            string sequenceFolderDir = folderDir.ToString();
+            MTMobj.GetComponent<TranscriptionMaster>().WriteMTMCSV(sequenceFolderDir);
+            AssetDatabase.Refresh();
+        }
         rePlaying = false;
         Debug.Log("replay stopped");
     }
@@ -217,11 +249,35 @@ public class RecorderMaster : MonoBehaviour
         if (recordBody){recorderObject.GetComponent<BodyRecorder>().StopRecording();}
         
         //start newsequence
-        string recordingFolderDir = folderDirectory.ToString();
-        folderDirectory = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
-        string sequenceFolderDir = folderDirectory.ToString();
+        string recordingFolderDir = folderDir.ToString();
+        folderDir = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
+        string sequenceFolderDir = folderDir.ToString();
         
         if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StartRecording(sequenceFolderDir); }
         if (recordBody) {recorderObject.GetComponent<BodyRecorder>().StartRecording(sequenceFolderDir); }
     }
+    string CreateUniqueFolderPath(string pathIn, string nameIn)
+    {
+        string fullpath = pathIn + "/" + nameIn ;
+        bool alreadyExists = AssetDatabase.IsValidFolder(fullpath);
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFolderPath(pathIn, (nameIn + "I"));
+        }
+        return fullpath;
+    }
+    string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
+    {
+        string fullpath = pathIn + "/" + nameIn + filetypeIn;
+        DirectoryInfo tempdirASDF = new DirectoryInfo(fullpath);
+        //FileInfo[] info = tempdirASDF.GetFiles(filetypeIn);
+        FileInfo file = new FileInfo(fullpath);
+        bool alreadyExists = file.Exists;
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFilePath(pathIn, (nameIn + "I"), filetypeIn);
+        }
+        return fullpath;
+    }
+    
 }

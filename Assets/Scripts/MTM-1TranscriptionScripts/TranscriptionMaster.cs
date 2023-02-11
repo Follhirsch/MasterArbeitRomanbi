@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TranscriptionMaster : MonoBehaviour
 {
+    StreamWriter csvWriter;
     public bool transcribtionOn;
     public bool transcribeHands = false;
     public bool transcribeBody = false;
@@ -33,6 +36,12 @@ public class TranscriptionMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*if (Input.GetKeyDown("5"))
+        {
+            MTMTranscription.Add(new Reach(1,2,true,100));
+            WriteMTMCSV("Assets/Resources/Recordings/Recording_20230211_1554_58/Sequence0");
+        }
+        */
     }
 
     IEnumerator updateCanvas()
@@ -42,7 +51,7 @@ public class TranscriptionMaster : MonoBehaviour
         
         for (int i = Math.Max(MTMTranscription.Count-10,0); i < MTMTranscription.Count; i++)
         {
-            textOutput += MTMTranscription[i].createOutputString() + "\n";
+            textOutput += MTMTranscription[i].createOutputString(false) + "\n";
         }
 
         TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutput;
@@ -86,7 +95,6 @@ public class TranscriptionMaster : MonoBehaviour
         
         StartCoroutine( updateCanvas());
     }
-
     public IEnumerator CalculateReleaseTransition(bool isRightHand, GameObject obj, int frame)
     {
         if (!transcribtionOn) {yield break;}
@@ -142,13 +150,11 @@ public class TranscriptionMaster : MonoBehaviour
         
         StartCoroutine( updateCanvas());
     }
-
     Disengage CalculateDisengage(Release rl)
     {
         InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
         return new Disengage(rl.isRightHand, InteractionValues.disengagingforce, rl.m_object, rl.frame);
     }
-
     Grasp CalculateGrasp(bool isRightHand, GameObject obj, int frame)
     {
         List<Release> releasListForPossibleRegrasps = new List<Release>();
@@ -229,7 +235,6 @@ public class TranscriptionMaster : MonoBehaviour
 
         return new Grasp(isRightHand, 1, 1, obj, frame); //Easy Grasp
     }
-
     Release CalculateRelease(bool isRightHand, GameObject obj, int frame)
     {
         bool graspfound = false;
@@ -269,7 +274,6 @@ public class TranscriptionMaster : MonoBehaviour
             return new Release(isRightHand, obj, 1, frame);
         }
     }
-
     Reach CalculateReach(Grasp g, int frame)
     {
         // find frames of motion
@@ -425,7 +429,6 @@ public class TranscriptionMaster : MonoBehaviour
         return new Move(2, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // move to approximate location
         
     }
-
     Crank CalculateCrank(Release rl)
     {
         InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
@@ -433,7 +436,6 @@ public class TranscriptionMaster : MonoBehaviour
             InteractionValues.crankAngleRelease, rl.m_object, rl.frame);
         
     }
-
     Position CalculatePositioning(Release rl)
     {
         InteractableObject InteractionValues = rl.m_object.GetComponent<InteractableObject>();
@@ -477,6 +479,33 @@ public class TranscriptionMaster : MonoBehaviour
         return outputArray;
     }
 
+    public void WriteMTMCSV(string folderDir)
+    {
+        string newpath = CreateUniqueFilePath(folderDir, "MTM", ".csv");
+        csvWriter = new StreamWriter(newpath);
+        
+        for (int i = 0; i < MTMTranscription.Count; i++)
+        {
+            //Debug.Log(MTMTranscription[i].createOutputString(true));
+            csvWriter.WriteLine(MTMTranscription[i].createOutputString(true));
+        }
+        csvWriter.Close();
+        AssetDatabase.Refresh();
+    }
+    
+    string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
+    {
+        string fullpath = pathIn + "/" + nameIn + filetypeIn;
+        DirectoryInfo tempdirASDF = new DirectoryInfo(fullpath);
+        //FileInfo[] info = tempdirASDF.GetFiles(filetypeIn);
+        FileInfo file = new FileInfo(fullpath);
+        bool alreadyExists = file.Exists;
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFilePath(pathIn, (nameIn + "I"), filetypeIn);
+        }
+        return fullpath;
+    }
     
     
 }

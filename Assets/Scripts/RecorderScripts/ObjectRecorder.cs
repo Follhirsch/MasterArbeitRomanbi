@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 //using RootMotion.Demos;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Valve.VR;
@@ -128,8 +129,8 @@ public class ObjectRecorder : MonoBehaviour
             dir = FolderDirectory.ToString();
         }
         */
-            
-        csvWriter = new StreamWriter(folderDir + "/" + "Objects" + ".csv");
+        string newpath = CreateUniqueFilePath(folderDir, "Objects", ".csv");
+        csvWriter = new StreamWriter(newpath);
         csvWriter.WriteLine("FPS,"+framerate.ToString()+"," + "NrOfObjects,"+totalNrOfObjects.ToString());
         string header = locateObjects();
         csvWriter.WriteLine(header);
@@ -199,5 +200,22 @@ public class ObjectRecorder : MonoBehaviour
     { 
         return obj.GetComponent<InteractableObject>().CreateStringToRecord();
     }
+    
+    
+    
+    string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
+    {
+        string fullpath = pathIn + "/" + nameIn + filetypeIn;
+        DirectoryInfo tempdirASDF = new DirectoryInfo(fullpath);
+        //FileInfo[] info = tempdirASDF.GetFiles(filetypeIn);
+        FileInfo file = new FileInfo(fullpath);
+        bool alreadyExists = file.Exists;
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFilePath(pathIn, (nameIn + "I"), filetypeIn);
+        }
+        return fullpath;
+    }
+    
 }
 

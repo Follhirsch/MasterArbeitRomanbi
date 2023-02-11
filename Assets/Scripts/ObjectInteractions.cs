@@ -71,6 +71,24 @@ public class ObjectInteractions : MonoBehaviour
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
         AddInteractionToList(frame,isRightHand,releasedObj,false);
     }
+
+    public void replayInteractionFrame(int frameIn)
+    {
+        foreach (var inter in InteractionList)
+        {
+            if (inter.frame == frameIn)
+            {
+                if (inter.isGrasp)
+                {
+                    addGraspedObjectReplay(inter.interactedObj,inter.isRightHand,inter.frame);
+                }
+                else
+                {
+                    removeGraspedObjReplay(inter.interactedObj,inter.isRightHand,inter.frame);
+                }
+            }
+        }
+    }
     
     public void addGraspedObjectReplay(GameObject graspedObj,bool isRightHand,int frame)
     {
@@ -115,8 +133,8 @@ public class ObjectInteractions : MonoBehaviour
     public void WriteInteractionCSV(string folderDirectory,List<GameObject> objListIn)
     { 
         recordedObjects = objListIn;
-        
-        csvWriter = new StreamWriter(folderDirectory + "/" + "Interactions" + ".csv");
+        string newPath = CreateUniqueFilePath(folderDirectory, "Interactions", ".csv");
+        csvWriter = new StreamWriter(newPath);
         string header = "Frame,IsRightHand,isGRab,objNr";
         csvWriter.WriteLine(header);
         for (int i = 0; i < InteractionList.Count; i++)
@@ -179,6 +197,18 @@ public class ObjectInteractions : MonoBehaviour
         public bool isRightHand;
         public bool isGrasp;
     }
-    
+    string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
+    {
+        string fullpath = pathIn + "/" + nameIn + filetypeIn;
+        DirectoryInfo tempdirASDF = new DirectoryInfo(fullpath);
+        //FileInfo[] info = tempdirASDF.GetFiles(filetypeIn);
+        FileInfo file = new FileInfo(fullpath);
+        bool alreadyExists = file.Exists;
+        if ( alreadyExists)
+        {
+            fullpath = CreateUniqueFilePath(pathIn, (nameIn + "I"), filetypeIn);
+        }
+        return fullpath;
+    }
 
 }

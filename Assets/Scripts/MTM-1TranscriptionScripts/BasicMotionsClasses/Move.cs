@@ -42,18 +42,28 @@ public class Move : BasicMotion
         differentiationDictionary.Add(5, "E");
     }
     
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "M";
+        //if (movingAtStart) { returnString = "m" + returnString;}
+        //if (movingAtEnd) { returnString += "m";}
+        
+        string BasicMotion = "M";
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }
-        returnString += distance.ToString() + differentiationDictionary[differentiation] + weight.ToString();
-        if (movingAtStart) { returnString = "m" + returnString;}
-        if (movingAtEnd) { returnString += "m";}
-        returnString = side + bodyPart + ": " + returnString + "   "+ m_object.name;
-        
-        return returnString;
+        string dist = distance.ToString();
+        string diff = differentiationDictionary[differentiation];
+        string weightStr = weight.ToString();
+        string obj = m_object.name;
+         
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +","+ dist+"," + diff +","+ weightStr +","+ obj);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + dist + diff + weightStr +" ,"+ obj);
+        }
     }
 
 }

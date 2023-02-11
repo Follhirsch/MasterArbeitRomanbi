@@ -19,14 +19,23 @@ public class Crank : BasicMotion
         m_object = objectIn;
     }
     
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "C";
+        string BasicMotion = "C";
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }
-        returnString += crankSize.ToString() +"/"+ crankRotationAngle+", "+ m_object.name;
-        returnString = side + bodyPart + ": " + returnString;
-        return returnString;
+        string diff = crankSize.ToString();
+        string spec = crankRotationAngle.ToString();
+        string obj = m_object.name;
+         
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ spec +","+ obj);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + diff +"/"+ spec +" ,"+ obj);
+        }
     }
 }

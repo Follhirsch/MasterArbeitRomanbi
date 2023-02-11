@@ -19,16 +19,23 @@ public class Disengage : BasicMotion
         //interactedObj = interactedObjIn;
     }
 
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "D";
+        string BasicMotion = "D";
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }
-
-        returnString += differentiation.ToString() + ", " + m_object.name;// + "->" + interactedObj.name;
-        returnString = side + bodyPart + ": " + returnString;
-        return returnString;
+        string diff = differentiation.ToString();
+        string obj = m_object.name;
+         
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ obj);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + diff + " ,"+ obj);
+        }
     }
     
     

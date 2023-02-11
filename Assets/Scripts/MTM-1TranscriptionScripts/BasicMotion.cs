@@ -7,10 +7,11 @@ public class BasicMotion
     public int frame;
     public string bodyPart;
 
-    public virtual string createOutputString()
+    public virtual string createOutputString(bool forCSV)
     {
-        return "";
+        return "not assigned";
     }
+    
 
     public static void initialzeDicts()
     {

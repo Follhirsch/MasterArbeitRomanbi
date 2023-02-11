@@ -38,12 +38,23 @@ public class Turn : BasicMotion
         differentiationDictionary.Add(5, "E");
     }
     
-    public override string createOutputString()
+    public override string createOutputString(bool forCSV)
     {
-        string returnString = "T";
-        returnString +=  differentiationDictionary[differentiation] + angle.ToString();
-        returnString = bodyPart + ": " + returnString;
+        string BasicMotion = "T";
+        string side = "";
+        if (isRightHand) { side = "Right"; }
+        else { side = "Left"; }
         
-        return returnString;
+        string diff = differentiationDictionary[differentiation];
+        string spec = angle.ToString();
+
+        if (forCSV)
+        {
+            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ spec);
+        }
+        else
+        {
+            return (side + bodyPart + ": " + BasicMotion + diff + spec);
+        }
     }
 }
