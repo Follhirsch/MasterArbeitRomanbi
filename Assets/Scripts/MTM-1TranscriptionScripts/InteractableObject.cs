@@ -59,20 +59,16 @@ public class InteractableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("y"))
+        /*if (Input.GetKeyDown("y"))
         {
             ReplayFromRecording(debugstring1);
         }
         if (Input.GetKeyDown("x"))
         {
             ReplayFromRecording(debugstring2);
-        }
-        if (Input.GetKeyDown("c"))
-        {
-            Debug.Log(isInGroup);
-        }
-        
-        
+        }*/
+
+
         //var handler = gameObject.GetComponent(typeof(CollisionHandler)) as MovablesCollisionHandler;
 
         if (isConstrainedMovable || isCrank)

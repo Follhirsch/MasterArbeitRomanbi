@@ -137,7 +137,6 @@ public class RecorderMaster : MonoBehaviour
                 if (recordObjects) {objRec.LogData();}
                 if (recordBody) {bodyRec.LogData();}
                 frame++;
-                //frame++;
                 timer = timer - samplingInterval;
             }
         }
@@ -207,10 +206,11 @@ public class RecorderMaster : MonoBehaviour
         rePlaying = true;
         for (int i = 0; i < maxlength; i++)
         {
+            frame = i;
             if (i < lengthObjects ) { objMani.playFrame(i); }
             if (i < lengthPlayer) {playerMani.playFrame(i); }
             if (i < lengthHands) { handMani.playFrame(i); }
-            frame = i;
+            
             
             yield return new WaitForSeconds(1 / framerate);
 
