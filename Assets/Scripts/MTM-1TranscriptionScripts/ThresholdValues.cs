@@ -21,7 +21,7 @@ public static class ThresholdValues
     public static float deltaHipPossibleBendingIn = 0.2f;
     public static float possibleSitHightIn = 0.8f;
 
-    public static float footKneelAngle = -90f;
+    public static float footKneelAngle = 90f;
 
     public static int movingFramesForStep = 10;
     public static float maxTimeForLoweringMtion = 3f;

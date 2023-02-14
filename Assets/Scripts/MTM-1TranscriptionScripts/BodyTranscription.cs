@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -46,14 +47,22 @@ public class BodyTranscription : MonoBehaviour
         recMaster = recorder.GetComponent<RecorderMaster>();
         bodyRec = recorder.GetComponent<BodyRecorder>();
         playerMani = recorder.GetComponent<PlayerManipulator>();
-        gameObject.GetComponent<TranscriptionMaster>();
+        MTM = gameObject.GetComponent<TranscriptionMaster>();
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown("o"))
+        {
+            Quaternion rRot = rightFoot.transform.rotation;
+            double angle = Mathf.Atan2(2 * (rRot.w * rRot.x + rRot.y * rRot.z), 1 - 2 * ((rRot.x * rRot.x) + (rRot.y * rRot.y)))*180/Math.PI;
+            Debug.Log(angle);
+        }
     }
 
-    // Update is called once per frame
-    void UpdateBodyTranscription(GameObject player)
-    {
-        if (!TranscriptionOn) {return;}
 
+    // Update is called once per frame
+    public void UpdateBodyTranscription()
+    {
         if (head.transform.position.y > ThresholdValues.possibleBendingHightOut)
         {
             endBodyMotionInterval();
@@ -62,9 +71,16 @@ public class BodyTranscription : MonoBehaviour
 
         if (Time.realtimeSinceStartup > startTimeLoweringMotion + ThresholdValues.maxTimeForLoweringMtion)
         {
+            LoweringMotion down = endLoweringMotion();
+            if (down != null)
+            {
+                MTM.MTMTranscription.Add(down);
+                StartCoroutine(MTM.updateCanvas());
+            }
+            
         }
 
-        if (!possibleBend || !isBent || !possibleSit || !isSitting || !possibleKneel || !isKneeling || fullKneel)
+        if (!possibleBend && !isBent && !possibleSit && !isSitting && !possibleKneel && !isKneeling && !fullKneel)
         {
             //check Head for bending
             if (head.transform.position.y < ThresholdValues.possibleBendingHightIn)
@@ -75,22 +91,29 @@ public class BodyTranscription : MonoBehaviour
             }
         }
 
-        if ((!possibleSit || !isSitting || !possibleKneel || !isKneeling || fullKneel) && (isBent || possibleBend))
+        if ((!possibleSit && !isSitting && !possibleKneel && !isKneeling && !fullKneel) && (isBent || possibleBend))
         {
+            //Debug.Log("fist"+(!possibleSit || !isSitting || !possibleKneel || !isKneeling || fullKneel)+"and" +(isBent || possibleBend));
+            //Debug.Log("notpossiblesitting "+!possibleSit + !isSitting +!possibleKneel +!isKneeling +!fullKneel);
+            //Debug.Log("isbent "+isBent +", possibleBend "+possibleBend);
+            
             //check Hip for sitting
             if (hips.transform.position.y < ThresholdValues.possibleSitHightIn)
             {
+                //Debug.Log("possiblesit detected");
                 possibleSit = true;
                 possibleSitFrame = possibleBendFrame;
                 possibleBend = false;
                 startTimeLoweringMotion = Time.realtimeSinceStartup;
             }
         }
+        
 
-        if ((isSitting||possibleSit)&&(!isKneeling||!possibleKneel||!fullKneel))
+        if ((isSitting || possibleSit)&&(!isKneeling && !possibleKneel && !fullKneel))
         {
             if (!rKneel && rightFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
             {
+                //Debug.Log("rkneel detected");
                 possibleKneel = true;
                 rKneel = true;
                 possibleKneelFrame = possibleSitFrame;
@@ -100,6 +123,7 @@ public class BodyTranscription : MonoBehaviour
 
             if (!lKneel && leftFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
             {
+                //Debug.Log("lkneel detected");
                 possibleKneel = true;
                 lKneel = true;
                 possibleKneelFrame = possibleSitFrame;
@@ -110,19 +134,18 @@ public class BodyTranscription : MonoBehaviour
 
         if ((isKneeling || possibleKneel) && !fullKneel)
         {
-            if (!rKneel && rightFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
+            if (!rKneel)
             {
-                rKneel = false;
-                
-            }
-
-            if (!lKneel && leftFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
-            {
-                lKneel = false;
+                if(rightFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
+                {
+                    //Debug.Log("lkneel detected");
+                    lKneel = false;
+                }
             }
 
             if (lKneel && rKneel)
             {
+                //Debug.Log("fullkneel detected");
                 resetIsMotions();
                 resetpossibleMotinos();
                 fullKneel = true;
@@ -131,6 +154,12 @@ public class BodyTranscription : MonoBehaviour
                 StartCoroutine(MTM.updateCanvas());
             }
         }
+
+        /*if (isKneeling || possibleKneel)
+        {
+            Debug.Log("rkneelangle"+rightFoot.transform.eulerAngles.x);
+            Debug.Log("lkneelangle"+leftFoot.transform.eulerAngles.x);
+        }*/
 
 
 
@@ -164,15 +193,14 @@ public class BodyTranscription : MonoBehaviour
         LoweringMotion down = endLoweringMotion();
         LoweringMotion up = ariseMotion(recMaster.frame);
         
-        if (down is not null)
+        if (down != null)
         {
-         MTM.MTMTranscription.Add(down);
+            MTM.MTMTranscription.Add(down);
          StartCoroutine(MTM.updateCanvas());
         }
-        if (up is not null)
+        if (up != null)
         {
             MTM.MTMTranscription.Add(up);
-            Debug.Log("error, no up motion captured");
             StartCoroutine(MTM.updateCanvas());
         }
     }

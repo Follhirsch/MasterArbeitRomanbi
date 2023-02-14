@@ -136,6 +136,7 @@ public class RecorderMaster : MonoBehaviour
             {
                 if (recordObjects) {objRec.LogData();}
                 if (recordBody) {bodyRec.LogData();}
+                MTMobj.GetComponent<TranscriptionMaster>().TranscribeBody();
                 frame++;
                 timer = timer - samplingInterval;
             }
@@ -183,7 +184,7 @@ public class RecorderMaster : MonoBehaviour
             recording = true;
             if (transcribeMTM)
             {
-                MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = true;
+                MTMobj.GetComponent<TranscriptionMaster>().turnTranscriptionOn();
             }
             Debug.Log("recording started");
         }

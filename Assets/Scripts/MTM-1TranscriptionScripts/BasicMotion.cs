@@ -19,6 +19,7 @@ public class BasicMotion
         Reach.initializeDict();
         Move.initializeDict();
         Position.initializeDict();
+        LoweringMotion.initializeDict();
         //Todo: add all dictionarrys
     }
 }

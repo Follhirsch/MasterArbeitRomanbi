@@ -21,6 +21,7 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject PlayerObject;
     public GameObject RecorderObject;
     public GameObject TranscriptionCanvas;
+    public BodyTranscription BodyMTM;
 
     public List<BasicMotion> MTMTranscription;
 
@@ -30,6 +31,7 @@ public class TranscriptionMaster : MonoBehaviour
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
         transcribtionOn = false;
+        BodyMTM = gameObject.GetComponent<BodyTranscription>();
         //supressNextHandMotion = false;
     }
 
@@ -42,6 +44,19 @@ public class TranscriptionMaster : MonoBehaviour
             WriteMTMCSV("Assets/Resources/Recordings/Recording_20230211_1554_58/Sequence0");
         }
         */
+    }
+
+    public void turnTranscriptionOn()
+    {
+        MTMTranscription.Clear();
+        transcribtionOn = true;
+    }
+
+    public void TranscribeBody()
+    {
+        if (!transcribtionOn) {return;}
+        if(!transcribeBody){return;}
+        BodyMTM.UpdateBodyTranscription();
     }
 
     public IEnumerator updateCanvas()

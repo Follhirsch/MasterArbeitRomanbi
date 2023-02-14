@@ -15,8 +15,8 @@ public class FootCalibration : MonoBehaviour
     {
         if (Input.GetKeyDown("c")) //calibrate Head Hight
         {
-            Debug.Log(gameObject.transform.rotation);
-            Debug.Log(gameObject.transform.position);
+            //Debug.Log(gameObject.transform.rotation);
+            //Debug.Log(gameObject.transform.position);
             Quaternion rot = gameObject.transform.rotation;
             Vector3 pos = gameObject.transform.position;
             float x = pos.x;
