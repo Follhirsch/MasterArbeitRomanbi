@@ -44,7 +44,7 @@ public class TranscriptionMaster : MonoBehaviour
         */
     }
 
-    IEnumerator updateCanvas()
+    public IEnumerator updateCanvas()
     {
         yield return new WaitForSeconds(0.2f);
         string textOutput = ""; 
