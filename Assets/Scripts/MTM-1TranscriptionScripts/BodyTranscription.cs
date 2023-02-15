@@ -2,27 +2,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using TMPro.SpriteAssetUtilities;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class BodyTranscription : MonoBehaviour
 {
     public bool TranscriptionOn = false;
     
-    public bool possibleBend;
+    public bool possibleBend = false;
     public int possibleBendFrame;
-    public bool isBent;
+    public bool isBent = false;
     public float startTimeLoweringMotion;
 
-    public bool possibleSit;
+    public bool possibleSit = false;
     public int possibleSitFrame;
-    public bool isSitting;
+    public bool isSitting = false;
     
-    public bool possibleKneel;
+    public bool possibleKneel = false;
     public int possibleKneelFrame;
-    public bool rKneel;
-    public bool lKneel;
-    public bool isKneeling;
-    public bool fullKneel;
+    public bool rKneel = false;
+    public bool lKneel = false;
+    public bool isKneeling = false;
+    public bool fullKneel = false;
 
     public List<int> possibleLegmotions;
     
@@ -38,6 +40,15 @@ public class BodyTranscription : MonoBehaviour
     private GameObject hips;
     private GameObject rightFoot;
     private GameObject leftFoot;
+
+    public bool rIsStepping;
+    public int rStepStartFrame;
+    public Vector3 rStepPosStart;
+    public Vector3 rStepForwardStart;
+    public bool lIsStepping;
+    public int lStepStartFrame;
+    public Vector3 lStepPosStart;
+    public Vector3 lStepForwardStart;
     
     // Start is called before the first frame update
     void Start()
@@ -63,6 +74,11 @@ public class BodyTranscription : MonoBehaviour
     // Update is called once per frame
     public void UpdateBodyTranscription()
     {
+        if (!fullKneel && !possibleKneel && !isKneeling && !possibleSit && !isSitting)
+        {
+            stepping(recMaster.frame, recMaster.rePlaying);
+        }
+        
         if (head.transform.position.y > ThresholdValues.possibleBendingHightOut)
         {
             endBodyMotionInterval();
@@ -77,7 +93,6 @@ public class BodyTranscription : MonoBehaviour
                 MTM.MTMTranscription.Add(down);
                 StartCoroutine(MTM.updateCanvas());
             }
-            
         }
 
         if (!possibleBend && !isBent && !possibleSit && !isSitting && !possibleKneel && !isKneeling && !fullKneel)
@@ -90,6 +105,7 @@ public class BodyTranscription : MonoBehaviour
                 startTimeLoweringMotion = Time.realtimeSinceStartup;
             }
         }
+        
 
         if ((!possibleSit && !isSitting && !possibleKneel && !isKneeling && !fullKneel) && (isBent || possibleBend))
         {
@@ -104,6 +120,8 @@ public class BodyTranscription : MonoBehaviour
                 possibleSit = true;
                 possibleSitFrame = possibleBendFrame;
                 possibleBend = false;
+                rIsStepping = false;
+                lIsStepping = false;
                 startTimeLoweringMotion = Time.realtimeSinceStartup;
             }
         }
@@ -111,7 +129,7 @@ public class BodyTranscription : MonoBehaviour
 
         if ((isSitting || possibleSit)&&(!isKneeling && !possibleKneel && !fullKneel))
         {
-            if (!rKneel && rightFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
+            if (!rKneel && FootAngleToUp(rightFoot) > ThresholdValues.footKneelAngle)
             {
                 //Debug.Log("rkneel detected");
                 possibleKneel = true;
@@ -121,7 +139,7 @@ public class BodyTranscription : MonoBehaviour
                 startTimeLoweringMotion = Time.realtimeSinceStartup;
             }
 
-            if (!lKneel && leftFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
+            if (!lKneel && FootAngleToUp(leftFoot) > ThresholdValues.footKneelAngle)
             {
                 //Debug.Log("lkneel detected");
                 possibleKneel = true;
@@ -136,12 +154,21 @@ public class BodyTranscription : MonoBehaviour
         {
             if (!rKneel)
             {
-                if(rightFoot.transform.eulerAngles.x < ThresholdValues.footKneelAngle)
+                if(FootAngleToUp(rightFoot) > ThresholdValues.footKneelAngle)
                 {
                     //Debug.Log("lkneel detected");
                     lKneel = false;
                 }
             }
+            if (!lKneel)
+            {
+                if(FootAngleToUp(rightFoot) > ThresholdValues.footKneelAngle)
+                {
+                    //Debug.Log("lkneel detected");
+                    lKneel = false;
+                }
+            }
+            
 
             if (lKneel && rKneel)
             {
@@ -174,18 +201,102 @@ public class BodyTranscription : MonoBehaviour
 
     void stepping(int frame,bool transcribeFromReplay)
     {
-        Vector3[] lFoot;
-        Vector3[] rFoot;
+        int frameDelta = ThresholdValues.stepMinMovingFrames;
+        if (frame<10){return;}// need at least 10 frames to create average
+        
+        int rIndex = 1;
+        int lIndex = 0;
+        Vector3 lFootDisp;
+        Vector3 rFootDisp;
         if (transcribeFromReplay)
         {
-            //playerMani.posArray
+            rFootDisp = playerMani.posArray[frame][rIndex] -
+                        playerMani.posArray[frame - frameDelta][rIndex];
+            lFootDisp = playerMani.posArray[frame][lIndex] -
+                        playerMani.posArray[frame - frameDelta][lIndex];
         }
         else
         {
-            
+            rFootDisp = bodyRec.bodyRestPosVectors[frame][rIndex] -
+                        bodyRec.bodyRestPosVectors[frame - frameDelta][rIndex];
+            lFootDisp = bodyRec.bodyRestPosVectors[frame][lIndex] -
+                        bodyRec.bodyRestPosVectors[frame - frameDelta][lIndex];
         }
-        // arry values of lfoot =0 and right foot =1
 
+        float rvelo = (Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x) )* recMaster.framerate / frameDelta;
+        float lvelo = (Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x) )* recMaster.framerate / frameDelta;
+        
+
+        if (rvelo > ThresholdValues.stepVelocityIn)
+        {
+            //Debug.Log("isstepping velo = "+rvelo);
+            rIsStepping = true;
+            rStepStartFrame = frame;
+            rStepPosStart = rightFoot.transform.position;
+            rStepForwardStart = Vector3.Normalize(Vector3.ProjectOnPlane(rightFoot.transform.up,Vector3.up));
+        }
+
+        if (rIsStepping)
+        {
+            if (rvelo < ThresholdValues.stepVelocityOut)
+            {
+               // Debug.Log("step ended velo = "+ rvelo);
+                rIsStepping = false;
+                MTM.MTMTranscription.Add(DetermineStep(true,rStepStartFrame));
+                StartCoroutine(MTM.updateCanvas());
+            }
+        }
+        if (lvelo > ThresholdValues.stepVelocityIn)
+        {
+            lIsStepping = true;
+            lStepStartFrame = frame;
+            lStepPosStart = leftFoot.transform.position;
+            lStepForwardStart = Vector3.Normalize(Vector3.ProjectOnPlane(leftFoot.transform.up,Vector3.up));
+        }
+
+        if (lIsStepping)
+        {
+            if (lvelo < ThresholdValues.stepVelocityOut)
+            {
+                lIsStepping = false;
+                MTM.MTMTranscription.Add(DetermineStep(false,lStepStartFrame));
+                StartCoroutine(MTM.updateCanvas());
+            }
+        }
+    }
+
+
+    Step DetermineStep(bool isRightfoot, int startFrame)
+    {
+        GameObject foot = isRightfoot ? rightFoot : leftFoot;
+        
+        // determine tunring
+        Vector3 forewardStart = isRightfoot ? rStepForwardStart : lStepForwardStart;
+        Vector3 forwarEnd = Vector3.Normalize(Vector3.ProjectOnPlane(foot.transform.up,Vector3.up));
+        float angle = Math.Abs(Vector3.Angle(forewardStart, forwarEnd));
+        Debug.Log(angle);
+
+        if (angle > ThresholdValues.stepAngleTurnMin)
+        {
+            if (angle>ThresholdValues.stepAngleTurnMax)
+            {
+                return new Step(isRightfoot, 2, startFrame);
+            }
+            else
+            {
+                return new Step(isRightfoot, 1, startFrame);
+            }
+        }
+        //determine if sidestep
+        Vector3 posStart = isRightfoot ? rStepPosStart : lStepPosStart;
+        Vector3 posEnd = foot.transform.position;
+        Vector3 changevektor = Vector3.Normalize(Vector3.ProjectOnPlane(posEnd - posStart, Vector3.up));
+        float forwardPrc = Math.Abs(Vector3.Dot(changevektor, forewardStart));
+        if (forwardPrc < ThresholdValues.stepSideStepMaxForewardPercentage)
+        {
+            return new Step(isRightfoot, 3, startFrame);
+        }
+        return new Step(isRightfoot, 1, startFrame);
     }
 
     void endBodyMotionInterval()
@@ -259,6 +370,12 @@ public class BodyTranscription : MonoBehaviour
         }
 
         return null;
+    }
+    float FootAngleToUp(GameObject foot)
+    {
+        Vector3 forward = foot.transform.up;
+        float angleToUp = Vector3.Angle(new Vector3(0, 1, 0), forward);
+        return angleToUp;
     }
     void resetpossibleMotinos()
     {

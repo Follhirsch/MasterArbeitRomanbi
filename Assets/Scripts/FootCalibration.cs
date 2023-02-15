@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FootCalibration : MonoBehaviour
 {
@@ -34,8 +36,17 @@ public class FootCalibration : MonoBehaviour
         }
         if (Input.GetKeyDown("v")) //calibrate Head Hight
         {
-            Debug.Log(gameObject.transform.rotation.eulerAngles);
+            if (gameObject.name == "Leftfoot"){return;}
+            //Debug.Log(gameObject.transform.rotation.eulerAngles.x);
+            //Quaternion rRot = gameObject.transform.rotation;
+            //double angle = Mathf.Atan(2 * (rRot.w * rRot.z + rRot.y * rRot.x)/( 1 - 2 * ((rRot.y * rRot.y) + (rRot.z * rRot.z))))*180/Math.PI;
+            //Debug.Log(angle);
+            Vector3 forward = gameObject.transform.up;
+            Debug.Log(forward);
+            Debug.Log(Vector3.Angle(new Vector3(0,1,0),forward));
+            
         }
+        
         
     }
 }

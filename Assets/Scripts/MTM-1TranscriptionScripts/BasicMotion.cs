@@ -20,6 +20,7 @@ public class BasicMotion
         Move.initializeDict();
         Position.initializeDict();
         LoweringMotion.initializeDict();
+        Step.initializeDict();
         //Todo: add all dictionarrys
     }
 }
