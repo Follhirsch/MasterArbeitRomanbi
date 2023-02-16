@@ -38,15 +38,7 @@ public class Step : BasicMotion
     public override string createOutputString(bool forCSV)
     {
         string BasicMotionStr = "Step";
-        string isRightfootStr = "";
-        if (isRightFoot)
-        {
-            isRightfootStr = "Right";
-        }
-        else
-        {
-            isRightfootStr = "Left";
-        }
+        string isRightfootStr = isRightFoot ? "Right" : "Left";
         
         if (forCSV)
         {

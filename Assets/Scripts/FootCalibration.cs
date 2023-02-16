@@ -42,9 +42,9 @@ public class FootCalibration : MonoBehaviour
             //double angle = Mathf.Atan(2 * (rRot.w * rRot.z + rRot.y * rRot.x)/( 1 - 2 * ((rRot.y * rRot.y) + (rRot.z * rRot.z))))*180/Math.PI;
             //Debug.Log(angle);
             Vector3 forward = gameObject.transform.up;
-            Debug.Log(forward);
-            Debug.Log(Vector3.Angle(new Vector3(0,1,0),forward));
-            
+            Vector3 forward2 = gameObject.transform.rotation * Vector3.up;
+            Debug.Log(forward+" "+forward2);
+            //Debug.Log(Vector3.Angle(new Vector3(0,1,0),forward));
         }
         
         

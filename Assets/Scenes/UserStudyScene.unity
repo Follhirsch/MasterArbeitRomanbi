@@ -277,7 +277,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &32533362
 Transform:
   m_ObjectHideFlags: 0
@@ -3340,14 +3340,6 @@ MonoBehaviour:
   recorder: {fileID: 1848330096}
   initalPlayer: {fileID: 2107576848}
   MTM: {fileID: 0}
-  rIsStepping: 0
-  rStepStartFrame: 0
-  rStepPosStart: {x: 0, y: 0, z: 0}
-  rStepForwardStart: {x: 0, y: 0, z: 0}
-  lIsStepping: 0
-  lStepStartFrame: 0
-  lStepPosStart: {x: 0, y: 0, z: 0}
-  lStepForwardStart: {x: 0, y: 0, z: 0}
 --- !u!1 &507722447
 GameObject:
   m_ObjectHideFlags: 0
@@ -6522,7 +6514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &882161859
 Transform:
   m_ObjectHideFlags: 0
@@ -6666,7 +6658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 5
+  index: 1
   origin: {fileID: 0}
 --- !u!1001 &916649520
 PrefabInstance:
@@ -8134,7 +8126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1184520127
 Transform:
   m_ObjectHideFlags: 0
@@ -8765,7 +8757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 4
+  index: 3
   origin: {fileID: 0}
 --- !u!1 &1293918867
 GameObject:
@@ -9611,7 +9603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 1
+  index: 2
   origin: {fileID: 0}
 --- !u!1 &1403059261
 GameObject:
@@ -14530,7 +14522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2061476850
 Transform:
   m_ObjectHideFlags: 0

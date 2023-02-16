@@ -21,6 +21,7 @@ public class BasicMotion
         Position.initializeDict();
         LoweringMotion.initializeDict();
         Step.initializeDict();
+        FootMotion.initializeDict();
         //Todo: add all dictionarrys
     }
 }
