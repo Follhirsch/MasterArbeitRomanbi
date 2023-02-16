@@ -20,6 +20,9 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject HandsObject;
     public GameObject PlayerObject;
     public GameObject RecorderObject;
+    private RecorderMaster recMaster;
+    private BodyRecorder bodyRec;
+    private HandPoseManipulation handMani;
     public GameObject TranscriptionCanvas;
     public BodyTranscription BodyMTM;
 
@@ -28,6 +31,10 @@ public class TranscriptionMaster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        recMaster = RecorderObject.GetComponent<RecorderMaster>();
+        bodyRec = RecorderObject.GetComponent<BodyRecorder>();
+        handMani = RecorderObject.GetComponent<HandPoseManipulation>();
+
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
         transcribtionOn = false;
@@ -312,27 +319,27 @@ public class TranscriptionMaster : MonoBehaviour
         
             //get data from recorder
         Vector3[][] recorderData;
-        int column = 1;
+        int column = 7; // to get the data of the index finger
         if (g.isRightHand)
-        {
-            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+        { 
+            if (recMaster.rePlaying)
             {
-                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().rPosArray;
+                recorderData = handMani.rPosArray;
             }
             else
             {
-                recorderData = RecorderObject.GetComponent<BodyRecorder>().rPosVectors.ToArray();
+                recorderData = bodyRec.rPosVectors.ToArray();
             }
         }
         else
         {
-            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+            if (recMaster.rePlaying)
             {
-                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().lPosArray;
+                recorderData = handMani.lPosArray;
             }
             else
             {
-                recorderData = RecorderObject.GetComponent<BodyRecorder>().lPosVectors.ToArray();
+                recorderData = bodyRec.lPosVectors.ToArray();
             }
         }
         int[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, frame));
@@ -388,24 +395,24 @@ public class TranscriptionMaster : MonoBehaviour
         int column = 1;
         if (rl.isRightHand)
         {
-            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+            if (recMaster.rePlaying)
             {
-                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().rPosArray;
+                recorderData = handMani.rPosArray;
             }
             else
             {
-                recorderData = RecorderObject.GetComponent<BodyRecorder>().rPosVectors.ToArray();
+                recorderData = bodyRec.rPosVectors.ToArray();
             }
         }
         else
         {
-            if (RecorderObject.GetComponent<RecorderMaster>().rePlaying)
+            if (recMaster.rePlaying)
             {
-                recorderData = RecorderObject.GetComponent<HandPoseManipulation>().lPosArray;
+                recorderData = handMani.lPosArray;
             }
             else
             {
-                recorderData = RecorderObject.GetComponent<BodyRecorder>().lPosVectors.ToArray();
+                recorderData = bodyRec.lPosVectors.ToArray();
             }
         }
         int[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, rl.frame));
@@ -466,7 +473,7 @@ public class TranscriptionMaster : MonoBehaviour
     {
         int amountOfMotions = 1;
         int[] returnArray = new int[amountOfMotions];
-        returnArray[0] = (int)(((path.Last() - path[0]).magnitude)*100);//round to adequate numbers
+        returnArray[0] = (int)(((path.Last() - path[0]).sqrMagnitude)*1000);//round to adequate numbers
         return returnArray;
     }
 

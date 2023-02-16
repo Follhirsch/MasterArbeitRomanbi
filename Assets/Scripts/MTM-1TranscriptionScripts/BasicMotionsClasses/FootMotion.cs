@@ -15,10 +15,8 @@ public class FootMotion : BasicMotion
         bodyPart = "Foot";
         frame = frameIn;
         isRightFoot = isRightFootIn;
-        differentiation = (specificationIn > 0.1) ? 1 : 3;
+        differentiation = (specificationIn > 10) ? 3 : 1;
         specification = specificationIn;
-        
-        
     }
     
     public static void initializeDict()
@@ -50,7 +48,7 @@ public class FootMotion : BasicMotion
         }
         else
         {
-            return (isRightfootStr + bodyPart + ": " + differentiationDictionary[differentiation] + BasicMotionStr + specificationStr);
+            return (isRightfootStr + bodyPart + ": " + BasicMotionStr + specificationStr);
         }
     }
     

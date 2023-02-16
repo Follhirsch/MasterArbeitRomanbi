@@ -4204,6 +4204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 622390670}
+  - component: {fileID: 622390671}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -4227,6 +4228,20 @@ Transform:
   m_Father: {fileID: 1554792558}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &622390671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622390669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8050bdc8a680b40b795d50f23b7ac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Human: {fileID: 232264067}
+  vrikSolver: {fileID: 0}
 --- !u!1 &625698757
 GameObject:
   m_ObjectHideFlags: 0
@@ -10390,7 +10405,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1554792558}
   - component: {fileID: 1554792559}
-  - component: {fileID: 1554792560}
   m_Layer: 0
   m_Name: HeadTracker
   m_TagString: Untagged
@@ -10429,18 +10443,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceObject: {fileID: 1931152527}
   targetObject: {fileID: 0}
---- !u!114 &1554792560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554792557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8050bdc8a680b40b795d50f23b7ac4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1572544671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6932814765052152644, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
