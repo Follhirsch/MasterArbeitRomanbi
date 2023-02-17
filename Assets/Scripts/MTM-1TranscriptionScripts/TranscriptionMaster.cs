@@ -46,11 +46,23 @@ public class TranscriptionMaster : MonoBehaviour
         ChangeSequence(recMaster.sequence);
         //supressNextHandMotion = false;
 
-        BasicMotion testMot = new Crank(true,10,10,10,new GameObject(),1);
+        /*BasicMotion testMot = new Crank(true,10,10,10,new GameObject(),1);
         Debug.Log("nromal "+testMot.compareMotion(new string[] { "C",""}));
         Debug.Log("contact "+testMot.compareMotion(new string[] { "R"}));
         Debug.Log("contact "+testMot.compareMotion(new string[] { "C" }));
+        */
+        MTMTranscription.Add(new Reach(2,1,true,10));
+        MTMTranscription.Add(new Grasp(true,1,1,new GameObject(),10));
+        MTMTranscription.Add(new Release(true,new GameObject(),2,100));
+        MTMTranscription.Add(new Reach(1,10,false,20));
         
+
+        StartCoroutine(updateCanvas());
+
+        /*new string[] { "R", "B" }, new string[] { "G", "1", "A" }, new string[] { "R", "A" },
+        new string[] { "G", "3", "" }, new string[] { "M", "A" }, new string[] { "RL", "1" },
+        new string[] { "M", "B" }, new string[] { "RL", "1" }*/
+
     }
 
     // Update is called once per frame
@@ -86,34 +98,17 @@ public class TranscriptionMaster : MonoBehaviour
     public IEnumerator updateCanvas()
     {
         yield return new WaitForSeconds(0.2f);
-        string textOutput = ""; 
+        string textOutput = "";
+
+        bool[] correctlyDetectedMotions = compareMTMList();
         
         for (int i = Math.Max(MTMTranscription.Count-10,0); i < MTMTranscription.Count; i++)
         {
-            textOutput += MTMTranscription[i].createOutputString(false) + "\n";
+            string detected = correctlyDetectedMotions[i] ? "☑" : "☐";
+            textOutput += detected +"  "+MTMTranscription[i].createOutputString(false) + "\n";
         }
 
         TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutput;
-
-        /* old implementation
-        string textOutputRH = "";
-        string textOutputLH = "";
-        string textOutputBody = "";
-        string textOutputRF = "";
-        string textOutputLF = "";
-        
-        for (int i = 0; i < outputData.Count; i++)
-        {
-            textOutputRH = outputData[i][0]+"\n";
-            textOutputLH = outputData[i][1]+"\n";
-            textOutputBody = outputData[i][2]+"\n";
-            textOutputRF = outputData[i][3]+"\n";
-            textOutputLF = outputData[i][4]+"\n";
-        }
-
-        TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutputRH;
-        TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutputLH;
-        */
     }
 
     public IEnumerator CalculateGraspTransition(bool isRightHand, GameObject obj, int frame)
@@ -554,22 +549,29 @@ public class TranscriptionMaster : MonoBehaviour
     }
     void InitialiseSequenceDict()
     {
-        sequenceDict.Add(0, new Svars(false, true, "Handpass", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(1, new Svars(false, true, "Insert Handle", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(2, new Svars(false, true, "Screw Handle", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(7, new Svars(false, true, "Use Crank", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(11, new Svars(true, false, "Walk To withe Table", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(12, new Svars(true, false, "Turn", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(13, new Svars(true, false, "Walk to Carpet", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(14, new Svars(true, false, "Kneel on one knee", new string[] { "A", "B", "C" }));
-        sequenceDict.Add(15, new Svars(true, false, "Kneel on both knees", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(0,
+            new Svars(false, true, "Handpass",
+                new List<string[]>
+                {
+                    new string[] { "R", "B" }, new string[] { "G", "1", "A" }, new string[] { "R", "A" },
+                    new string[] { "G", "3", "" }, new string[] { "M", "A" }, new string[] { "RL", "1" },
+                    new string[] { "M", "B" }, new string[] { "RL", "1" }
+                }));
+        sequenceDict.Add(1, new Svars(false, true, "Insert Handle", new List<string[]>()));
+        sequenceDict.Add(2, new Svars(false, true, "Screw Handle", new List<string[]>()));
+        sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new List<string[]>()));
+        sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new List<string[]>()));
+        sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new List<string[]>()));
+        sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new List<string[]>()));
+        sequenceDict.Add(7, new Svars(false, true, "Use Crank", new List<string[]>()));
+        sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>()));
+        sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>()));
+        sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new List<string[]>()));
+        sequenceDict.Add(11, new Svars(true, false, "Walk To withe Table", new List<string[]>()));
+        sequenceDict.Add(12, new Svars(true, false, "Turn", new List<string[]>()));
+        sequenceDict.Add(13, new Svars(true, false, "Walk to Carpet", new List<string[]>()));
+        sequenceDict.Add(14, new Svars(true, false, "Kneel on one knee", new List<string[]>()));
+        sequenceDict.Add(15, new Svars(true, false, "Kneel on both knees", new List<string[]>()));
     }
 
     public struct Svars
@@ -577,9 +579,9 @@ public class TranscriptionMaster : MonoBehaviour
         public bool bodyOn;
         public bool handOn;
         public string title;
-        public string[] expectedMotions;
+        public List<string[]> expectedMotions;
 
-        public Svars(bool bodyOnIn, bool handOnIn, string titleIn, string[] expectedMotionsIn)
+        public Svars(bool bodyOnIn, bool handOnIn, string titleIn, List<string[]> expectedMotionsIn)
         {
             bodyOn = bodyOnIn;
             handOn = handOnIn;
@@ -589,8 +591,28 @@ public class TranscriptionMaster : MonoBehaviour
         
     }
 
-    void compareMTM()
+    bool[] compareMTMList()
     {
+        List<string[]> compList = sequenceDict[sequence].expectedMotions;
+        bool[] expectedMotionsFound = Enumerable.Repeat(false, compList.Count).ToArray();
+        bool[] motionsFoundInExpected = Enumerable.Repeat(false, MTMTranscription.Count).ToArray();
+        if (compList.Count < 1) { return motionsFoundInExpected;}
+        
+        for (int i = 0; i < MTMTranscription.Count; i++)
+        {
+            for (int j = 0; j < compList.Count; j++)
+            {
+                if (expectedMotionsFound[j]){continue;}
+
+                if (MTMTranscription[i].compareMotion(compList[j]))
+                {
+                    expectedMotionsFound[j] = true;
+                    motionsFoundInExpected[i] = true;
+                    break;
+                }
+            }
+        }
+        return motionsFoundInExpected;
     }
 
 }

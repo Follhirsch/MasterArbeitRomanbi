@@ -153,8 +153,6 @@ public class RecorderMaster : MonoBehaviour
         }
     }
 
-    
-
     void ToggleRecording()
     {
         if (recording) //stop recording
