@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class Grasp : BasicMotion
     public int differentiation = 0;
     public int specification;
     public GameObject m_object;
+    private string motionStr = "G";
     public static Dictionary<int, string> specificationDictionary;
 
     public Grasp(bool isRightHandIn,int differentiationIn, int specificationIn, GameObject objectIn,int frameIn)
@@ -36,9 +38,18 @@ public class Grasp : BasicMotion
         specificationDictionary.Add(4,"D");
     }
     
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 3) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        bool furtherCorrect = motion[1].Equals(differentiation.ToString(), StringComparison.Ordinal);
+        bool furtherCorrect2 = motion[2].Equals(specificationDictionary[specification], StringComparison.Ordinal);
+        return (motCorrect && furtherCorrect && furtherCorrect2);
+    }
+    
      public override string createOutputString(bool forCSV)
      {
-         string BasicMotion = "G";
+         string BasicMotion = motionStr;
          string side = "";
          if (isRightHand) { side = "Right"; }
          else { side = "Left"; }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ public class Disengage : BasicMotion
     public bool isRightHand;
     public int differentiation;
     public GameObject m_object;
+
+    private string motionStr = "D";
     //public GameObject interactedObj;
 
     public Disengage(bool isRightHandIn,int differentiationIn, GameObject objectIn,int frameIn)
@@ -18,10 +21,18 @@ public class Disengage : BasicMotion
         m_object = objectIn;
         //interactedObj = interactedObjIn;
     }
+    
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 2) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        bool furtherCorrect = motion[1].Equals(differentiation.ToString(), StringComparison.Ordinal);
+        return (motCorrect && furtherCorrect);
+    }
 
     public override string createOutputString(bool forCSV)
     {
-        string BasicMotion = "D";
+        string BasicMotion = motionStr;
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }

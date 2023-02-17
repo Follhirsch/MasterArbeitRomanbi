@@ -24,13 +24,17 @@ public class TranscriptionMaster : MonoBehaviour
     private BodyRecorder bodyRec;
     private HandPoseManipulation handMani;
     public GameObject TranscriptionCanvas;
+    public GameObject TranscriptionTitle;
     public BodyTranscription BodyMTM;
 
     public List<BasicMotion> MTMTranscription;
+    private int sequence = 0;
+    public Dictionary<int,Svars> sequenceDict = new Dictionary<int, Svars>();
 
     // Start is called before the first frame update
     void Start()
     {
+        InitialiseSequenceDict();
         recMaster = RecorderObject.GetComponent<RecorderMaster>();
         bodyRec = RecorderObject.GetComponent<BodyRecorder>();
         handMani = RecorderObject.GetComponent<HandPoseManipulation>();
@@ -39,7 +43,14 @@ public class TranscriptionMaster : MonoBehaviour
         BasicMotion.initialzeDicts();
         transcribtionOn = false;
         BodyMTM = gameObject.GetComponent<BodyTranscription>();
+        ChangeSequence(recMaster.sequence);
         //supressNextHandMotion = false;
+
+        BasicMotion testMot = new Crank(true,10,10,10,new GameObject(),1);
+        Debug.Log("nromal "+testMot.compareMotion(new string[] { "C",""}));
+        Debug.Log("contact "+testMot.compareMotion(new string[] { "R"}));
+        Debug.Log("contact "+testMot.compareMotion(new string[] { "C" }));
+        
     }
 
     // Update is called once per frame
@@ -59,7 +70,13 @@ public class TranscriptionMaster : MonoBehaviour
         transcribtionOn = true;
     }
 
-    public void TranscribeBody()
+    public void turnTranscriptionOff(string sequenceDirIn)
+    {
+        transcribtionOn = false;
+        WriteMTMCSV(sequenceDirIn);
+    }
+
+        public void TranscribeBody()
     {
         if (!transcribtionOn) {return;}
         if(!transcribeBody){return;}
@@ -505,6 +522,7 @@ public class TranscriptionMaster : MonoBehaviour
     {
         string newpath = CreateUniqueFilePath(folderDir, "MTM", ".csv");
         csvWriter = new StreamWriter(newpath);
+        csvWriter.WriteLine(sequenceDict[sequence].title);
         
         for (int i = 0; i < MTMTranscription.Count; i++)
         {
@@ -528,6 +546,51 @@ public class TranscriptionMaster : MonoBehaviour
         }
         return fullpath;
     }
-    
-    
+
+    public void ChangeSequence(int sequenceIn)
+    {
+        sequence = sequenceIn;
+        TranscriptionTitle.GetComponent<Text>().text = sequenceDict[sequence].title;
+    }
+    void InitialiseSequenceDict()
+    {
+        sequenceDict.Add(0, new Svars(false, true, "Handpass", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(1, new Svars(false, true, "Insert Handle", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(2, new Svars(false, true, "Screw Handle", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(7, new Svars(false, true, "Use Crank", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(11, new Svars(true, false, "Walk To withe Table", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(12, new Svars(true, false, "Turn", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(13, new Svars(true, false, "Walk to Carpet", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(14, new Svars(true, false, "Kneel on one knee", new string[] { "A", "B", "C" }));
+        sequenceDict.Add(15, new Svars(true, false, "Kneel on both knees", new string[] { "A", "B", "C" }));
+    }
+
+    public struct Svars
+    {
+        public bool bodyOn;
+        public bool handOn;
+        public string title;
+        public string[] expectedMotions;
+
+        public Svars(bool bodyOnIn, bool handOnIn, string titleIn, string[] expectedMotionsIn)
+        {
+            bodyOn = bodyOnIn;
+            handOn = handOnIn;
+            title = titleIn;
+            expectedMotions = expectedMotionsIn;
+        }
+        
+    }
+
+    void compareMTM()
+    {
+    }
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class Reach : BasicMotion
     public bool movingAtStart = false;
     public bool movingAtEnd = false;
     public bool isRightHand;
+    private string motionStr = "R";
     
     public static Dictionary<int, string> differentiationDictionary;
 
@@ -37,10 +39,17 @@ public class Reach : BasicMotion
         differentiationDictionary.Add(4, "D");
         differentiationDictionary.Add(5, "E");
     }
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 2) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        bool furtherCorrect = motion[1].Equals(differentiationDictionary[differentiation], StringComparison.Ordinal);
+        return (motCorrect && furtherCorrect);
+    }
 
     public override string createOutputString(bool forCSV)
     {
-        string BasicMotion = "R";
+        string BasicMotion = motionStr;
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }

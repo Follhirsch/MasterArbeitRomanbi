@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,12 @@ public class FootMotion : BasicMotion
         differentiationDictionary.Add(3, "LM");
     }
     
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 1) { return false;}
+        bool motCorrect = motion[0].Equals(differentiationDictionary[differentiation], StringComparison.Ordinal);
+        return (motCorrect);
+    }
     public override string createOutputString(bool forCSV)
     {
         string BasicMotionStr = differentiationDictionary[differentiation];

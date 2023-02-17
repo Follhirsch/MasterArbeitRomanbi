@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class Move : BasicMotion
     public GameObject m_object;
     public int weight;
     public bool isRightHand;
+    private string motionStr = "M";
     
     public static Dictionary<int, string> differentiationDictionary;
 
@@ -42,12 +44,20 @@ public class Move : BasicMotion
         differentiationDictionary.Add(5, "E");
     }
     
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 2) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        bool furtherCorrect = motion[1].Equals(differentiationDictionary[differentiation], StringComparison.Ordinal);
+        return (motCorrect && furtherCorrect);
+    }
+    
     public override string createOutputString(bool forCSV)
     {
         //if (movingAtStart) { returnString = "m" + returnString;}
         //if (movingAtEnd) { returnString += "m";}
         
-        string BasicMotion = "M";
+        string BasicMotion = motionStr;
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }

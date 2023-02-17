@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class Crank : BasicMotion
     public int crankSize = 0;
     public int crankRotationAngle = 0;
     public GameObject m_object;
+    private string motionStr = "C";
     
     public Crank(bool isRightHandIn,int crankSizeIn, int crankAngleGraspIn, int crankAngleReleaseIn, GameObject objectIn,int frameIn)
     {
@@ -19,9 +21,16 @@ public class Crank : BasicMotion
         m_object = objectIn;
     }
     
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 1) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        return (motCorrect);
+    }
+    
     public override string createOutputString(bool forCSV)
     {
-        string BasicMotion = "C";
+        string BasicMotion = motionStr;
         string side = "";
         if (isRightHand) { side = "Right"; }
         else { side = "Left"; }

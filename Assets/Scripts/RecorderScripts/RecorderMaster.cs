@@ -17,7 +17,7 @@ public class RecorderMaster : MonoBehaviour
     public bool recordBody;
     public bool recordObjects;
     public bool transcribeMTM;
-    private int recordedSequenceNr;
+    public int sequence = 0;
     public int frame;
     
     public ObjectManipulator objMani;
@@ -35,8 +35,9 @@ public class RecorderMaster : MonoBehaviour
     public string path;
     public GameObject SceneToRecord;
     public GameObject MTMobj;
+    private TranscriptionMaster MTMmaster;
 
-    
+
 
 
     private GameObject recorderObject;
@@ -55,15 +56,14 @@ public class RecorderMaster : MonoBehaviour
         playerMani = recorderObject.GetComponent<PlayerManipulator>();
         bodyRec = recorderObject.GetComponent<BodyRecorder>();
         objRec = recorderObject.GetComponent<ObjectRecorder>();
-        
-        
-        
-        
-        
+        MTMmaster = MTMobj.GetComponent<TranscriptionMaster>();
+
+
+
+
         recording = false;
         samplingInterval = 1 / framerate;
         frame = 0;
-        recordedSequenceNr = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
     }
@@ -75,6 +75,16 @@ public class RecorderMaster : MonoBehaviour
         {
             if (rePlaying){return;}
             ToggleRecording();
+        }
+        if (Input.GetKeyDown("left"))
+        {
+            sequence = sequence < 1 ? 0 : sequence - 1;
+            MTMmaster.ChangeSequence(sequence);
+        }
+        if (Input.GetKeyDown("right"))
+        {
+            sequence = sequence > 18 ? 19 : sequence + 1;
+            MTMmaster.ChangeSequence(sequence);
         }
 
         if (Input.GetKeyDown("1"))//Load all the files
@@ -136,7 +146,7 @@ public class RecorderMaster : MonoBehaviour
             {
                 if (recordObjects) {objRec.LogData();}
                 if (recordBody) {bodyRec.LogData();}
-                MTMobj.GetComponent<TranscriptionMaster>().TranscribeBody();
+                MTMmaster.TranscribeBody();
                 frame++;
                 timer = timer - samplingInterval;
             }
@@ -151,9 +161,7 @@ public class RecorderMaster : MonoBehaviour
         {
             if (transcribeMTM)
             {
-                MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
-                string sequenceFolderDir = folderDir.ToString();
-                MTMobj.GetComponent<TranscriptionMaster>().WriteMTMCSV(sequenceFolderDir);
+                MTMmaster.turnTranscriptionOff(folderDir.ToString());
             }
             
             recording = false;
@@ -174,7 +182,7 @@ public class RecorderMaster : MonoBehaviour
             }
 
             string recordingFolderDir = BaseFolderDir.ToString();
-            string tempdir = CreateUniqueFolderPath(recordingFolderDir, ("Sequence" + recordedSequenceNr.ToString()));
+            string tempdir = CreateUniqueFolderPath(recordingFolderDir, ("Sequence" + sequence.ToString()));
             folderDir = Directory.CreateDirectory(tempdir); // returns a DirectoryInfo object
             string sequenceFolderDir = folderDir.ToString();
 
@@ -184,7 +192,7 @@ public class RecorderMaster : MonoBehaviour
             recording = true;
             if (transcribeMTM)
             {
-                MTMobj.GetComponent<TranscriptionMaster>().turnTranscriptionOn();
+                MTMmaster.turnTranscriptionOn();
             }
             Debug.Log("recording started");
         }
@@ -196,7 +204,7 @@ public class RecorderMaster : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if(transcribeMTM)
         {
-            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = true;
+            MTMmaster.transcribtionOn = true;
         }
         
         int lengthObjects = objMani.posArray.Length;
@@ -229,9 +237,9 @@ public class RecorderMaster : MonoBehaviour
     {
         if(transcribeMTM)
         {
-            MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn = false;
+            MTMmaster.transcribtionOn = false;
             string sequenceFolderDir = folderDir.ToString();
-            MTMobj.GetComponent<TranscriptionMaster>().WriteMTMCSV(sequenceFolderDir);
+            MTMmaster.WriteMTMCSV(sequenceFolderDir);
             AssetDatabase.Refresh();
         }
         rePlaying = false;
@@ -244,7 +252,7 @@ public class RecorderMaster : MonoBehaviour
         playerMani.EnablePlayer(enable);
         handMani.EnableReplayHands(enable);
     }
-    void RecordNewSequenceWithoutStopping()
+    /*void RecordNewSequenceWithoutStopping()
     {
         //stop old sequence
         if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StopRecording(); }
@@ -252,12 +260,12 @@ public class RecorderMaster : MonoBehaviour
         
         //start newsequence
         string recordingFolderDir = folderDir.ToString();
-        folderDir = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ recordedSequenceNr.ToString()); // returns a DirectoryInfo object
+        folderDir = Directory.CreateDirectory(recordingFolderDir + "/"+"Sequence"+ sequence.ToString()); // returns a DirectoryInfo object
         string sequenceFolderDir = folderDir.ToString();
         
         if (recordObjects) {recorderObject.GetComponent<ObjectRecorder>().StartRecording(sequenceFolderDir); }
         if (recordBody) {recorderObject.GetComponent<BodyRecorder>().StartRecording(sequenceFolderDir); }
-    }
+    }*/
     string CreateUniqueFolderPath(string pathIn, string nameIn)
     {
         string fullpath = pathIn + "/" + nameIn ;
@@ -281,5 +289,7 @@ public class RecorderMaster : MonoBehaviour
         }
         return fullpath;
     }
-    
+
+
+
 }

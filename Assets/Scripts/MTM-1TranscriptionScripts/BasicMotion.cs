@@ -11,6 +11,11 @@ public class BasicMotion
     {
         return "not assigned";
     }
+    public virtual bool compareMotion(string[] motion)
+    {
+        Debug.Log("not assigned Comparison");
+        return false;
+    }
     
 
     public static void initialzeDicts()

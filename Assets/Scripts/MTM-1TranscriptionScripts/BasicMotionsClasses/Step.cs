@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class Step : BasicMotion
 {
     public int differentiation;
     public bool isRightFoot;
+    string motionStr = "Step";
 
     //public GameObject interactedObj;
     public static Dictionary<int, string> differentiationDictionary;
@@ -16,6 +18,14 @@ public class Step : BasicMotion
         frame = frameIn;
         isRightFoot = isRightFootIn;
         differentiation = differentiationIn;
+    }
+    
+    public override bool compareMotion(string[] motion)
+    {
+        if (motion.Length != 2) { return false;}
+        bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
+        bool furtherCorrect = motion[1].Equals(differentiationDictionary[differentiation], StringComparison.Ordinal);
+        return (motCorrect && furtherCorrect);
     }
     public static void initializeDict()
     {
@@ -37,7 +47,7 @@ public class Step : BasicMotion
 
     public override string createOutputString(bool forCSV)
     {
-        string BasicMotionStr = "Step";
+        string BasicMotionStr = motionStr;
         string isRightfootStr = isRightFoot ? "Right" : "Left";
         
         if (forCSV)
