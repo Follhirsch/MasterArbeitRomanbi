@@ -30,7 +30,8 @@ public class FootCalibration : MonoBehaviour
             gameObject.transform.position = pos;
             //gameObject.transform.position = new Vector3()
         }
-        if (Input.GetKeyDown("v")) //calibrate Head Hight
+        
+        /*if (Input.GetKeyDown("v")) //calibrate Head Hight
         {
             if (gameObject.name == "Leftfoot"){return;}
             //Debug.Log(gameObject.transform.rotation.eulerAngles.x);
@@ -44,7 +45,7 @@ public class FootCalibration : MonoBehaviour
             //Vector3 forward2 = gameObject.transform.rotation * Vector3.up;
             //Debug.Log(forward+" "+forward2);
             //Debug.Log(Vector3.Angle(new Vector3(0,1,0),forward));
-        }
+        }*/
 
 
     }

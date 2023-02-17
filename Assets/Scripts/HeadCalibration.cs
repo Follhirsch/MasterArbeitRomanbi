@@ -5,13 +5,10 @@ using UnityEngine;
 
 public class HeadCalibration : MonoBehaviour
 {
-    public GameObject Human;
-
-    public VRIK vrikSolver;
     // Start is called before the first frame update
     void Start()
     {
-        vrikSolver = Human.GetComponent<VRIK>();
+
     }
 
     // Update is called once per frame
@@ -20,7 +17,6 @@ public class HeadCalibration : MonoBehaviour
         if (Input.GetKeyDown("c")) //calibrate Head Hight
         {
             CalibrateHeadThresholds(gameObject.transform.position.y);
-            CalibrateLegLength(gameObject.transform.position.y);
         }
     }
 
@@ -33,10 +29,5 @@ public class HeadCalibration : MonoBehaviour
             ThresholdValues.headHightStanding - ThresholdValues.deltaHeadPossibleBendingOut;
     }
 
-    public void CalibrateLegLength(float neckHight)
-    {
-        float mlp = (neckHight - 0.5555f) / 0.9146f;
-        vrikSolver.solver.rightLeg.legLengthMlp = mlp;
-        vrikSolver.solver.leftLeg.legLengthMlp = mlp;
-    }
+ 
 }

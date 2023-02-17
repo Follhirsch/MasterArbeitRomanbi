@@ -1,18 +1,3 @@
-Frame,IsRightHand,isGRab,objNr
-0,True,True,8
-0,True,True,1
-0,True,True,9
-0,True,False,8
-0,True,False,9
-0,True,False,
-0,True,False,1
-962,True,True,0
-965,True,False,0
-194,True,True,1
-195,True,True,9
-195,True,True,8
-199,True,False,9
-199,True,False,8
-205,True,False,1
-205,True,True,1
-209,True,False,1
+version https://git-lfs.github.com/spec/v1
+oid sha256:dabbece334cac2dafc23b8bf9a41ecb05f98d832e17ce882079e720124b5e9ed
+size 315
