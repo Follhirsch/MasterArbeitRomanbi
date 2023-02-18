@@ -354,8 +354,8 @@ public class TranscriptionMaster : MonoBehaviour
                 recorderData = bodyRec.lPosVectors.ToArray();
             }
         }
-        int[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, frame));
-        int distance = distances.Last();
+        float[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, frame));
+        float distance = distances.Last();
 
 
         if (g.differentiation == 1 && g.specification == 2) // precise Grasp
@@ -427,8 +427,8 @@ public class TranscriptionMaster : MonoBehaviour
                 recorderData = bodyRec.lPosVectors.ToArray();
             }
         }
-        int[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, rl.frame));
-        int distance = distances.Last();
+        float[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, rl.frame));
+        float distance = distances.Last();
 
         if (distance < ThresholdValues.minMoveDistThreshold)
         {
@@ -481,11 +481,11 @@ public class TranscriptionMaster : MonoBehaviour
     
     
 
-    int[] DistanceClassification(Vector3[] path) //TODO:basic distance should be improved
+    float[] DistanceClassification(Vector3[] path) //TODO:basic distance should be improved
     {
         int amountOfMotions = 1;
-        int[] returnArray = new int[amountOfMotions];
-        returnArray[0] = (int)(((path.Last() - path[0]).sqrMagnitude)*1000);//round to adequate numbers
+        float[] returnArray = new float[amountOfMotions];
+        returnArray[0] = (((path.Last() - path[0]).sqrMagnitude)*1000);//round to adequate numbers
         return returnArray;
     }
 
@@ -512,7 +512,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         return outputArray;
     }
-
     public void WriteMTMCSV(string folderDir)
     {
         string newpath = CreateUniqueFilePath(folderDir, "MTM", ".csv");
@@ -527,7 +526,6 @@ public class TranscriptionMaster : MonoBehaviour
         csvWriter.Close();
         AssetDatabase.Refresh();
     }
-    
     string CreateUniqueFilePath(string pathIn, string nameIn, string filetypeIn)
     {
         string fullpath = pathIn + "/" + nameIn + filetypeIn;
@@ -541,7 +539,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         return fullpath;
     }
-
     public void ChangeSequence(int sequenceIn)
     {
         sequence = sequenceIn;
@@ -621,7 +618,6 @@ public class TranscriptionMaster : MonoBehaviour
             new []{"KBK","0"},new []{"KBK","1"},new []{"KBK","0"},new []{"KBK","1"}
         }));
     }
-
     public struct Svars
     {
         public bool bodyOn;
@@ -638,7 +634,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
     }
-
     bool[] compareMTMList()
     {
         List<string[]> compList = sequenceDict[sequence].expectedMotions;

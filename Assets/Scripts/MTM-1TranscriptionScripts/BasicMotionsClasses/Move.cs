@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Move : BasicMotion
@@ -15,13 +16,14 @@ public class Move : BasicMotion
     private string motionStr = "M";
     
     public static Dictionary<int, string> differentiationDictionary;
+    public static int[] MTMdistances;
 
-    public Move(int differentiationIn, int distanceIn, int weightIn, bool isRightHandIn,GameObject objectIn,int frameIn)
+    public Move(int differentiationIn, float distanceIn, int weightIn, bool isRightHandIn,GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
         frame = frameIn;
         differentiation = differentiationIn;
-        distance = distanceIn;
+        distance = roundToMTMlength(distanceIn);
         weight = weightIn;
         isRightHand = isRightHandIn;
         m_object = objectIn;
@@ -42,6 +44,10 @@ public class Move : BasicMotion
         differentiationDictionary.Add(3, "C");
         differentiationDictionary.Add(4, "D");
         differentiationDictionary.Add(5, "E");
+
+        MTMdistances = new[]
+            { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80 };
+
     }
     
     public override bool compareMotion(string[] motion)
@@ -74,6 +80,19 @@ public class Move : BasicMotion
         {
             return (side + bodyPart + ": " + BasicMotion + dist + diff + weightStr +" ,"+ obj);
         }
+    }
+
+    int roundToMTMlength(float input)
+    {
+        int ceiledValue = Mathf.CeilToInt(input);
+
+        for (int i = 1; i < MTMdistances.Length; i++) {
+            if (ceiledValue < MTMdistances[i])
+            {
+                return MTMdistances[i];
+            }
+        }
+        return MTMdistances.Last();
     }
 
 }
