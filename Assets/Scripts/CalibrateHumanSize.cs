@@ -12,7 +12,7 @@ public class CalibrateHumanSize : MonoBehaviour
 
     public GameObject neck;
     public GameObject hip;
-    
+    public GameObject rightHand;
 
     public VRIK vrikSolver;
     // Start is called before the first frame update
@@ -37,7 +37,7 @@ public class CalibrateHumanSize : MonoBehaviour
         }
         if (Input.GetKeyDown("b"))
         {
-            Debug.Log(hip.transform.position.y);
+            Debug.Log(rightHand.transform.position.x);
         }
 
 

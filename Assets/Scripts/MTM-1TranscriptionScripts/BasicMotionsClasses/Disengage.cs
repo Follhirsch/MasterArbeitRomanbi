@@ -24,10 +24,9 @@ public class Disengage : BasicMotion
     
     public override bool compareMotion(string[] motion)
     {
-        if (motion.Length != 2) { return false;}
+        if (motion.Length != 1) { return false;}
         bool motCorrect = motion[0].Equals(motionStr, StringComparison.Ordinal);
-        bool furtherCorrect = motion[1].Equals(differentiation.ToString(), StringComparison.Ordinal);
-        return (motCorrect && furtherCorrect);
+        return (motCorrect);
     }
 
     public override string createOutputString(bool forCSV)

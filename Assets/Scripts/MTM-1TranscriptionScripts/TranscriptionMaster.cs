@@ -549,29 +549,77 @@ public class TranscriptionMaster : MonoBehaviour
     }
     void InitialiseSequenceDict()
     {
-        sequenceDict.Add(0,
-            new Svars(false, true, "Handpass",
-                new List<string[]>
-                {
-                    new string[] { "R", "B" }, new string[] { "G", "1", "A" }, new string[] { "R", "A" },
-                    new string[] { "G", "3", "" }, new string[] { "M", "A" }, new string[] { "RL", "1" },
-                    new string[] { "M", "B" }, new string[] { "RL", "1" }
-                }));
-        sequenceDict.Add(1, new Svars(false, true, "Insert Handle", new List<string[]>()));
-        sequenceDict.Add(2, new Svars(false, true, "Screw Handle", new List<string[]>()));
-        sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new List<string[]>()));
-        sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new List<string[]>()));
-        sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new List<string[]>()));
-        sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new List<string[]>()));
-        sequenceDict.Add(7, new Svars(false, true, "Use Crank", new List<string[]>()));
-        sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>()));
-        sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>()));
-        sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new List<string[]>()));
-        sequenceDict.Add(11, new Svars(true, false, "Walk To withe Table", new List<string[]>()));
-        sequenceDict.Add(12, new Svars(true, false, "Turn", new List<string[]>()));
-        sequenceDict.Add(13, new Svars(true, false, "Walk to Carpet", new List<string[]>()));
-        sequenceDict.Add(14, new Svars(true, false, "Kneel on one knee", new List<string[]>()));
-        sequenceDict.Add(15, new Svars(true, false, "Kneel on both knees", new List<string[]>()));
+        sequenceDict.Add(0, new Svars(false, true, "Handpass", new List<string[]>
+        {
+            new[] { "R", "B" }, new[] { "G", "1", "A" }, new[] { "R", "A" }, new[] { "G", "3", "" }, new[] { "M", "A" },
+            new[] { "RL", "1" }, new[] { "M", "B" }, new[] { "RL", "1" }
+        }));
+        sequenceDict.Add(1, new Svars(false, true, "Insert Handle", new List<string[]>
+        {
+            new[] { "R", "B" }, new[] { "G", "1", "C" }, new[] { "M", "C" }, new[] { "P" }, new[] { "RL", "1" },
+        }));
+        sequenceDict.Add(2, new Svars(false, true, "Screw Handle", new List<string[]>
+        {
+            new [] { "R", "B" }, new [] { "G", "1", "C" }, new [] { "M", "B" },
+            new [] { "G", "2", "" }, new [] { "M", "B" }, new [] { "RL", "1" }
+        }));
+        sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new List<string[]>
+        {
+            new [] { "R", "B" }, new [] { "G", "5", "C" }, new [] { "M", "B" }, new [] { "RL", "2" }
+        }));
+        sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new List<string[]>
+        {
+            new [] { "R", "C" }, new [] { "G", "4", "B" }, new [] { "M", "C" }, new [] { "RL", "1" }
+        }));
+        sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new List<string[]>
+        {
+            new[] { "R", "C" }, new[] { "G", "1", "A" }, new[] { "M", "B" }, new[] { "M", "B" }, new[] { "M", "B" },
+            new[] { "M", "B" }, new[] { "RL", "1" }
+        }));
+        sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new List<string[]>
+        {
+            new[] { "R", "D" }, new[] { "G", "1", "B" }, new[] { "D" }, new[] { "M", "B" }, new[] { "RL", "1" }
+        }));
+        sequenceDict.Add(7, new Svars(false, true, "Use Crank", new List<string[]>
+        {
+            new [] { "R", "B" }, new [] { "G", "1", "A" }, new [] { "C" }, new [] { "RL", "1" }
+        }));
+        sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>
+        {
+            new[] { "R", "B" }, new[] { "R", "A" }, new[] { "G", "5" }, new[] { "RL", "2" }
+        }));
+        sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>
+        {
+            new[] { "LM" }, new[] { "FMP" }, new[] { "FM" }, new[] { "LM" }
+        }));
+        sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new List<string[]>
+        {
+            new []{"SIT","0"},new []{"SIT","1"},new []{"SIT","0"},new []{"SIT","1"}
+        }));
+        sequenceDict.Add(11, new Svars(true, false, "Walk To withe Table", new List<string[]>
+        {
+            new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""}
+        }));
+        sequenceDict.Add(12, new Svars(true, false, "Sidestep", new List<string[]>
+        {
+            new []{"Step","Side"},new []{"Step","Side"},new []{"Step","Side"},new []{"Step","Side"}
+        }));
+        sequenceDict.Add(13, new Svars(true, false, "Turn", new List<string[]>
+        {
+            new []{"Step","Turn"},new []{"Step","Turn"},new []{"Step","Turn"},new []{"Step","Turn"}
+        }));
+        sequenceDict.Add(14, new Svars(true, false, "Walk to Carpet", new List<string[]>
+        {
+            new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""}
+        }));
+        sequenceDict.Add(15, new Svars(true, false, "Kneel on one knee", new List<string[]>
+        {
+            new []{"KOK","0"},new []{"KOK","1"},new []{"KOK","0"},new []{"KOK","1"}
+        }));
+        sequenceDict.Add(16, new Svars(true, false, "Kneel on both knees", new List<string[]>
+        {
+            new []{"KBK","0"},new []{"KBK","1"},new []{"KBK","0"},new []{"KBK","1"}
+        }));
     }
 
     public struct Svars
