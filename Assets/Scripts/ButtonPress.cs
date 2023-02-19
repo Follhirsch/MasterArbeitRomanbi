@@ -10,7 +10,8 @@ public class ButtonPress : MonoBehaviour
     public bool buttonOn = false;
     private float timePressed;
     private float timeToBePressed = 3f;
-    
+    public GameObject light;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,21 +21,44 @@ public class ButtonPress : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*if (Input.GetKeyDown("b"))
+        {
+            ButtonPressed();
+        }*/
+        
         if(!buttonOn){return;}
         if (timePressed + timeToBePressed < Time.realtimeSinceStartup)
         {
-            gameObject.transform.localPosition = defaultPosition;
-            buttonOn = false;
+            ButtonReturn();
         }
-        
+
     }
 
     private void OnCollisionEnter(Collision collision)
+    {
+        ButtonPressed();
+    }
+
+    void ButtonPressed()
     {
         if (buttonOn) {return;}
         
         gameObject.transform.localPosition = pressedPosition;
         buttonOn = true;
         timePressed = Time.realtimeSinceStartup;
+        ChangeLightning(2f);
     }
+
+    void ButtonReturn()
+    {
+        gameObject.transform.localPosition = defaultPosition;
+        buttonOn = false;
+        ChangeLightning(1f);
+    }
+
+    void ChangeLightning(float newIntensity)
+    {
+        light.GetComponent<Light>().intensity = newIntensity;
+    }
+    
 }
