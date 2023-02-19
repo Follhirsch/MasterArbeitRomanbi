@@ -234,8 +234,8 @@ public class BodyTranscription : MonoBehaviour
             lFootDisp = bodyRec.bodyRestPosVectors[frame][lIndex] -
                         bodyRec.bodyRestPosVectors[frame - frameDelta][lIndex];
         }
-        float rvelo = (Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x) )* recMaster.framerate / frameDelta;
-        float lvelo = (Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x) )* recMaster.framerate / frameDelta;
+        float rvelo = (rFootDisp.magnitude)* recMaster.framerate / frameDelta;
+        float lvelo = (lFootDisp.magnitude )* recMaster.framerate / frameDelta;
         
         if (rvelo > ThresholdValues.feetVelocityIn)
         {
@@ -292,7 +292,7 @@ public class BodyTranscription : MonoBehaviour
         }
 
         Vector3 distanceFootMovedVector = posEnd - posStart;
-        float distanceFootMoved = (distanceFootMovedVector.sqrMagnitude*1000);
+        float distanceFootMoved = (distanceFootMovedVector.magnitude*100);
 
         return new FootMotion(isRightfoot,(int)distanceFootMoved,startFrame);
     }
@@ -319,8 +319,8 @@ public class BodyTranscription : MonoBehaviour
                         bodyRec.bodyRestPosVectors[frame - frameDelta][lIndex];
         }
 
-        float rvelo = (Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x)+Math.Abs(rFootDisp.x) )* recMaster.framerate / frameDelta;
-        float lvelo = (Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x)+Math.Abs(lFootDisp.x) )* recMaster.framerate / frameDelta;
+        float rvelo = (rFootDisp.magnitude )* recMaster.framerate / frameDelta;
+        float lvelo = (lFootDisp.magnitude )* recMaster.framerate / frameDelta;
         
 
         if (rvelo > ThresholdValues.stepVelocityIn)

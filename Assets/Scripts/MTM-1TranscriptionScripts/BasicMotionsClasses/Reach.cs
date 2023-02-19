@@ -8,6 +8,7 @@ public class Reach : BasicMotion
 {
     public int differentiation = 0;
     public int distance;
+    public int rotationAngle;
     public bool movingAtStart = false;
     public bool movingAtEnd = false;
     public bool isRightHand;
@@ -15,13 +16,15 @@ public class Reach : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
     public static int[] MTMdistances;
+    public static int[] MTMturnRotationAngles;
 
-    public Reach(int differentiationIn, float distanceIn,bool isRightHandIn,int frameIn)
+    public Reach(bool isRightHandIn,int differentiationIn, float distanceIn,float rotationIn,int frameIn)
     {
         bodyPart = "Hand";
         frame = frameIn;
         differentiation = differentiationIn;
-        distance = roundToMTMlength(distanceIn);
+        distance = RoundToMTMlength(distanceIn,MTMdistances);
+        rotationAngle = RoundToMTMlength(rotationIn, MTMturnRotationAngles);
         isRightHand = isRightHandIn;
     }
     public static void initializeDict()
@@ -43,7 +46,9 @@ public class Reach : BasicMotion
         
         MTMdistances = new[]
             { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80 };
-        
+        MTMturnRotationAngles = new[]
+            { 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180 };
+
     }
     public override bool compareMotion(string[] motion)
     {
@@ -65,23 +70,23 @@ public class Reach : BasicMotion
 
         if (forCSV)
         {
-            return (side + bodyPart + "," + BasicMotion +"," +dist+ "," + diff);
+            return (side + bodyPart + "," + BasicMotion + "," + dist + "," + diff + ",/T,S," + rotationAngle);
         }
         else
         {
-            return (side + bodyPart + ": " + BasicMotion + dist + diff);
+            return (side + bodyPart + ": " + BasicMotion + dist + diff + " or TS" + rotationAngle);
         }
     }
-    int roundToMTMlength(float input)
+    int RoundToMTMlength(float input,int[] lengths)
     {
         int ceiledValue = Mathf.CeilToInt(input);
 
-        for (int i = 1; i < MTMdistances.Length; i++) {
-            if (ceiledValue < MTMdistances[i])
+        for (int i = 1; i < lengths.Length; i++) {
+            if (ceiledValue < lengths[i])
             {
-                return MTMdistances[i];
+                return lengths[i];
             }
         }
-        return MTMdistances.Last();
+        return lengths.Last();
     }
 }

@@ -8,6 +8,7 @@ public class Move : BasicMotion
 {
     public int differentiation = 0;
     public int distance;
+    public int rotationAngle;
     public bool movingAtStart = false;
     public bool movingAtEnd = false;
     public GameObject m_object;
@@ -17,14 +18,16 @@ public class Move : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
     public static int[] MTMdistances;
+    public static int[] MTMturnRotationAngles;
 
-    public Move(int differentiationIn, float distanceIn, int weightIn, bool isRightHandIn,GameObject objectIn,int frameIn)
+    public Move( bool isRightHandIn,int differentiationIn, float distanceIn, int weightIn,float rotationAngleIn,GameObject objectIn,int frameIn)
     {
         bodyPart = "Hand";
         frame = frameIn;
         differentiation = differentiationIn;
-        distance = roundToMTMlength(distanceIn);
+        distance = RoundToMTMlength(distanceIn,MTMdistances);
         weight = weightIn;
+        rotationAngle = RoundToMTMlength(rotationAngleIn,MTMturnRotationAngles);
         isRightHand = isRightHandIn;
         m_object = objectIn;
     }
@@ -47,7 +50,8 @@ public class Move : BasicMotion
 
         MTMdistances = new[]
             { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80 };
-
+        MTMturnRotationAngles = new[]
+            { 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180 };
     }
     
     public override bool compareMotion(string[] motion)
@@ -82,17 +86,17 @@ public class Move : BasicMotion
         }
     }
 
-    int roundToMTMlength(float input)
+    int RoundToMTMlength(float input,int[] lengths)
     {
         int ceiledValue = Mathf.CeilToInt(input);
 
-        for (int i = 1; i < MTMdistances.Length; i++) {
-            if (ceiledValue < MTMdistances[i])
+        for (int i = 1; i < lengths.Length; i++) {
+            if (ceiledValue < lengths[i])
             {
-                return MTMdistances[i];
+                return lengths[i];
             }
         }
-        return MTMdistances.Last();
+        return lengths.Last();
     }
 
 }

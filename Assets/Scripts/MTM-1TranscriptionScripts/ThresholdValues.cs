@@ -25,8 +25,8 @@ public static class ThresholdValues
 
     public static int stepMinMovingFrames = 5;
     public static int stepFrameDelayCompensation = 30;
-    public static float stepVelocityIn = 0.3f;
-    public static float stepVelocityOut = 0.05f;
+    public static float stepVelocityIn = 0.15f;
+    public static float stepVelocityOut = 0.025f;
     public static float stepAngleTurnMin = 45f;
     public static float stepAngleTurnMax = 90f;
     public static float stepSideStepMaxForewardPercentage = 0.6f;
@@ -34,8 +34,8 @@ public static class ThresholdValues
 
     public static int feetMinMovingFrames = 10;
     public static int feetFrameDelayCompensation = 30;
-    public static float feetVelocityIn = 0.1f;
-    public static float feetVelocityOut = 0.05f;
+    public static float feetVelocityIn = 0.05f;
+    public static float feetVelocityOut = 0.025f;
     
 
 

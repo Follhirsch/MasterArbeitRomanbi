@@ -51,11 +51,10 @@ public class TranscriptionMaster : MonoBehaviour
         Debug.Log("contact "+testMot.compareMotion(new string[] { "R"}));
         Debug.Log("contact "+testMot.compareMotion(new string[] { "C" }));
         */
-        MTMTranscription.Add(new Reach(2,1,true,10));
+        MTMTranscription.Add(new Reach(true,2,1,35,10));
         MTMTranscription.Add(new Grasp(true,1,1,new GameObject(),10));
         MTMTranscription.Add(new Release(true,new GameObject(),2,100));
-        MTMTranscription.Add(new Reach(1,10,false,20));
-        
+        MTMTranscription.Add(new Reach(true,1,10,40,20));
 
         StartCoroutine(updateCanvas());
 
@@ -330,52 +329,61 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
             //get data from recorder
-        Vector3[][] recorderData;
-        int column = 7; // to get the data of the index finger
-        if (g.isRightHand)
-        { 
-            if (recMaster.rePlaying)
+            Vector3[][] recorderDataPos;
+            Quaternion[][] recorderDataRot;
+            int column = 7;
+            if (g.isRightHand)
             {
-                recorderData = handMani.rPosArray;
+                if (recMaster.rePlaying)
+                {
+                    recorderDataPos = handMani.rPosArray;
+                    recorderDataRot = handMani.rOriArray;
+                }
+                else
+                {
+                    recorderDataPos = bodyRec.rPosVectors.ToArray();
+                    recorderDataRot = bodyRec.rOriQuaternion.ToArray();
+                }
             }
             else
             {
-                recorderData = bodyRec.rPosVectors.ToArray();
+                if (recMaster.rePlaying)
+                {
+                    recorderDataPos = handMani.lPosArray;
+                    recorderDataRot = handMani.lOriArray;
+                }
+                else
+                {
+                    recorderDataPos = bodyRec.lPosVectors.ToArray();
+                    recorderDataRot = bodyRec.lOriQuaternion.ToArray();
+                }
             }
-        }
-        else
-        {
-            if (recMaster.rePlaying)
-            {
-                recorderData = handMani.lPosArray;
-            }
-            else
-            {
-                recorderData = bodyRec.lPosVectors.ToArray();
-            }
-        }
-        float[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, frame));
-        float distance = distances.Last();
+        Tuple<float, float>[] distancesAndAngles = DistanceClassification(
+            CreateSinglePath(recorderDataPos, column, startFrame, g.frame),
+            CreateSingleRotPath(recorderDataRot, column, startFrame, g.frame));
+        
+        float distance = distancesAndAngles.Last().Item1;
+        float rotation = distancesAndAngles.Last().Item2;
 
 
         if (g.differentiation == 1 && g.specification == 2) // precise Grasp
         {
-            return new Reach(4, distance, g.isRightHand,frame);
+            return new Reach(g.isRightHand,4, distance,rotation ,frame);
         }
 
         if (g.differentiation == 4)
         {
-            return new Reach(3, distance, g.isRightHand,frame);
+            return new Reach(g.isRightHand,3, distance,rotation ,frame);
         }
 
         Reach rOut;
         if (g.m_object.GetComponent<InteractableObject>().isAtKnownLocation)
         {
-            rOut = new Reach(1, distance, g.isRightHand,frame);
+            rOut = new Reach(g.isRightHand,1, distance,rotation ,frame);
         }
         else
         {
-            rOut = new Reach(2, distance, g.isRightHand,frame);
+            rOut = new Reach(g.isRightHand,2, distance, rotation,frame);
         }
 
         //Todo: check if moving at start or end
@@ -403,64 +411,74 @@ public class TranscriptionMaster : MonoBehaviour
             startFrame = lastGraspsThisH.Last().frame;
         }
         //get data from recorder
-        Vector3[][] recorderData;
-        int column = 1;
+        Vector3[][] recorderDataPos;
+        Quaternion[][] recorderDataRot;
+        int column = 7;
         if (rl.isRightHand)
         {
             if (recMaster.rePlaying)
             {
-                recorderData = handMani.rPosArray;
+                recorderDataPos = handMani.rPosArray;
+                recorderDataRot = handMani.rOriArray;
             }
             else
             {
-                recorderData = bodyRec.rPosVectors.ToArray();
+                recorderDataPos = bodyRec.rPosVectors.ToArray();
+                recorderDataRot = bodyRec.rOriQuaternion.ToArray();
             }
         }
         else
         {
             if (recMaster.rePlaying)
             {
-                recorderData = handMani.lPosArray;
+                recorderDataPos = handMani.lPosArray;
+                recorderDataRot = handMani.lOriArray;
             }
             else
             {
-                recorderData = bodyRec.lPosVectors.ToArray();
+                recorderDataPos = bodyRec.lPosVectors.ToArray();
+                recorderDataRot = bodyRec.lOriQuaternion.ToArray();
             }
         }
-        float[] distances = DistanceClassification(CreateSinglePath(recorderData, column, startFrame, rl.frame));
-        float distance = distances.Last();
 
-        if (distance < ThresholdValues.minMoveDistThreshold)
+        Tuple<float, float>[] distancesAndAngles = DistanceClassification(
+            CreateSinglePath(recorderDataPos, column, startFrame, rl.frame),
+            CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
+        
+        float distance = distancesAndAngles.Last().Item1;
+        float rotation = distancesAndAngles.Last().Item2;
+
+        /*if (distance < ThresholdValues.minMoveDistThreshold)
         {
             Debug.Log("no Move due to small distance");
             return null; 
-        }
+        }*/
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
 
         int weight = interactionValues.weight;
         
         if (involvedPositioning)
         {
-            return new Move(3, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // precise move
+            return new Move(rl.isRightHand,3, distance, weight,rotation,rl.m_object,rl.frame); // precise move
         }
         //check if object is in other Hand
         if (rl.isRightHand)
         {
             if (interactionValues.isInHandLH)
             {
-                return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
+                return new Move(rl.isRightHand,1, distance, weight, rotation , rl.m_object, rl.frame); // easy move
             }
         }
         else
         {
             if (interactionValues.isInHandRH)
             {
-                return new Move(1, distance, weight, rl.isRightHand, rl.m_object, rl.frame); // easy move
+                return new Move(rl.isRightHand,1, distance, weight, rotation, rl.m_object, rl.frame); // easy move
             }
         }
         
 
-        return new Move(2, distance, weight,rl.isRightHand,rl.m_object,rl.frame); // move to approximate location
+        return new Move(rl.isRightHand,2, distance, weight,rotation,rl.m_object,rl.frame); // move to approximate location
         
     }
     Crank CalculateCrank(Release rl)
@@ -481,12 +499,23 @@ public class TranscriptionMaster : MonoBehaviour
     
     
 
-    float[] DistanceClassification(Vector3[] path) //TODO:basic distance should be improved
+    Tuple<float,float>[] DistanceClassification(Vector3[] path,Quaternion[] rotPath) //TODO:basic distance, should be improved
     {
         int amountOfMotions = 1;
-        float[] returnArray = new float[amountOfMotions];
-        returnArray[0] = (((path.Last() - path[0]).sqrMagnitude)*1000);//round to adequate numbers
-        return returnArray;
+        int[] framesIntervals = new[] { 0, path.Length-1};
+        Tuple<float, float>[] returnArray = new Tuple<float, float>[amountOfMotions];
+        for (int i = 0; i < amountOfMotions; i++)
+        {
+            returnArray[i] =
+                new Tuple<float, float>((path[framesIntervals[1]] - path[framesIntervals[0]]).magnitude * 100,//0.06
+                    DetermineAngleChange(rotPath[framesIntervals[1]], rotPath[framesIntervals[0]]));
+        }
+        return returnArray;//<distance,anglechange>[]
+    }
+
+    float DetermineAngleChange(Quaternion start, Quaternion end)
+    {
+        return Vector3.Angle(start * Vector3.up, end * Vector3.up);
     }
 
     /*Vector3[] createSinglePath(List<Vector3[]> recorderDataIn,int column,int startFrame, int endFrame)
@@ -512,6 +541,20 @@ public class TranscriptionMaster : MonoBehaviour
         }
         return outputArray;
     }
+    Quaternion[] CreateSingleRotPath(Quaternion[][] recorderDataIn,int column,int startFrame, int endFrame)
+    {
+        Quaternion[] outputArray = new Quaternion[endFrame - startFrame + 1];
+        int ii = 0;
+        for (int i = startFrame; i < endFrame+1; i++)
+        {
+            outputArray[ii] = recorderDataIn[i][column];
+            ii++;
+        }
+        return outputArray;
+    }
+    
+    
+    
     public void WriteMTMCSV(string folderDir)
     {
         string newpath = CreateUniqueFilePath(folderDir, "MTM", ".csv");
