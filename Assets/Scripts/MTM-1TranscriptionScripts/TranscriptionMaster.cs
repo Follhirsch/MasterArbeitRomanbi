@@ -78,6 +78,7 @@ public class TranscriptionMaster : MonoBehaviour
     public void turnTranscriptionOn()
     {
         MTMTranscription.Clear();
+        StartCoroutine(updateCanvas());
         transcribtionOn = true;
     }
 
@@ -586,6 +587,8 @@ public class TranscriptionMaster : MonoBehaviour
     {
         sequence = sequenceIn;
         TranscriptionTitle.GetComponent<Text>().text = sequenceDict[sequence].title;
+        transcribeBody = sequenceDict[sequence].bodyOn;
+        transcribeHands = sequenceDict[sequence].handOn;
     }
     void InitialiseSequenceDict()
     {

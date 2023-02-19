@@ -10,6 +10,8 @@ public class HandleScrewing : MonoBehaviour
     public float screwdistance;
     public GameObject newHammer;
     GameObject hammer;
+
+    private bool triggerOn = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +19,7 @@ public class HandleScrewing : MonoBehaviour
         maxAngle = gameObject.GetComponent<KnobCollisionHandler>().upperBound;
         screwdistance = transform.localPosition.z;
         hammer = gameObject.transform.parent.transform.parent.gameObject;
+        triggerOn = true;
     }
 
     // Update is called once per frame
@@ -27,6 +30,8 @@ public class HandleScrewing : MonoBehaviour
         Vector3 localpositionvector = transform.localPosition;
         if (angle >= maxAngle)
         {
+            gameObject.GetComponent<KnobCollisionHandler>().upperBound = maxAngle+1;
+            maxAngle = gameObject.GetComponent<KnobCollisionHandler>().upperBound;
             SwapHammers();
         }
         localpositionvector.z = screwdistance*(1-angle/maxAngle);
@@ -36,6 +41,7 @@ public class HandleScrewing : MonoBehaviour
     void SwapHammers()
     {
         Debug.Log("Handle fully screwed in");
+        
             
         Vector3 enclavePos = new Vector3(0.2f,-0.5f,0);//(newHammer.transform.position);
         Vector3 newPositionHammer = hammer.transform.position;

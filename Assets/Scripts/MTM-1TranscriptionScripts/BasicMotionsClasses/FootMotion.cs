@@ -11,13 +11,14 @@ public class FootMotion : BasicMotion
     
     public static Dictionary<int, string> differentiationDictionary;
     
-    public FootMotion(bool isRightFootIn,int specificationIn,int frameIn)
+    public FootMotion(bool isRightFootIn,float distance,int frameIn)
     {
         bodyPart = "Foot";
         frame = frameIn;
         isRightFoot = isRightFootIn;
-        differentiation = (specificationIn > 10) ? 3 : 1;
-        specification = specificationIn;
+        specification = Mathf.CeilToInt(distance);
+        differentiation = (specification > 10) ? 3 : 1;
+
     }
     
     public static void initializeDict()

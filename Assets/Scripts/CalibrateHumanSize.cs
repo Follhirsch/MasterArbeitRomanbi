@@ -35,10 +35,6 @@ public class CalibrateHumanSize : MonoBehaviour
         {
             ScaleModel(scale);
         }
-        if (Input.GetKeyDown("b"))
-        {
-            Debug.Log(rightHand.transform.position.x);
-        }
 
 
         if (vrikSolver is null)

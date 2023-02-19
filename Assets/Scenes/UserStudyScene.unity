@@ -1025,7 +1025,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5817327317734912087, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6255926969434212508, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_IsActive
@@ -1425,7 +1425,7 @@ MonoBehaviour:
   armMip: 1
   neck: {fileID: 622390669}
   hip: {fileID: 645586989}
-  rightHand: {fileID: 0}
+  rightHand: {fileID: 1931530335}
   vrikSolver: {fileID: 0}
 --- !u!1001 &233067684
 PrefabInstance:
@@ -3030,6 +3030,7 @@ MonoBehaviour:
   Nail: {fileID: 0}
   reenterTimeDelay: 1
   exitTime: 0
+  triggerEnabled: 1
 --- !u!136 &438219030
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6756,7 +6757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 1
+  index: 7
   origin: {fileID: 0}
 --- !u!1001 &916649520
 PrefabInstance:
@@ -8213,6 +8214,7 @@ MonoBehaviour:
   Nail: {fileID: 0}
   reenterTimeDelay: 1
   exitTime: 0
+  triggerEnabled: 1
 --- !u!1 &1143975110 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 07cf52e3631708648beb89b0b04a19a8, type: 3}
@@ -8949,7 +8951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 3
+  index: 6
   origin: {fileID: 0}
 --- !u!1 &1293918867
 GameObject:
@@ -9482,8 +9484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8fb75d47c52e44eb39647bad68d4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressedPosition: {x: 0, y: -0.2, z: 0}
-  defaultPosition: {x: 0, y: -0.8, z: 0}
+  distanceToMove: 0.6
   buttonOn: 0
   light: {fileID: 251141052}
 --- !u!114 &1337404641
@@ -9732,7 +9733,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.396, y: 1.451}
+  m_AnchoredPosition: {x: -0.396, y: 1.76}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1355020157 stripped
@@ -9796,7 +9797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d37c2cf88f7c59f4c8cf5d3812568143, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 2
+  index: 5
   origin: {fileID: 0}
 --- !u!1 &1403059261
 GameObject:
@@ -10374,6 +10375,7 @@ MonoBehaviour:
   Nail: {fileID: 0}
   reenterTimeDelay: 1
   exitTime: 0
+  triggerEnabled: 1
 --- !u!136 &1453216514
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -11471,7 +11473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1618020684
 Transform:
   m_ObjectHideFlags: 0
@@ -12712,6 +12714,7 @@ MonoBehaviour:
   hammerheadCollider: {fileID: 1294970482}
   newHammer: {fileID: 919132148895466350}
   MTMobj: {fileID: 497665591}
+  triggerEnabled: 1
 --- !u!850595691 &1780964795
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -14408,6 +14411,7 @@ MonoBehaviour:
   fixedNail: {fileID: 0}
   MTMobj: {fileID: 497665591}
   enclavepos: {x: 0, y: 0, z: 0}
+  triggerEnabled: 1
   fixedNailMovableHandler: {fileID: 0}
 --- !u!114 &2045878629
 MonoBehaviour:
@@ -14835,8 +14839,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2082276300}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.52, z: -0.179}
-  m_LocalScale: {x: 0.7, y: 0.099999994, z: 0.5}
+  m_LocalPosition: {x: 0, y: -0.518, z: -0.179}
+  m_LocalScale: {x: 0.7, y: 0.29999, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1349905451}
@@ -14931,8 +14935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8fb75d47c52e44eb39647bad68d4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressedPosition: {x: 0, y: -0.2, z: 0}
-  defaultPosition: {x: 0, y: -0.8, z: 0}
+  distanceToMove: 0.6
   buttonOn: 0
   light: {fileID: 251141052}
 --- !u!114 &2082276306

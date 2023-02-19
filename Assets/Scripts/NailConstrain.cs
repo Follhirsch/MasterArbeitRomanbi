@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRfreePluginUnity;
 
 public class NailConstrain : MonoBehaviour
 {
@@ -10,12 +12,18 @@ public class NailConstrain : MonoBehaviour
     public GameObject Nail;
     public float reenterTimeDelay = 1f;
     public float exitTime;
+    public bool triggerEnabled = true;
+    private MovablesCollisionHandler nailHandler;
+    private float grabcoefficient;
     // Start is called before the first frame update
     void Start()
     {
         Nail = gameObject.transform.parent.gameObject;
         TargetCollider = GameObject.Find("TriggerForNail");
+        nailHandler = Nail.GetComponent<MovablesCollisionHandler>();
+        grabcoefficient = nailHandler.EndGrabCoeff;
         exitTime = Time.realtimeSinceStartup;
+        triggerEnabled = true;
     }
 
     void OnEnable()
@@ -30,13 +38,22 @@ public class NailConstrain : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        if(!triggerEnabled){return;}
         if (exitTime+reenterTimeDelay>Time.realtimeSinceStartup){return;}
         if (!other.CompareTag(TargetCollider.tag)){return;}
         swapNails();
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag(TargetCollider.tag)){return;}
+        nailHandler.EndGrabCoeff = grabcoefficient;
+        triggerEnabled = true;
+    }
+
     void swapNails()
     {
+        triggerEnabled = false;
         //suppress the next hand moton
         if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
         {
@@ -47,7 +64,8 @@ public class NailConstrain : MonoBehaviour
         }//suppress next transcription
         
         //fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
-
+        nailHandler.EndGrabCoeff = 1000f;
+        nailHandler.isGrabbed = false;
         Vector3 enclavePos = new Vector3(1, -0.5f, 0);
 
         

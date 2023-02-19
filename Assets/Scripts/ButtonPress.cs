@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ButtonPress : MonoBehaviour
 {
-    public Vector3 pressedPosition = new Vector3(0,-0.2f,0);
-    public Vector3 defaultPosition = new Vector3(0,-0.8f,0);
+    private Vector3 pressedPosition;
+    private Vector3 defaultPosition;
+    public float distanceToMove = 0.6f;
     public bool buttonOn = false;
     private float timePressed;
     private float timeToBePressed = 3f;
@@ -16,15 +18,18 @@ public class ButtonPress : MonoBehaviour
     void Start()
     {
         timePressed = Time.realtimeSinceStartup;
+        defaultPosition = new Vector3(gameObject.transform.localPosition.x,gameObject.transform.localPosition.y,gameObject.transform.localPosition.z);
+        pressedPosition = new Vector3(defaultPosition.x, defaultPosition.y + distanceToMove, defaultPosition.z);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKeyDown("b"))
+        if (Input.GetKeyDown("b"))
         {
+            pressedPosition = new Vector3(defaultPosition.x, defaultPosition.y + distanceToMove, defaultPosition.z);
             ButtonPressed();
-        }*/
+        }
         
         if(!buttonOn){return;}
         if (timePressed + timeToBePressed < Time.realtimeSinceStartup)

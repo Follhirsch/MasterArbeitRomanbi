@@ -12,11 +12,16 @@ public class ConstrainedNailScript : MonoBehaviour
     private Quaternion startOri;
     public GameObject MTMobj;
     public Vector3 enclavepos;
+    public bool triggerEnabled = true;
+    private ConstrainedMovablesCollisionHandler nailHandler;
+    private float grabcoefficient;
+    private bool hanlerfound = false;
 
     public ConstrainedMovable fixedNailMovableHandler;
     // Start is called before the first frame update
     void Start()
     {
+        hanlerfound = false;
         fixedNail = gameObject;
         fixedNailMovableHandler = fixedNail.GetComponent<ConstrainedMovable>();
         startPos = fixedNail.transform.position;
@@ -26,13 +31,19 @@ public class ConstrainedNailScript : MonoBehaviour
         enclavepos.y += -100;
 
         fixedNail.transform.position = enclavepos;
+        triggerEnabled = true;
+        
+        nailHandler = fixedNail.GetComponent<ConstrainedMovablesCollisionHandler>();
+        grabcoefficient = nailHandler.EndGrabCoeff;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!triggerEnabled){return;}
         if (fixedNailMovableHandler.movedDistance >= fixedNailMovableHandler.upperBound)
         {
+            fixedNailMovableHandler.upperBound = fixedNailMovableHandler.upperBound+0.01f;
             SwapNails();
         }
         
@@ -53,6 +64,10 @@ public class ConstrainedNailScript : MonoBehaviour
         Quaternion ori = fixedNail.transform.rotation;
         fixedNail.GetComponent<ConstrainedMovable>().movedDistance = 0;
         fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
+        
+        nailHandler.EndGrabCoeff = 1000f;
+        nailHandler.isGrabbed = false;
+        
         MoveToEnclave();
             
         inputNail.transform.position = pos;
@@ -60,6 +75,7 @@ public class ConstrainedNailScript : MonoBehaviour
         inputNail.transform.GetChild(2).GetComponent<NailConstrain>().exitTime = Time.realtimeSinceStartup;
         inputNail.GetComponent<InteractableObject>().gotDisengaged = true;
         inputNail.GetComponent<InteractableObject>().disengagingforce = 2;
+        nailHandler.EndGrabCoeff = grabcoefficient;
     }
 
     void MoveToEnclave()

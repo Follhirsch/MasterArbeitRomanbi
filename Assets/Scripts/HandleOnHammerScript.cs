@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using VRfreePluginUnity;
 
@@ -14,12 +15,18 @@ public class HandleOnHammerScript : MonoBehaviour
     GameObject handle;
     GameObject hammer;
     GameObject hammerHead;
+    public bool triggerEnabled = true;
+    private MovablesCollisionHandler handleHandler;
+    private float grabcoefficient;
 
     void Start()
     {
         handle = gameObject.transform.parent.gameObject;
         hammer = handle.transform.parent.gameObject;
         hammerHead = hammerheadCollider.transform.parent.gameObject;
+        handleHandler = handle.GetComponent<MovablesCollisionHandler>();
+        grabcoefficient = handleHandler.EndGrabCoeff;
+        triggerEnabled = true;
     }
     void Update()
     {
@@ -28,12 +35,21 @@ public class HandleOnHammerScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (!triggerEnabled){return;}
         if (!other.CompareTag(hammerheadCollider.tag)){return;}
         SwapHammers();
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (triggerEnabled){return;}
+        if (!other.CompareTag(hammerheadCollider.tag)){return;}
+        handleHandler.EndGrabCoeff = grabcoefficient;
+        triggerEnabled = true;
     }
 
     void SwapHammers()
     {
+        triggerEnabled = false;
         float dxAngle = handle.transform.localRotation.eulerAngles.x - hammerHead.transform.localRotation.eulerAngles.x;
         float dyAngle = handle.transform.localRotation.eulerAngles.y - hammerHead.transform.localRotation.eulerAngles.y;
         
@@ -56,8 +72,12 @@ public class HandleOnHammerScript : MonoBehaviour
 
         //handle.GetComponent<MovablesCollisionHandler>().enabled = false;
         //hammerHead.GetComponent<MovablesCollisionHandler>().enabled = false;
+        handleHandler.EndGrabCoeff = 1000;
+        handleHandler.isGrabbed = false;
+        handle.transform.localPosition = new Vector3(0, -100, 0);
         hammer.transform.position = enclavePos;
-        
+        //handle.GetComponent<MovablesCollisionHandler>().enabled = true;
+
         //hammer.SetActive(false);
         
         
@@ -66,6 +86,8 @@ public class HandleOnHammerScript : MonoBehaviour
 
         //newHammer.SetActive(true);
         newHammer.transform.GetChild(0).transform.GetChild(0).GetComponent<InteractableObject>().AddPositioning(1,1);
+        //handleHandler.EndGrabCoeff = grabcoefficient;
+        //triggerEnabled = true;
     }
     
     
