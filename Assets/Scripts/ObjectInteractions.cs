@@ -49,7 +49,6 @@ public class ObjectInteractions : MonoBehaviour
     
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
-        
         // update interactableObject
         releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
         

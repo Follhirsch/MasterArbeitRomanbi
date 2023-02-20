@@ -190,6 +190,7 @@ public class RecorderMaster : MonoBehaviour
             if (transcribeMTM)
             {
                 MTMmaster.turnTranscriptionOn();
+                objInter.turnTranscriptionOn();
             }
             Debug.Log("recording started");
         }
@@ -203,7 +204,6 @@ public class RecorderMaster : MonoBehaviour
         if(transcribeMTM)
         {
             MTMmaster.turnTranscriptionOn();
-            objInter.turnTranscriptionOn();
         }
         
         int lengthObjects = objMani.posArray.Length;
@@ -236,9 +236,7 @@ public class RecorderMaster : MonoBehaviour
     {
         if(transcribeMTM)
         {
-            MTMmaster.transcribtionOn = false;
-            string sequenceFolderDir = folderDir.ToString();
-            MTMmaster.WriteMTMCSV(sequenceFolderDir);
+            MTMmaster.turnTranscriptionOff(folderDir.ToString());
             AssetDatabase.Refresh();
         }
         rePlaying = false;

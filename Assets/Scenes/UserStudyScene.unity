@@ -3381,6 +3381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d758d92d49c6548855387954a4dc91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transcribtionOn: 0
   supressNextHandMotion: 0
   suppressGroupedObjectMotions: 0
 --- !u!114 &497665597
@@ -3425,11 +3426,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 695484cd7152ded43af9b2e2a05c9d0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epsilon: 0.01
-  minPoints: 10
-  rad: 0.001
+  epsilon: 0.02
+  minPoints: 20
+  rad: 0.002
   spherePrefab: {fileID: 0}
   dataVisualisationObjects: []
+  startFrame: 130
+  endFrame: 332
 --- !u!1 &507722447
 GameObject:
   m_ObjectHideFlags: 0
@@ -13252,6 +13255,7 @@ MonoBehaviour:
   playerMani: {fileID: 0}
   bodyRec: {fileID: 0}
   objRec: {fileID: 0}
+  objInter: {fileID: 0}
   rePlaying: 0
   loadFromCsvFile: 0
   recordingFilesDir: 

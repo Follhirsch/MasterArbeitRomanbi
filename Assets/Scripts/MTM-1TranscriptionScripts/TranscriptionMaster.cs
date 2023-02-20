@@ -27,6 +27,7 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject TranscriptionTitle;
     public BodyTranscription BodyMTM;
     private DBSCANClusterer dbscan;
+   
 
     public List<BasicMotion> MTMTranscription;
     private int sequence = 0;
@@ -39,7 +40,7 @@ public class TranscriptionMaster : MonoBehaviour
         recMaster = RecorderObject.GetComponent<RecorderMaster>();
         bodyRec = RecorderObject.GetComponent<BodyRecorder>();
         handMani = RecorderObject.GetComponent<HandPoseManipulation>();
-        gameObject.GetComponent<DBSCANClusterer>();
+        dbscan = gameObject.GetComponent<DBSCANClusterer>();
 
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
@@ -126,8 +127,8 @@ public class TranscriptionMaster : MonoBehaviour
         
         if (g.differentiation != 2) // was not regrasp? -> add reach
         {
-            BasicMotion rB = CalculateReach(g, frame);
-            MTMTranscription.Add(rB);
+            Reach[] rB = CalculateReach(g);
+            MTMTranscription.AddRange(rB);
         }
         MTMTranscription.Add(g);
         
@@ -169,11 +170,11 @@ public class TranscriptionMaster : MonoBehaviour
 
         
         
-        Move m = CalculateMove(rl,positioningInvolved);
+        Move[] ms = CalculateMoves(rl,positioningInvolved);
         
-        if (m != null)
+        if (ms[^1] != null)
         {
-            MTMTranscription.Add(m);
+            MTMTranscription.AddRange(ms);
         }
         
         if (positioningInvolved)
@@ -312,7 +313,7 @@ public class TranscriptionMaster : MonoBehaviour
             return new Release(isRightHand, obj, 1, frame);
         }
     }
-    Reach CalculateReach(Grasp g, int frame)
+    Reach[] CalculateReach(Grasp g)
     {
         // find frames of motion
         List<Release> lastReleases = new List<Release>();
@@ -369,33 +370,40 @@ public class TranscriptionMaster : MonoBehaviour
         
         float distance = distancesAndAngles.Last().Item1;
         float rotation = distancesAndAngles.Last().Item2;
+        Reach[] returnArray = new Reach[distancesAndAngles.Length];
+        for (int i = 0; i < returnArray.Length-1; i++)
+        {
+            returnArray[i] = new Reach(g.isRightHand, 5, distancesAndAngles[i].Item1, distancesAndAngles[i].Item2,
+                g.frame);
+        }
 
 
         if (g.differentiation == 1 && g.specification == 2) // precise Grasp
         {
-            return new Reach(g.isRightHand,4, distance,rotation ,frame);
+            returnArray[^1] = new Reach(g.isRightHand,4, distance,rotation ,g.frame);
+            return returnArray;
         }
 
         if (g.differentiation == 4)
         {
-            return new Reach(g.isRightHand,3, distance,rotation ,frame);
+            returnArray[^1] = new Reach(g.isRightHand, 3, distance, rotation, g.frame);
+            return returnArray;
         }
-
-        Reach rOut;
+        
         if (g.m_object.GetComponent<InteractableObject>().isAtKnownLocation)
         {
-            rOut = new Reach(g.isRightHand,1, distance,rotation ,frame);
+            returnArray[^1] = new Reach(g.isRightHand,1, distance,rotation ,g.frame);
         }
         else
         {
-            rOut = new Reach(g.isRightHand,2, distance, rotation,frame);
+            returnArray[^1] = new Reach(g.isRightHand,2, distance, rotation,g.frame);
         }
 
         //Todo: check if moving at start or end
 
-        return rOut;
+        return returnArray;
     }
-    Move CalculateMove(Release rl,bool involvedPositioning)
+    Move[] CalculateMoves(Release rl,bool involvedPositioning)
     {
         // find frames of motion
         List<Grasp> lastGraspsThisH = new List<Grasp>();
@@ -445,46 +453,54 @@ public class TranscriptionMaster : MonoBehaviour
                 recorderDataRot = bodyRec.lOriQuaternion.ToArray();
             }
         }
+        InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
+        int weight = interactionValues.weight;
         
-
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, column, startFrame, rl.frame),
             CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
         
         float distance = distancesAndAngles.Last().Item1;
         float rotation = distancesAndAngles.Last().Item2;
+        
+        Move[] returnArray = new Move[distancesAndAngles.Length];
+        for (int i = 0; i < returnArray.Length-1; i++)
+        {
+            returnArray[i] = new Move(rl.isRightHand,2,distancesAndAngles[i].Item1,weight,distancesAndAngles[i].Item2,rl.m_object,rl.frame);
+        }
 
         /*if (distance < ThresholdValues.minMoveDistThreshold)
         {
             Debug.Log("no Move due to small distance");
             return null; 
         }*/
-        InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
-
-        int weight = interactionValues.weight;
+        
         
         if (involvedPositioning)
         {
-            return new Move(rl.isRightHand,3, distance, weight,rotation,rl.m_object,rl.frame); // precise move
+            returnArray[^1] = new Move(rl.isRightHand,3, distance, weight,rotation,rl.m_object,rl.frame); // precise move
+            return returnArray;
         }
         //check if object is in other Hand
         if (rl.isRightHand)
         {
             if (interactionValues.isInHandLH)
             {
-                return new Move(rl.isRightHand,1, distance, weight, rotation , rl.m_object, rl.frame); // easy move
+                returnArray[^1] = new Move(rl.isRightHand,1, distance, weight, rotation , rl.m_object, rl.frame); // easy move
+                return returnArray;
             }
         }
         else
         {
             if (interactionValues.isInHandRH)
             {
-                return new Move(rl.isRightHand,1, distance, weight, rotation, rl.m_object, rl.frame); // easy move
+                returnArray[^1] = new Move(rl.isRightHand,1, distance, weight, rotation, rl.m_object, rl.frame); // easy move
+                return returnArray;
             }
         }
         
-
-        return new Move(rl.isRightHand,2, distance, weight,rotation,rl.m_object,rl.frame); // move to approximate location
+        returnArray[^1] = new Move(rl.isRightHand,2, distance, weight,rotation,rl.m_object,rl.frame); // move to approximate location
+        return returnArray;
         
     }
     Crank CalculateCrank(Release rl)
@@ -509,12 +525,13 @@ public class TranscriptionMaster : MonoBehaviour
     {
         Tuple<int,int>[] motions= dbscan.classifyMotionFrames(path);
         int amountOfMotions = motions.Length;
+        Debug.Log("motions");
         //int[] framesIntervals = new[] { 0, path.Length-1};
         Tuple<float, float>[] returnArray = new Tuple<float, float>[amountOfMotions];
         for (int i = 0; i < amountOfMotions; i++)
         {
             returnArray[i] =
-                new Tuple<float, float>((path[motions[i].Item2] - path[motions[i].Item1]).magnitude * 100,//0.06
+                new Tuple<float, float>((path[motions[i].Item2] - path[motions[i].Item1]).magnitude * 100,
                     DetermineAngleChange(rotPath[motions[i].Item2], rotPath[motions[i].Item2]));
         }
         return returnArray;//<distance,anglechange>[]
