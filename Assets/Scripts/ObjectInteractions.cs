@@ -8,6 +8,7 @@ using VRfreePluginUnity;
 public class ObjectInteractions : MonoBehaviour
 {
     public List<Interaction> InteractionList = new List<Interaction>();
+    public bool transcribtionOn;
 
     public bool supressNextHandMotion = false;
     public bool suppressGroupedObjectMotions;
@@ -21,13 +22,12 @@ public class ObjectInteractions : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        transcribtionOn = false;
         transcriptionMaster = gameObject.GetComponent<TranscriptionMaster>();
-        
     }
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
-        
         //update InteractableObject
         graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
         
@@ -39,6 +39,7 @@ public class ObjectInteractions : MonoBehaviour
         }
         
         //TranscribeMTM
+        if (!transcribtionOn){return;}
         if (supressNextHandMotion){return;}
         graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
@@ -58,15 +59,13 @@ public class ObjectInteractions : MonoBehaviour
             else if (releasedObj.GetComponent<InteractableObject>().isInGroup){return;}
         }
         
-        
-        
         //TranscribeMTM
         if (supressNextHandMotion)
         {
             supressNextHandMotion = false;
             return;
         }
-        
+        if (!transcribtionOn){return;}
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
         AddInteractionToList(frame,isRightHand,releasedObj,false);
@@ -119,6 +118,17 @@ public class ObjectInteractions : MonoBehaviour
         }
     }
     
+    public void turnTranscriptionOn()
+    {
+        InteractionList.Clear();
+        transcribtionOn = true;
+    }
+    public void turnTranscriptionOff(string sequenceDir,List<GameObject> objList)
+    {
+        transcribtionOn = false;
+        WriteInteractionCSV(sequenceDir,objList);
+    }
+
     void AddInteractionToList(int frameIn,bool isRightHandIn, GameObject objIn,bool IsGraspIn)
     {
         Interaction newInteraction = new Interaction();

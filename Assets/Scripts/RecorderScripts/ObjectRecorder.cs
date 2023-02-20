@@ -113,7 +113,6 @@ public class ObjectRecorder : MonoBehaviour
     public void StopRecording()
     {
         csvWriter.Close();
-        MTMobj.GetComponent<ObjectInteractions>().WriteInteractionCSV(folderdir,ObjectsToRecord);
     }
 
     public void StartRecording(string folderDir)

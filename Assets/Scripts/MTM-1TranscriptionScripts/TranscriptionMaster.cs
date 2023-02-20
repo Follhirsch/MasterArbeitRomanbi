@@ -26,6 +26,7 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject TranscriptionCanvas;
     public GameObject TranscriptionTitle;
     public BodyTranscription BodyMTM;
+    private DBSCANClusterer dbscan;
 
     public List<BasicMotion> MTMTranscription;
     private int sequence = 0;
@@ -38,6 +39,7 @@ public class TranscriptionMaster : MonoBehaviour
         recMaster = RecorderObject.GetComponent<RecorderMaster>();
         bodyRec = RecorderObject.GetComponent<BodyRecorder>();
         handMani = RecorderObject.GetComponent<HandPoseManipulation>();
+        gameObject.GetComponent<DBSCANClusterer>();
 
         MTMTranscription = new List<BasicMotion>();
         BasicMotion.initialzeDicts();
@@ -67,12 +69,14 @@ public class TranscriptionMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKeyDown("5"))
+        if (Input.GetKeyDown("o"))
         {
-            MTMTranscription.Add(new Reach(1,2,true,100));
-            WriteMTMCSV("Assets/Resources/Recordings/Recording_20230211_1554_58/Sequence0");
+            for (int i = 0; i < MTMTranscription.Count; i++)
+            {
+                Debug.Log(MTMTranscription[i].GetType() + "frame"+MTMTranscription[i].frame);
+            }
         }
-        */
+        
     }
 
     public void turnTranscriptionOn()
@@ -441,6 +445,7 @@ public class TranscriptionMaster : MonoBehaviour
                 recorderDataRot = bodyRec.lOriQuaternion.ToArray();
             }
         }
+        
 
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, column, startFrame, rl.frame),
@@ -502,14 +507,15 @@ public class TranscriptionMaster : MonoBehaviour
 
     Tuple<float,float>[] DistanceClassification(Vector3[] path,Quaternion[] rotPath) //TODO:basic distance, should be improved
     {
-        int amountOfMotions = 1;
-        int[] framesIntervals = new[] { 0, path.Length-1};
+        Tuple<int,int>[] motions= dbscan.classifyMotionFrames(path);
+        int amountOfMotions = motions.Length;
+        //int[] framesIntervals = new[] { 0, path.Length-1};
         Tuple<float, float>[] returnArray = new Tuple<float, float>[amountOfMotions];
         for (int i = 0; i < amountOfMotions; i++)
         {
             returnArray[i] =
-                new Tuple<float, float>((path[framesIntervals[1]] - path[framesIntervals[0]]).magnitude * 100,//0.06
-                    DetermineAngleChange(rotPath[framesIntervals[1]], rotPath[framesIntervals[0]]));
+                new Tuple<float, float>((path[motions[i].Item2] - path[motions[i].Item1]).magnitude * 100,//0.06
+                    DetermineAngleChange(rotPath[motions[i].Item2], rotPath[motions[i].Item2]));
         }
         return returnArray;//<distance,anglechange>[]
     }

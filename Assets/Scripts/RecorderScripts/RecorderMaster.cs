@@ -25,6 +25,7 @@ public class RecorderMaster : MonoBehaviour
     public PlayerManipulator playerMani;
     public BodyRecorder bodyRec;
     public ObjectRecorder objRec;
+    public ObjectInteractions objInter;
     
     
     public bool rePlaying = false;
@@ -57,10 +58,8 @@ public class RecorderMaster : MonoBehaviour
         bodyRec = recorderObject.GetComponent<BodyRecorder>();
         objRec = recorderObject.GetComponent<ObjectRecorder>();
         MTMmaster = MTMobj.GetComponent<TranscriptionMaster>();
-
-
-
-
+        objInter = MTMmaster.GetComponent<ObjectInteractions>();
+        
         recording = false;
         samplingInterval = 1 / framerate;
         frame = 0;
@@ -138,7 +137,6 @@ public class RecorderMaster : MonoBehaviour
             loadFromCsvFile = !loadFromCsvFile;
         }
         
-        
         if (recording)
         {
             timer += Time.deltaTime;
@@ -160,6 +158,7 @@ public class RecorderMaster : MonoBehaviour
             if (transcribeMTM)
             {
                 MTMmaster.turnTranscriptionOff(folderDir.ToString());
+                objInter.turnTranscriptionOff(folderDir.ToString(),objRec.ObjectsToRecord);
             }
             
             recording = false;
@@ -198,11 +197,13 @@ public class RecorderMaster : MonoBehaviour
 
     IEnumerator replayEveryting()
     {
+        frame = 0;
         EnableEverything(true);
         yield return new WaitForSeconds(0.5f);
         if(transcribeMTM)
         {
-            MTMmaster.transcribtionOn = true;
+            MTMmaster.turnTranscriptionOn();
+            objInter.turnTranscriptionOn();
         }
         
         int lengthObjects = objMani.posArray.Length;
@@ -217,7 +218,7 @@ public class RecorderMaster : MonoBehaviour
             if (i < lengthObjects ) { objMani.playFrame(i); }
             if (i < lengthPlayer) {playerMani.playFrame(i); }
             if (i < lengthHands) { handMani.playFrame(i); }
-            
+            objInter.replayInteractionFrame(frame);
             
             yield return new WaitForSeconds(1 / framerate);
 
