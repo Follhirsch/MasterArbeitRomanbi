@@ -26,8 +26,8 @@ public class RecorderMaster : MonoBehaviour
     public BodyRecorder bodyRec;
     public ObjectRecorder objRec;
     public ObjectInteractions objInter;
-    
-    
+
+    public bool pause = false;
     public bool rePlaying = false;
     public bool loadFromCsvFile = false;
     public string recordingFilesDir;
@@ -51,6 +51,7 @@ public class RecorderMaster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pause = false;
         replayFolderCreated = false;
         recorderObject = this.gameObject;
         objMani = recorderObject.GetComponent<ObjectManipulator>();
@@ -88,6 +89,8 @@ public class RecorderMaster : MonoBehaviour
             MTMmaster.ChangeSequence(sequence);
             loadShadowHands();
         }
+
+        if (Input.GetKeyDown("5")) { pause = !pause;}
 
         if (Input.GetKeyDown("1"))//Load all the files
         {
@@ -131,7 +134,6 @@ public class RecorderMaster : MonoBehaviour
         if (Input.GetKeyDown("3")) //replay single frame
         {
             if(recording){return;}
-            stopReplay();
             EnableEverything(true);
             objMani.playFrame(frame);
             playerMani.playFrame(frame);
@@ -231,6 +233,17 @@ public class RecorderMaster : MonoBehaviour
         rePlaying = true;
         for (int i = 0; i < maxlength; i++)
         {
+            do
+            {
+                while (pause)
+                {
+                    if (pause)
+                    {
+                        yield return new WaitForSeconds(1);
+                    }
+                }
+            } while (pause);
+                
             frame = i;
             if (i < lengthObjects ) {objMani.playFrame(i); }
             if (i < lengthPlayer) {playerMani.playFrame(i); }
@@ -316,8 +329,8 @@ public class RecorderMaster : MonoBehaviour
         objMani.activateTriggersAndComponentsForReplay(!enable);
         playerMani.EnablePlayer(enable);
         handMani.EnableReplayHands(enable);
-        AvatarReplay.GetComponent<CalibrateHumanSize>().applyCalibration(replayCalibValues.Item1,
-            replayCalibValues.Item2, replayCalibValues.Item3);
+        /*AvatarReplay.GetComponent<CalibrateHumanSize>().applyCalibration(replayCalibValues.Item1,
+            replayCalibValues.Item2, replayCalibValues.Item3);*/
     }
 
     void EnableShadowHands(bool enable)

@@ -133,7 +133,7 @@ public class DBSCANClusterer : MonoBehaviour {
 
     public Tuple<int, int>[] classifyMotionFrames(Vector3[] posData)
     {
-        Debug.Log("debug 1");
+        //Debug.Log("debug 1");
         int numPoints = posData.Length;
         int[] clusterLabels = new int[numPoints];
         int clusterIndex = 0;
@@ -158,19 +158,43 @@ public class DBSCANClusterer : MonoBehaviour {
                 ExpandCluster(i, neighbors, clusterIndex, clusterLabels, posData);
             }
         }
-        Debug.Log("debug 2");
+        //Debug.Log("debug 2");
 
         //nrOfGroups = clusterIndex;
         //groupIDs = clusterLabels;
+
+        bool startMissed = false;
+        bool endmissed = false;
+        for (int i = 0; i < 10; i++)
+        {
+            bool tempBoolS = (clusterLabels[i] != -1);
+            if (tempBoolS)
+            {
+                startMissed = false;
+                break;
+            }
+            else {startMissed = true; }
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            bool tempBoolE = clusterLabels[^(i+1)] != -1;
+            if (tempBoolE)
+            {
+                startMissed = false;
+                break;
+            }
+            else
+            {
+                startMissed = true;
+            }
+        }
         
-        bool startMissed = clusterLabels[0] == -1 ? true : false ;
-        bool endmissed = clusterLabels[^1] == -1 ? true : false;
         int addMissedStart = clusterLabels[0] == -1 ? 1 : 0;
         int addMissedEnd = clusterLabels[^1] == -1 ? 1 : 0;
         int comparisonindex = clusterIndex;
         if (startMissed) { clusterIndex++;}
         if (endmissed) { clusterIndex++;}
-        Debug.Log("comparison " + comparisonindex);
+        //Debug.Log("comparison " + comparisonindex);
         if (comparisonindex < 3)
         {
             Tuple<int, int>[] singleReturnTouples = new Tuple<int, int>[1];
@@ -178,7 +202,7 @@ public class DBSCANClusterer : MonoBehaviour {
             return singleReturnTouples;
         }
         
-        Debug.Log("debug 3");
+        //Debug.Log("debug 3");
 
         int[] indexframes = new int[clusterIndex];
         for (int i = 1; i < clusterIndex+1; i++)
@@ -239,13 +263,13 @@ public class DBSCANClusterer : MonoBehaviour {
         }*/
         
         Tuple<int, int>[] returnTuples = new Tuple<int, int>[startFrames.Length];
-        Debug.Log("frames calculated start"+startFrames+"end"+endFrames);
+        //Debug.Log("frames calculated start"+startFrames+"end"+endFrames);
 
         for (int i = 0; i < returnTuples.Length; i++)
         {
             returnTuples[i] = new Tuple<int, int>(startFrames[i], endFrames[i]);
         }
-        Debug.Log(returnTuples);
+        //Debug.Log(returnTuples);
         
         return returnTuples;
     }

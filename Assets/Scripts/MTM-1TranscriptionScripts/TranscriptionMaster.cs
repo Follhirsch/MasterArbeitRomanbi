@@ -525,7 +525,7 @@ public class TranscriptionMaster : MonoBehaviour
     {
         Tuple<int,int>[] motions= dbscan.classifyMotionFrames(path);
         int amountOfMotions = motions.Length;
-        Debug.Log("motions");
+        //Debug.Log("motions");
         //int[] framesIntervals = new[] { 0, path.Length-1};
         Tuple<float, float>[] returnArray = new Tuple<float, float>[amountOfMotions];
         for (int i = 0; i < amountOfMotions; i++)
@@ -556,22 +556,25 @@ public class TranscriptionMaster : MonoBehaviour
     */
     Vector3[] CreateSinglePath(Vector3[][] recorderDataIn,int column,int startFrame, int endFrame)
     {
-        Vector3[] outputArray = new Vector3[endFrame - startFrame + 1];
-        int ii = 0;
-        for (int i = startFrame; i < endFrame+1; i++)
+        Debug.Log("start:"+startFrame+" end:"+endFrame+" arraylengt:"+recorderDataIn.Length );
+        Vector3[] outputArray = new Vector3[endFrame - startFrame];
+        int ii = startFrame;
+        for (int i = 0; i < outputArray.Length; i++)
         {
-            outputArray[ii] = recorderDataIn[i][column];
+            Vector3 tempvector = recorderDataIn[ii][column];
+            outputArray[i] = tempvector;
             ii++;
         }
         return outputArray;
     }
     Quaternion[] CreateSingleRotPath(Quaternion[][] recorderDataIn,int column,int startFrame, int endFrame)
     {
-        Quaternion[] outputArray = new Quaternion[endFrame - startFrame + 1];
-        int ii = 0;
-        for (int i = startFrame; i < endFrame+1; i++)
+        Quaternion[] outputArray = new Quaternion[endFrame - startFrame];
+        int ii = startFrame;
+        for (int i = 0; i < outputArray.Length; i++)
         {
-            outputArray[ii] = recorderDataIn[i][column];
+            Quaternion tempQuat = recorderDataIn[ii][column];
+            outputArray[i] = tempQuat;
             ii++;
         }
         return outputArray;

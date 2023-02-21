@@ -43,8 +43,6 @@ public class CalibrateHumanSize : MonoBehaviour
         {
             vrikSolver = gameObject.GetComponent<VRIK>();
         }
-
-
     }
 
     void CalibrateModel()
@@ -105,7 +103,7 @@ public class CalibrateHumanSize : MonoBehaviour
 
     public string outputCalibrationString()
     {
-        string returnStr = "scale," + scale.ToString() + ",legMip," + legMip.ToString() + "armMip" + armMip.ToString(); 
+        string returnStr = "scale," + scale.ToString() + ",legMip," + legMip.ToString() + ",armMip," + armMip.ToString(); 
         return returnStr;
     }
     
