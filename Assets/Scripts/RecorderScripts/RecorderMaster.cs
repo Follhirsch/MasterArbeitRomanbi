@@ -80,11 +80,13 @@ public class RecorderMaster : MonoBehaviour
         {
             sequence = sequence < 1 ? 0 : sequence - 1;
             MTMmaster.ChangeSequence(sequence);
+            loadShadowHands();
         }
         if (Input.GetKeyDown("right"))
         {
             sequence = sequence > 18 ? 19 : sequence + 1;
             MTMmaster.ChangeSequence(sequence);
+            loadShadowHands();
         }
 
         if (Input.GetKeyDown("1"))//Load all the files
@@ -98,12 +100,12 @@ public class RecorderMaster : MonoBehaviour
                 path = pathParts[1];
                 folderDir = new DirectoryInfo("Assets/Resources/" + path);
 
-                Tuple<bool,Tuple<float,float,float>> objLoaded = objMani.loadFromCSVFile(path);
+                bool objLoaded = objMani.loadFromCSVFile(path);
                 bool handsLoaded = handMani.loadFromCSVFile(path);
-                bool playerLoaded = playerMani.loadFromCSVFile(path);
-                replayCalibValues = objLoaded.Item2;
+                Tuple<bool,Tuple<float,float,float>> playerLoaded = playerMani.loadFromCSVFile(path);
+                replayCalibValues = playerLoaded.Item2;
 
-                if (!(objLoaded.Item1 && handsLoaded && playerLoaded))
+                if (!(objLoaded && handsLoaded && playerLoaded.Item1))
                 {
                     Debug.Log("no file found");
                 }
@@ -139,6 +141,12 @@ public class RecorderMaster : MonoBehaviour
         {
             if(recording){return;}
             loadFromCsvFile = !loadFromCsvFile;
+        }
+        
+        if (Input.GetKeyDown("space")) //replay everything
+        {
+            if(recording){return;}
+            playShadowHands();
         }
         
         if (recording)
@@ -224,7 +232,7 @@ public class RecorderMaster : MonoBehaviour
         for (int i = 0; i < maxlength; i++)
         {
             frame = i;
-            if (i < lengthObjects ) { objMani.playFrame(i); }
+            if (i < lengthObjects ) {objMani.playFrame(i); }
             if (i < lengthPlayer) {playerMani.playFrame(i); }
             if (i < lengthHands) { handMani.playFrame(i); }
             objInter.replayInteractionFrame(frame);
@@ -252,6 +260,57 @@ public class RecorderMaster : MonoBehaviour
         Debug.Log("replay stopped");
     }
 
+    void loadShadowHands()
+    {
+        string shadowhandFolder = "Assets/Resources/ShadowHands";
+        string sequenceFolder = shadowhandFolder + "/Sequence" + sequence;
+
+        bool objLoaded = objMani.loadFromCSVFile(sequenceFolder);
+        bool handsLoaded = handMani.loadFromCSVFile(path);
+
+        if (!(objLoaded && handsLoaded))
+        {
+            Debug.Log("no Shadowhands found");
+        }
+    }
+
+    IEnumerator playShadowHands()
+    {
+        frame = 0;
+        EnableShadowHands(true);
+        yield return new WaitForSeconds(0.5f);
+        if(transcribeMTM)
+        {
+            MTMmaster.turnTranscriptionOn();
+        }
+        
+        int lengthObjects = objMani.posArray.Length;
+        int lengthHands = handMani.lPosArray.Length;
+        int maxlength = new[] { lengthObjects, lengthHands }.Max();
+        
+        rePlaying = true;
+        for (int i = 0; i < maxlength; i++)
+        {
+            frame = i;
+            if (i < lengthObjects ) {objMani.playFrame(i); }
+            if (i < lengthHands) { handMani.playFrame(i); }
+            objInter.replayInteractionFrame(frame);
+            
+            yield return new WaitForSeconds(1 / framerate);
+
+            if (!rePlaying)
+            {
+                stopReplay();
+                yield break;
+            }
+        }
+        objMani.playFrame(0);
+        objInter.replayInteractionFrame(0);
+        
+        rePlaying = false;
+        EnableShadowHands(false);
+    }
+
     void EnableEverything(bool enable)
     {
         objMani.activateTriggersAndComponentsForReplay(!enable);
@@ -259,6 +318,12 @@ public class RecorderMaster : MonoBehaviour
         handMani.EnableReplayHands(enable);
         AvatarReplay.GetComponent<CalibrateHumanSize>().applyCalibration(replayCalibValues.Item1,
             replayCalibValues.Item2, replayCalibValues.Item3);
+    }
+
+    void EnableShadowHands(bool enable)
+    {
+        objMani.activateTriggersAndComponentsForReplay(!enable);
+        handMani.EnableReplayHands(enable);
     }
     /*void RecordNewSequenceWithoutStopping()
     {

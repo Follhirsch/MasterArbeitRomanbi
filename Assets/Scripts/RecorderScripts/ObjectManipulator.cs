@@ -83,11 +83,11 @@ public class ObjectManipulator : MonoBehaviour
         objectsToReplay = objRec.ObjectsToRecord;
         totalNrobjects = objectsToReplay.Count;
     }
-    public Tuple<bool,Tuple<float,float,float>> loadFromCSVFile(string pathIn)
+    public bool loadFromCSVFile(string pathIn)
     {
         dir = pathIn + "/Objects";
         replayFile = Resources.Load<TextAsset>(dir);
-        if (replayFile == null) { return new Tuple<bool,Tuple<float,float,float>>(false,new Tuple<float, float, float>(1,1,1));}
+        if (replayFile == null) { return false;}
         //syntax csv object1.x,object1.y,object1.z,object1.rx,object1.ry,object1.rz,interactionvalues...
         string[] dataLines = replayFile.text.Split("\n");
         string[] recorderOptionStrings = dataLines[0].Split(",");
@@ -95,11 +95,6 @@ public class ObjectManipulator : MonoBehaviour
         int frames = dataLines.Length - 2;
         framerate = int.Parse(recorderOptionStrings[1]); 
         totalNrobjects = int.Parse(recorderOptionStrings[3]);
-        Tuple<float, float, float> calibValues = new Tuple<float, float, float>(
-            float.Parse(recorderOptionStrings[5]), float.Parse(recorderOptionStrings[7]),
-            float.Parse(recorderOptionStrings[9])
-        );
-
         List<Vector3[]> tempPosVectorList = new List<Vector3[]>();
         List<Quaternion[]> tempOriList = new List<Quaternion[]>();
         List<float[]> tempVeloList = new List<float[]>();
@@ -141,11 +136,11 @@ public class ObjectManipulator : MonoBehaviour
         if (!GameObject.Find("MTM-transcription").GetComponent<ObjectInteractions>().ReadInteractionsCSV(pathIn,objectsToReplay))
         {
             Debug.Log("Interactions not loaded");
-            return new Tuple<bool, Tuple<float, float, float>>(false, new Tuple<float, float, float>(1, 1, 1));
+            return false;
         }
         
         Debug.Log("Objects CSV file Loaded");
-        return new Tuple<bool, Tuple<float, float, float>>(true, calibValues);
+        return true;
     }
 
 

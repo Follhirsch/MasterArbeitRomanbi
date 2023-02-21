@@ -20,10 +20,10 @@ public class Replayshadowhands : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space"))
+        /*if (Input.GetKeyDown("space"))
         {
             //PlayShadow();
-        }
+        }*/
     }
 
     /*
