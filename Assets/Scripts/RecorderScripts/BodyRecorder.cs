@@ -89,7 +89,7 @@ public class BodyRecorder : MonoBehaviour
         if (recordHands) { csvWriterHands.Close(); }
         if (recordBodyRest) { csvWriterBody.Close();}
     }
-    public void StartRecording(string folderDir)
+    public void StartRecording(string folderDir,string calibStr)
     {
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
         
@@ -119,10 +119,12 @@ public class BodyRecorder : MonoBehaviour
             /*Convert.ToInt16(recordHead) + 2 * Convert.ToInt16(recordHandShadow) +
                               Convert.ToInt16(recordHip) + Convert.ToInt16(recordLeftFoot) +
                               Convert.ToInt16(recordRightFoot);*/
-            string firstline = "FPS," + framerate.ToString() + "," + "NrOfObjects," + NrOfObjects.ToString();
-            firstline += ",LFoot," + Convert.ToString(recordLeftFoot) + ",RFoot," + Convert.ToString(recordRightFoot) + ",Hip," +
+            string firstline = "FPS," + framerate.ToString() + "," + "NrOfObjects," + NrOfObjects.ToString()+",";
+            firstline += calibStr;
+            /*firstline += ",LFoot," + Convert.ToString(recordLeftFoot) + ",RFoot," + Convert.ToString(recordRightFoot) + ",Hip," +
                              Convert.ToString(recordHip) + ",Head," + Convert.ToString(recordHead) + ",HandsPLayer," +
-                             Convert.ToString(recordHandPlayer);
+                             Convert.ToString(recordHandPlayer);*/
+            
             csvWriterBody.WriteLine(firstline);
             csvWriterBody.WriteLine(header);
         }

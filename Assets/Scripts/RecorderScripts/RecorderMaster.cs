@@ -38,8 +38,9 @@ public class RecorderMaster : MonoBehaviour
     public GameObject MTMobj;
     private TranscriptionMaster MTMmaster;
 
-
-
+    public GameObject AvatarPlayer;
+    public GameObject AvatarReplay;
+    private Tuple<float,float,float> replayCalibValues = new Tuple<float, float, float>(1,1,1);
 
     private GameObject recorderObject;
 
@@ -96,19 +97,22 @@ public class RecorderMaster : MonoBehaviour
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
                 folderDir = new DirectoryInfo("Assets/Resources/" + path);
-                Debug.Log("fromreplayloading: "+folderDir);
 
-                bool objLoaded = objMani.loadFromCSVFile(path);
+                Tuple<bool,Tuple<float,float,float>> objLoaded = objMani.loadFromCSVFile(path);
                 bool handsLoaded = handMani.loadFromCSVFile(path);
                 bool playerLoaded = playerMani.loadFromCSVFile(path);
+                replayCalibValues = objLoaded.Item2;
 
-                if (!(objLoaded && handsLoaded && playerLoaded))
+                if (!(objLoaded.Item1 && handsLoaded && playerLoaded))
                 {
                     Debug.Log("no file found");
                 }
             }
             else
             {
+                CalibrateHumanSize calpscript = AvatarPlayer.GetComponent<CalibrateHumanSize>();
+                replayCalibValues =
+                    new Tuple<float, float, float>(calpscript.scale, calpscript.legMip, calpscript.armMip);
                 objMani.loadFromGame();
                 handMani.loadFromGame();
                 playerMani.loadFromGame();
@@ -184,7 +188,12 @@ public class RecorderMaster : MonoBehaviour
             string sequenceFolderDir = folderDir.ToString();
 
             if (recordObjects) {objRec.StartRecording(sequenceFolderDir); }
-            if (recordBody) {bodyRec.StartRecording(sequenceFolderDir); }
+
+            if (recordBody)
+            {
+                string calibStr = AvatarPlayer.GetComponent<CalibrateHumanSize>().outputCalibrationString();
+                bodyRec.StartRecording(sequenceFolderDir,calibStr);
+            }
             
             recording = true;
             if (transcribeMTM)
@@ -248,6 +257,8 @@ public class RecorderMaster : MonoBehaviour
         objMani.activateTriggersAndComponentsForReplay(!enable);
         playerMani.EnablePlayer(enable);
         handMani.EnableReplayHands(enable);
+        AvatarReplay.GetComponent<CalibrateHumanSize>().applyCalibration(replayCalibValues.Item1,
+            replayCalibValues.Item2, replayCalibValues.Item3);
     }
     /*void RecordNewSequenceWithoutStopping()
     {
@@ -267,7 +278,6 @@ public class RecorderMaster : MonoBehaviour
     {
         string fullpath = pathIn + "\\" + nameIn;
         bool alreadyExists = Directory.Exists(fullpath);
-        Debug.Log(fullpath +" |folter exists: "+ alreadyExists);
         if (alreadyExists)
         {
             fullpath = CreateUniqueFolderPath(pathIn, (nameIn + "I"));

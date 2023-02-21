@@ -1423,6 +1423,7 @@ MonoBehaviour:
   scale: 0.1
   legMip: 1.14
   armMip: 1
+  isActivePlayerAvatar: 0
   neck: {fileID: 622390669}
   hip: {fileID: 645586989}
   rightHand: {fileID: 1931530335}
@@ -13266,6 +13267,8 @@ MonoBehaviour:
   path: 
   SceneToRecord: {fileID: 633928715}
   MTMobj: {fileID: 497665591}
+  AvatarPlayer: {fileID: 0}
+  AvatarReplay: {fileID: 0}
 --- !u!114 &1848330101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15687,6 +15690,26 @@ MonoBehaviour:
       onRightFootstep:
         m_PersistentCalls:
           m_Calls: []
+--- !u!114 &3448009896359265241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3448009896359265237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21b727ab1084c44188ae32788e742bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scale: 0.1
+  legMip: 1.14
+  armMip: 1
+  isActivePlayerAvatar: 0
+  neck: {fileID: 0}
+  hip: {fileID: 0}
+  rightHand: {fileID: 0}
+  vrikSolver: {fileID: 0}
 --- !u!23 &7536051110288016888
 MeshRenderer:
   m_ObjectHideFlags: 0

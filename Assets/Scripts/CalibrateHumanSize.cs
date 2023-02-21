@@ -9,6 +9,7 @@ public class CalibrateHumanSize : MonoBehaviour
     public float scale = 0.1f;
     public float legMip = 1.14f;
     public float armMip = 1f;
+    public bool isActivePlayerAvatar;
 
     public GameObject neck;
     public GameObject hip;
@@ -28,6 +29,7 @@ public class CalibrateHumanSize : MonoBehaviour
     {
         if (Input.GetKeyDown("c"))
         {
+            if (!isActivePlayerAvatar) {return;}
             CalibrateModel();
         }
         
@@ -99,6 +101,12 @@ public class CalibrateHumanSize : MonoBehaviour
     {
         vrikSolver.solver.leftArm.armLengthMlp = newArmMip;
         vrikSolver.solver.rightArm.armLengthMlp = newArmMip;
+    }
+
+    public string outputCalibrationString()
+    {
+        string returnStr = "scale," + scale.ToString() + ",legMip," + legMip.ToString() + "armMip" + armMip.ToString(); 
+        return returnStr;
     }
     
     
