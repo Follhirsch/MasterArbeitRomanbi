@@ -178,7 +178,7 @@ public class RecorderMaster : MonoBehaviour
                 replayFolderCreated = true;
             }
 
-            string recordingFolderDir = BaseFolderDir.ToString();
+            string recordingFolderDir = BaseFolderDir.FullName;
             string tempdir = CreateUniqueFolderPath(recordingFolderDir, ("Sequence" + sequence.ToString()));
             folderDir = Directory.CreateDirectory(tempdir); // returns a DirectoryInfo object
             string sequenceFolderDir = folderDir.ToString();
@@ -265,9 +265,10 @@ public class RecorderMaster : MonoBehaviour
     }*/
     string CreateUniqueFolderPath(string pathIn, string nameIn)
     {
-        string fullpath = pathIn + "/" + nameIn ;
-        bool alreadyExists = AssetDatabase.IsValidFolder(fullpath);
-        if ( alreadyExists)
+        string fullpath = pathIn + "\\" + nameIn;
+        bool alreadyExists = Directory.Exists(fullpath);
+        Debug.Log(fullpath +" |folter exists: "+ alreadyExists);
+        if (alreadyExists)
         {
             fullpath = CreateUniqueFolderPath(pathIn, (nameIn + "I"));
         }
@@ -286,7 +287,4 @@ public class RecorderMaster : MonoBehaviour
         }
         return fullpath;
     }
-
-
-
 }
