@@ -522,6 +522,7 @@ public class TranscriptionMaster : MonoBehaviour
     Tuple<float,float>[] DistanceClassification(Vector3[] path,Quaternion[] rotPath) //TODO:basic distance, should be improved
     {
         Tuple<int,int>[] motions= dbscan.classifyMotionFrames(path);
+        if (motions is null) { return null;}
         int amountOfMotions = motions.Length;
         //Debug.Log("motions");
         //int[] framesIntervals = new[] { 0, path.Length-1};

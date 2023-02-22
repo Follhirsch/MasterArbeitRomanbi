@@ -63,7 +63,7 @@ public class RecorderMaster : MonoBehaviour
         objInter = MTMmaster.GetComponent<ObjectInteractions>();
         
         recording = false;
-        samplingInterval = 1 / framerate;
+        samplingInterval = 1 / (float)framerate;
         frame = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";

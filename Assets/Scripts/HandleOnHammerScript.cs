@@ -37,6 +37,7 @@ public class HandleOnHammerScript : MonoBehaviour
     {
         if (!triggerEnabled){return;}
         if (!other.CompareTag(hammerheadCollider.tag)){return;}
+        Debug.Log("hammer on handle");
         SwapHammers();
     }
     void OnTriggerExit(Collider other)

@@ -142,6 +142,7 @@ public class DBSCANClusterer : MonoBehaviour {
     public Tuple<int, int>[] classifyMotionFrames(Vector3[] posData)
     {
         //Debug.Log("debug 1");
+        if (posData.Length < 1) { return null;}
         int numPoints = posData.Length;
         int[] clusterLabels = new int[numPoints];
         int clusterIndex = 0;
