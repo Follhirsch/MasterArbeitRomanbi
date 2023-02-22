@@ -79,7 +79,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
     }
-
     public void turnTranscriptionOn()
     {
         MTMTranscription.Clear();
@@ -340,7 +339,7 @@ public class TranscriptionMaster : MonoBehaviour
             int column = 7;
             if (g.isRightHand)
             {
-                if (recMaster.rePlaying)
+                if (transcribeFromReplay)
                 {
                     recorderDataPos = handMani.rPosArray;
                     recorderDataRot = handMani.rOriArray;
@@ -353,7 +352,7 @@ public class TranscriptionMaster : MonoBehaviour
             }
             else
             {
-                if (recMaster.rePlaying)
+                if (transcribeFromReplay)
                 {
                     recorderDataPos = handMani.lPosArray;
                     recorderDataRot = handMani.lOriArray;
@@ -364,7 +363,7 @@ public class TranscriptionMaster : MonoBehaviour
                     recorderDataRot = bodyRec.lOriQuaternion.ToArray();
                 }
             }
-        Tuple<float, float>[] distancesAndAngles = DistanceClassification(
+            Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, column, startFrame, g.frame),
             CreateSingleRotPath(recorderDataRot, column, startFrame, g.frame));
         
@@ -429,7 +428,7 @@ public class TranscriptionMaster : MonoBehaviour
         int column = 7;
         if (rl.isRightHand)
         {
-            if (recMaster.rePlaying)
+            if (transcribeFromReplay)
             {
                 recorderDataPos = handMani.rPosArray;
                 recorderDataRot = handMani.rOriArray;
@@ -442,7 +441,7 @@ public class TranscriptionMaster : MonoBehaviour
         }
         else
         {
-            if (recMaster.rePlaying)
+            if (transcribeFromReplay)
             {
                 recorderDataPos = handMani.lPosArray;
                 recorderDataRot = handMani.lOriArray;
@@ -457,8 +456,7 @@ public class TranscriptionMaster : MonoBehaviour
         int weight = interactionValues.weight;
         
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
-            CreateSinglePath(recorderDataPos, column, startFrame, rl.frame),
-            CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
+            CreateSinglePath(recorderDataPos, column, startFrame, rl.frame), CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
         
         float distance = distancesAndAngles.Last().Item1;
         float rotation = distancesAndAngles.Last().Item2;
@@ -556,7 +554,6 @@ public class TranscriptionMaster : MonoBehaviour
     */
     Vector3[] CreateSinglePath(Vector3[][] recorderDataIn,int column,int startFrame, int endFrame)
     {
-        Debug.Log("start:"+startFrame+" end:"+endFrame+" arraylengt:"+recorderDataIn.Length );
         Vector3[] outputArray = new Vector3[endFrame - startFrame];
         int ii = startFrame;
         for (int i = 0; i < outputArray.Length; i++)

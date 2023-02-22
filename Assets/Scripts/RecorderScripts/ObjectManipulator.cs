@@ -221,6 +221,11 @@ public class ObjectManipulator : MonoBehaviour
         {
             component.enabled = activate;
         }
+
+        foreach (var obj in objectsToReplay)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = activate;
+        }
     }
 
 }

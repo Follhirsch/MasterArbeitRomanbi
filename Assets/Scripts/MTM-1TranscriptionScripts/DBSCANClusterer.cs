@@ -11,6 +11,7 @@ public class DBSCANClusterer : MonoBehaviour {
     public float epsilon = 0.02f;  // Radius around each point that determines its neighborhood
     public int minPoints = 20;  // Minimum number of points required to form a dense region
 
+    public bool displayRightHand = true;
     public float rad = 0.1f;
     public GameObject spherePrefab;
     
@@ -44,8 +45,15 @@ public class DBSCANClusterer : MonoBehaviour {
     {
         if (Input.GetKeyDown("p"))
         {
+            if (displayRightHand)
+            {
+                demoPosArray = GameObject.Find("Recorder/Player").GetComponent<HandPoseManipulation>().rPosArray;
+            }
+            else
+            {
+                demoPosArray = GameObject.Find("Recorder/Player").GetComponent<HandPoseManipulation>().lPosArray;
+            }
             
-            demoPosArray = GameObject.Find("Recorder/Player").GetComponent<HandPoseManipulation>().rPosArray;
             if (endFrame > demoPosArray.Length)
             {
                 endFrame = demoPosArray.Length - 1;
@@ -165,7 +173,7 @@ public class DBSCANClusterer : MonoBehaviour {
 
         bool startMissed = false;
         bool endmissed = false;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < Math.Min(10,clusterLabels.Length); i++)
         {
             bool tempBoolS = (clusterLabels[i] != -1);
             if (tempBoolS)
@@ -175,7 +183,7 @@ public class DBSCANClusterer : MonoBehaviour {
             }
             else {startMissed = true; }
         }
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < Math.Min(10,clusterLabels.Length); i++)
         {
             bool tempBoolE = clusterLabels[^(i+1)] != -1;
             if (tempBoolE)

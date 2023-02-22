@@ -67,6 +67,8 @@ public class RecorderMaster : MonoBehaviour
         frame = 0;
         recordingFilesDir = Application.dataPath;
         recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
+        
+        loadShadowHands();
     }
 
     // Update is called once per frame
@@ -98,7 +100,8 @@ public class RecorderMaster : MonoBehaviour
             if (loadFromCsvFile)
             {
                 //Debug.Log(recordingFilesDir);
-                path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,"Recording_20230102_1719");
+                path = EditorUtility.OpenFolderPanel("Choose Replay Folder", recordingFilesDir,
+                    "Recording_20230102_1719");
                 string[] pathParts = path.Split( "Assets/Resources/");
                 path = pathParts[1];
                 folderDir = new DirectoryInfo("Assets/Resources/" + path);
@@ -148,7 +151,8 @@ public class RecorderMaster : MonoBehaviour
         if (Input.GetKeyDown("space")) //replay everything
         {
             if(recording){return;}
-            playShadowHands();
+
+            StartCoroutine(playShadowHands());
         }
         
         if (recording)
@@ -208,6 +212,7 @@ public class RecorderMaster : MonoBehaviour
             recording = true;
             if (transcribeMTM)
             {
+                MTMmaster.transcribeFromReplay = false;
                 MTMmaster.turnTranscriptionOn();
                 objInter.turnTranscriptionOn();
             }
@@ -222,6 +227,7 @@ public class RecorderMaster : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if(transcribeMTM)
         {
+            MTMmaster.transcribeFromReplay = true;
             MTMmaster.turnTranscriptionOn();
         }
         
@@ -250,7 +256,7 @@ public class RecorderMaster : MonoBehaviour
             if (i < lengthHands) { handMani.playFrame(i); }
             objInter.replayInteractionFrame(frame);
             
-            yield return new WaitForSeconds(1 / framerate);
+            yield return new WaitForSecondsRealtime(1 / (float)framerate);
 
             if (!rePlaying)
             {
@@ -275,28 +281,24 @@ public class RecorderMaster : MonoBehaviour
 
     void loadShadowHands()
     {
-        string shadowhandFolder = "Assets/Resources/ShadowHands";
+        string shadowhandFolder = "ShadowHands";
         string sequenceFolder = shadowhandFolder + "/Sequence" + sequence;
-
         bool objLoaded = objMani.loadFromCSVFile(sequenceFolder);
-        bool handsLoaded = handMani.loadFromCSVFile(path);
-
+        bool handsLoaded = handMani.loadFromCSVFile(sequenceFolder);
+        //Assets/Resources/ShadowHands/Sequence0
         if (!(objLoaded && handsLoaded))
         {
-            Debug.Log("no Shadowhands found");
+            Debug.Log("no Shadowhands found objladed:" +objLoaded+" hands loaded:"+handsLoaded);
         }
     }
 
     IEnumerator playShadowHands()
     {
         frame = 0;
+        Debug.Log("hello");
         EnableShadowHands(true);
         yield return new WaitForSeconds(0.5f);
-        if(transcribeMTM)
-        {
-            MTMmaster.turnTranscriptionOn();
-        }
-        
+
         int lengthObjects = objMani.posArray.Length;
         int lengthHands = handMani.lPosArray.Length;
         int maxlength = new[] { lengthObjects, lengthHands }.Max();
@@ -309,7 +311,7 @@ public class RecorderMaster : MonoBehaviour
             if (i < lengthHands) { handMani.playFrame(i); }
             objInter.replayInteractionFrame(frame);
             
-            yield return new WaitForSeconds(1 / framerate);
+            yield return new WaitForSecondsRealtime(1/(float)framerate);
 
             if (!rePlaying)
             {
