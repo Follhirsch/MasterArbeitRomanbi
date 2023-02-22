@@ -52,11 +52,12 @@ public class ConstrainedNailScript : MonoBehaviour
     void SwapNails()
     {
         //supress next transcription
-        if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
+        TranscriptionMaster MTMmaster = FindObjectOfType<TranscriptionMaster>();
+        if (MTMmaster.transcribtionOn)
         {
-            if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
+            if (MTMmaster.transcribeHands)
             {
-                MTMobj.GetComponent<ObjectInteractions>().supressNextHandMotion = true;
+                FindObjectOfType<ObjectInteractions>().supressNextHandMotion = true;
             }
         }
 

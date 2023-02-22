@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.SceneTemplate;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,9 @@ public class TranscriptionMaster : MonoBehaviour
     public GameObject TranscriptionTitle;
     public BodyTranscription BodyMTM;
     private DBSCANClusterer dbscan;
+    private int lastGraspFrame = 0;
+
+    private bool releaseToShort = false;
    
 
     public List<BasicMotion> MTMTranscription;
@@ -36,6 +40,7 @@ public class TranscriptionMaster : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         InitialiseSequenceDict();
         recMaster = RecorderObject.GetComponent<RecorderMaster>();
         bodyRec = RecorderObject.GetComponent<BodyRecorder>();
@@ -119,6 +124,9 @@ public class TranscriptionMaster : MonoBehaviour
     {
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
+
+        lastGraspFrame = frame;
+        
         //if (supressNextHandMotion){yield break;}
 
         yield return new WaitForSeconds(1f);
@@ -128,6 +136,12 @@ public class TranscriptionMaster : MonoBehaviour
         {
             Reach[] rB = CalculateReach(g);
             MTMTranscription.AddRange(rB);
+        }
+        
+        if(releaseToShort)
+        {
+            releaseToShort = false;
+            yield break;
         }
         MTMTranscription.Add(g);
         
@@ -144,8 +158,12 @@ public class TranscriptionMaster : MonoBehaviour
             yield break;
         }
         */
-        
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
+        if (lastGraspFrame == frame)
+        {
+            releaseToShort = true;
+        }
+        yield return new WaitForSeconds(0.9f);
         //calculate Release
         Release rl = CalculateRelease(isRightHand, obj, frame);
 
@@ -166,11 +184,16 @@ public class TranscriptionMaster : MonoBehaviour
             Disengage d = CalculateDisengage(rl);
             MTMTranscription.Add(d);
         }
-
-        
         
         Move[] ms = CalculateMoves(rl,positioningInvolved);
-        
+
+        if (ms is null)
+        {
+            releaseToShort = true;
+            Debug.Log("same frame release");
+            yield break;
+        }
+            
         if (ms[^1] != null)
         {
             MTMTranscription.AddRange(ms);
@@ -181,6 +204,11 @@ public class TranscriptionMaster : MonoBehaviour
             Position p = CalculatePositioning(rl);
             MTMTranscription.Add(p);
             //TODO: how to takkle positioning and disengaging
+        }
+        if (disengagingInvolved)
+        {
+            Disengage d = new Disengage(rl.isRightHand, 2, rl.m_object, rl.frame);
+            MTMTranscription.Add(d);
         }
         
         
@@ -203,7 +231,7 @@ public class TranscriptionMaster : MonoBehaviour
             if (mot is Release)
             {
                 Release rl = mot as Release;
-                if (obj.name.Equals(rl.m_object.name, StringComparison.Ordinal) && rl.isRightHand == isRightHand)
+                if (obj.name.Split("-")[0].Equals(rl.m_object.name.Split("-")[0], StringComparison.Ordinal) && rl.isRightHand == isRightHand)
                 {
 
                     if (frame - rl.frame < ThresholdValues.regraspAllowedFrames)
@@ -215,7 +243,7 @@ public class TranscriptionMaster : MonoBehaviour
             else if (mot is Grasp)
             {
                 Grasp g = mot as Grasp;
-                if (obj.name.Equals(g.m_object.name, StringComparison.Ordinal) && g.isRightHand != isRightHand)
+                if (obj.name.Split("-")[0].Equals(g.m_object.name.Split("-")[0], StringComparison.Ordinal) && g.isRightHand != isRightHand)
                 {
                     if (frame - g.frame < ThresholdValues.handChangeAllowedFrames)
                     {
@@ -284,7 +312,8 @@ public class TranscriptionMaster : MonoBehaviour
             {
                 Grasp tempG = mot as Grasp;
                 if (tempG.isRightHand!=isRightHand){continue;}
-                if (!obj.name.Equals(tempG.m_object.name, StringComparison.Ordinal))
+                Debug.Log(obj.name.Split("-")[0]+" "+tempG.m_object.name.Split("-")[0]+" "+obj.name.Split("-")[0].Equals(tempG.m_object.name.Split("-")[0], StringComparison.Ordinal));
+                if (!obj.name.Split("-")[0].Equals(tempG.m_object.name.Split("-")[0], StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -457,6 +486,9 @@ public class TranscriptionMaster : MonoBehaviour
         
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, column, startFrame, rl.frame), CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
+        if (distancesAndAngles is null)
+        {
+            return null;}
         
         float distance = distancesAndAngles.Last().Item1;
         float rotation = distancesAndAngles.Last().Item2;
@@ -496,7 +528,7 @@ public class TranscriptionMaster : MonoBehaviour
                 return returnArray;
             }
         }
-        
+
         returnArray[^1] = new Move(rl.isRightHand,2, distance, weight,rotation,rl.m_object,rl.frame); // move to approximate location
         return returnArray;
         

@@ -12,11 +12,15 @@ public class ButtonPress : MonoBehaviour
     public bool buttonOn = false;
     private float timePressed;
     private float timeToBePressed = 3f;
-    public GameObject light;
+    private Color onColor = new Color(124, 252, 0);
+    private Color offColor;
+    private Renderer rend;
 
     // Start is called before the first frame update
     void Start()
     {
+        rend = gameObject.GetComponent<Renderer>();
+        offColor = rend.material.color;
         timePressed = Time.realtimeSinceStartup;
         defaultPosition = new Vector3(gameObject.transform.localPosition.x,gameObject.transform.localPosition.y,gameObject.transform.localPosition.z);
         pressedPosition = new Vector3(defaultPosition.x, defaultPosition.y + distanceToMove, defaultPosition.z);
@@ -51,19 +55,26 @@ public class ButtonPress : MonoBehaviour
         gameObject.transform.localPosition = pressedPosition;
         buttonOn = true;
         timePressed = Time.realtimeSinceStartup;
-        ChangeLightning(2f);
+        changeColor(true);
     }
 
     void ButtonReturn()
     {
         gameObject.transform.localPosition = defaultPosition;
         buttonOn = false;
-        ChangeLightning(1f);
+        changeColor(false);
     }
 
-    void ChangeLightning(float newIntensity)
+    void changeColor(bool on)
     {
-        light.GetComponent<Light>().intensity = newIntensity;
+        if (on)
+        {
+            rend.material.color = onColor;
+        }
+        else
+        {
+            rend.material.color = offColor;
+        }
     }
     
 }

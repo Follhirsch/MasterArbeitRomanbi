@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -40,7 +41,12 @@ public class ObjectInteractions : MonoBehaviour
         
         //TranscribeMTM
         if (!transcribtionOn){return;}
-        if (supressNextHandMotion){return;}
+
+        if (supressNextHandMotion)
+        {
+            Debug.Log("g suppressed");
+            return;
+        }
         graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
@@ -61,6 +67,7 @@ public class ObjectInteractions : MonoBehaviour
         //TranscribeMTM
         if (supressNextHandMotion)
         {
+            Debug.Log("rl suppressed");
             supressNextHandMotion = false;
             return;
         }
@@ -102,7 +109,7 @@ public class ObjectInteractions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("x"))
+        /*if (Input.GetKeyDown("x"))
         {
             AddInteractionToList(2, true,GameObject.Find("CrankHandle"), true);
             Debug.Log(InteractionList.Count);
@@ -114,7 +121,7 @@ public class ObjectInteractions : MonoBehaviour
                 Debug.Log(InteractionList[i].frame);
             }
             
-        }
+        }*/
     }
     
     public void turnTranscriptionOn()
@@ -157,7 +164,7 @@ public class ObjectInteractions : MonoBehaviour
             GameObject tempObj = InteractionList[i].interactedObj;
             for (int j = 0; j < recordedObjects.Count; j++)
             {
-                if (recordedObjects[j].name == tempObj.name)
+                if (recordedObjects[j].name.Equals(tempObj.name,StringComparison.Ordinal))
                 {
                     nrString = j.ToString();
                     break;

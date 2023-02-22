@@ -9,7 +9,7 @@ public class HammeringNail : MonoBehaviour
     public GameObject nail;
     public ConstrainedMovable movable;
     public GameObject hammerhead;
-    public float deltaHammerhit;
+    public float deltaHammerhit =0.0225f;
     public float maxDistance = -0.0225f;
     public float timeBetweenHammering = 1f;
     private float hammerTime;

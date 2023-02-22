@@ -49,35 +49,24 @@ public class HandleScrewing : MonoBehaviour
 
     void SwapHammers()
     {
-        Debug.Log("Handle fully screwed in");
-        Debug.Log(newHammer.transform.parent.transform.position);
-            
-        Vector3 enclavePos = new Vector3(0.2f,-0.5f,0);//(newHammer.transform.position);
-        /*Vector3 positioning1 = newHammer.transform.position;
-        Vector3 positioning2 = newHammer.transform.GetChild(0).transform.position;
-        Vector3 deltaPos = positioning2 - positioning1;
-        Debug.Log(positioning1);*/
+        TranscriptionMaster MTMmaster = FindObjectOfType<TranscriptionMaster>();
+        if (MTMmaster.transcribtionOn)
+        {
+            if (MTMmaster.transcribeHands)
+            {
+                FindObjectOfType<ObjectInteractions>().supressNextHandMotion = true;
+            }
+        }
 
+        Vector3 enclavePos = new Vector3(0.2f,-0.5f,0);
+        
         Vector3 newPositionHammer = hammerHead.transform.position;
         Quaternion newRotHammer = hammerHead.transform.rotation;
         
-        
-        /*Vector3 newPositionHammerHead = hammer.transform.GetChild(0).transform.position;
-        Quaternion newRotHammerHead = hammer.transform.GetChild(0).transform.rotation;
-        Vector3 newPositionHammerHandle = hammer.transform.GetChild(0).transform.position;
-        Quaternion newRotHammerHandle = hammer.transform.GetChild(0).transform.rotation;*/
-        //hammer.GetComponent<MovablesCollisionHandler>().enabled = false;
         hammerHead.transform.position = enclavePos;
         hammerHead.transform.GetChild(0).transform.position = enclavePos;
         
         newHammer.transform.rotation = newRotHammer;
         newHammer.transform.position = newPositionHammer;
-        Debug.Log(newHammer.transform.position);
-        Debug.Log(newHammer.transform.GetChild(0).transform.position);
-        
-
-        /*newHammer.transform.GetChild(0).transform.rotation = newRotHammer;
-        newHammer.transform.GetChild(1).transform.position = newPositionHammerHandle;
-        newHammer.transform.GetChild(1).transform.rotation = newRotHammerHandle;*/
     }
 }

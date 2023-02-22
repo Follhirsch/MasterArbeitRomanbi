@@ -55,13 +55,14 @@ public class NailConstrain : MonoBehaviour
     {
         triggerEnabled = false;
         //suppress the next hand moton
-        if (MTMobj.GetComponent<TranscriptionMaster>().transcribtionOn)
+        TranscriptionMaster MTMmaster = FindObjectOfType<TranscriptionMaster>();
+        if (MTMmaster.transcribtionOn)
         {
-            if (MTMobj.GetComponent<TranscriptionMaster>().transcribeHands)
+            if (MTMmaster.transcribeHands)
             {
-                MTMobj.GetComponent<ObjectInteractions>().supressNextHandMotion = true;
+                FindObjectOfType<ObjectInteractions>().supressNextHandMotion = true;
             }
-        }//suppress next transcription
+        }
         
         //fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
         nailHandler.EndGrabCoeff = 1000f;
