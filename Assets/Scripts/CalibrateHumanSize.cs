@@ -72,7 +72,7 @@ public class CalibrateHumanSize : MonoBehaviour
     float calculateLegMip(float scaleIn)
     {
         float hipHight = hip.transform.position.y;
-        float mlp = (hipHight *1.0567f+0.0151f)*0.1f/scaleIn; //0.1f is the scale in witch the calibratino was performed
+        float mlp = (hipHight *1f+0.15f)*0.1f/scaleIn;//(hipHight *1.0567f+0.0151f)*0.1f/scaleIn; //0.1f is the scale in witch the calibratino was performed
         Debug.Log(mlp);
         return mlp;
     }
