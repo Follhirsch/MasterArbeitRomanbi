@@ -34,6 +34,7 @@ public class ObjectRecorder : MonoBehaviour
     public GameObject recObj8;
     public GameObject recObj9;
     public GameObject recObj10;
+    public GameObject recObj11;
     public List<string[]> IntaractinValuesList = new List<string[]>();
     public List<float[]> velocityList = new List<float[]>();
     public string folderdir;
@@ -148,7 +149,7 @@ public class ObjectRecorder : MonoBehaviour
         ObjectsToRecord.Add(recObj8);
         ObjectsToRecord.Add(recObj9);
         ObjectsToRecord.Add(recObj10);
-
+        ObjectsToRecord.Add(recObj11);
 
         totalNrOfObjects = ObjectsToRecord.Count;
         return CreateHeader();

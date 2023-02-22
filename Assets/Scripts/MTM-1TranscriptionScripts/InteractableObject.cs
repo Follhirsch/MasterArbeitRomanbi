@@ -29,6 +29,7 @@ public class InteractableObject : MonoBehaviour
     public bool isHammerHandleScrew = false;
     public bool isnotParticipating = false;
     public RecorderMaster recMaster;
+    public bool fakeInteractable = false;
     public string debugstring1;
     public string debugstring2;
     
@@ -38,7 +39,8 @@ public class InteractableObject : MonoBehaviour
         debugstring1 = "1/1/1/1/1/1/1/1/1/1/1/1/1";
         debugstring2 = "0/0/0/0/0/0/0/0/0/0/0/0/0";
         gameObject.tag = "InteractableObject";
-        weight = (int)gameObject.GetComponent<Rigidbody>().mass;
+        if (!isnotParticipating)
+        {weight = (int)gameObject.GetComponent<Rigidbody>().mass;}
         isInHandRH = false;
         isInHandLH = false;
         isFullyGrasped = false;
@@ -67,21 +69,19 @@ public class InteractableObject : MonoBehaviour
         {
             ReplayFromRecording(debugstring2);
         }*/
-
-
         //var handler = gameObject.GetComponent(typeof(CollisionHandler)) as MovablesCollisionHandler;
-
-        if (isConstrainedMovable || isCrank)
+        
+        if (isnotParticipating)
+        {
+            return;
+        }
+        else if (isConstrainedMovable || isCrank)
         {
             isFullyGrasped = gameObject.GetComponent<ConstrainedMovablesCollisionHandler>().isGrabbed;
         }
         else if (isHammerHandleScrew)
         {
             //TODO what am I doing with the knob collision Hanldler for grasping;
-        }
-        else if (isnotParticipating)
-        {
-            
         }
         else
         {

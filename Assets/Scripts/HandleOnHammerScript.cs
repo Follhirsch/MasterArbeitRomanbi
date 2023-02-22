@@ -30,7 +30,11 @@ public class HandleOnHammerScript : MonoBehaviour
     }
     void Update()
     {
-        
+        if (Input.GetKeyDown("j"))
+        {
+            SwapHammers();
+        }
+
     }
 
     void OnTriggerEnter(Collider other)

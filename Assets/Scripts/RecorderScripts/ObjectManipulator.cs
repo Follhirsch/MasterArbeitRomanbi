@@ -39,15 +39,17 @@ public class ObjectManipulator : MonoBehaviour
         totalNrobjects = objectsToReplay.Count;
         
         triggersToDeactivate = new List<GameObject>();
-        string[] tags = new [] { "HammerHeadTrigger","NailHole","NailGroupTrigger" };
+        string[] tags = new [] { "NailHole","NailGroupTrigger" };
         for (int i = 0; i < tags.Length; i++)
         {
             triggersToDeactivate.AddRange(GameObject.FindGameObjectsWithTag(tags[i]));
         }
+        
         componentsToDeactivate.AddRange(FindObjectsOfType<HammeringNail>());
         componentsToDeactivate.AddRange(FindObjectsOfType<ConstrainedNailScript>());
         componentsToDeactivate.AddRange(FindObjectsOfType<HandleScrewing>());
         componentsToDeactivate.AddRange(FindObjectsOfType<ButtonPress>());
+        componentsToDeactivate.AddRange(FindObjectsOfType<HandleOnHammerScript>());
     }
 
     // Update is called once per frame
@@ -224,7 +226,19 @@ public class ObjectManipulator : MonoBehaviour
 
         foreach (var obj in objectsToReplay)
         {
+            string n = obj.name;
+            if (n.Equals("Button") || n.Equals("PedalButton") || n.Equals("VR Objects-Nail fixed") ||
+                n.Equals("hammerhead-complete") || n.Equals("Handle-complete")||n.Equals("CrankHandle")){continue;}
             obj.GetComponent<Rigidbody>().useGravity = activate;
+            if (activate)
+            {
+                obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            }
+            else
+            {
+                obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            }
+            
         }
     }
 

@@ -1508,7 +1508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4300777859853747013, guid: aaccdb68ce5ccfd4da01c3ab8b59417c, type: 3}
       propertyPath: m_IsActive
@@ -4051,7 +4051,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   epsilon: 0.02
-  minPoints: 30
+  minPoints: 5
   displayRightHand: 1
   rad: 0.005
   spherePrefab: {fileID: 0}
@@ -4386,6 +4386,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!114 &559849809
@@ -5416,7 +5417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.45
+      value: 0.585
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5570,6 +5571,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!1 &645586989
@@ -6090,6 +6092,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!114 &700162524
@@ -6178,6 +6181,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!114 &763385013
@@ -7143,6 +7147,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!1 &856878319
@@ -7516,31 +7521,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.03684554
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7456266
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.032838404
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.6645337
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -174.342
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -83.418
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7370156802671013846, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7370156802671013846, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7370156802671013846, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7370156802671013846, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6503535031324115906, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6503535031324115906, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6503535031324115906, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6503535031324115906, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7af80248390e1b5438963f698f7b6732, type: 3}
       propertyPath: m_Name
@@ -8179,7 +8216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1024484637
 Transform:
   m_ObjectHideFlags: 0
@@ -8947,6 +8984,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!1 &1184520126
@@ -9235,7 +9273,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192606731}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0947}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10166,6 +10204,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!1 &1349905450
@@ -10887,7 +10926,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1432557207
 Transform:
   m_ObjectHideFlags: 0
@@ -13826,7 +13865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dir: 
   recorderSource: {fileID: 0}
-  sceneTarget: {fileID: 1432557206}
+  sceneTarget: {fileID: 0}
   objectsToReplay: []
   frame: 0
   totalNrobjects: 0
@@ -13857,6 +13896,7 @@ MonoBehaviour:
   recObj8: {fileID: 772101729}
   recObj9: {fileID: 1143975110}
   recObj10: {fileID: 700162521}
+  recObj11: {fileID: 2741248733054246144}
   folderdir: 
   searchTag: InteractableObject
   ObjectsToRecord: []
@@ -14742,6 +14782,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!54 &1948999766
@@ -15217,6 +15258,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!1 &2045957333
@@ -15650,6 +15692,7 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
 --- !u!65 &2082276303
@@ -16032,7 +16075,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 25}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1618020684}
   m_Father: {fileID: 2719837005253870081}
@@ -16067,6 +16110,7 @@ GameObject:
   - component: {fileID: 7536051110288016888}
   - component: {fileID: 1595862905}
   - component: {fileID: 7710136601592957439}
+  - component: {fileID: 7710136601592957440}
   m_Layer: 0
   m_Name: hammerhead-complete
   m_TagString: Untagged
@@ -16498,9 +16542,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 2741248733054246144}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd6309247592ae14e906c0a2a9bc0856, type: 3}
+  m_Script: {fileID: 11500000, guid: 0e9b75a3fe86371408fd0ff4590886b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 0
+  isSmall: 0
+  isCylindrical: 0
+  isInGroup: 0
+  isAtKnownLocation: 0
+  gotPositioned: 0
+  positionForce: 0
+  positioningSpecification: 0
+  gotDisengaged: 0
+  disengagingforce: 0
+  isCrank: 0
+  CrankSize: 0
+  crankAngleGrasp: 0
+  crankAngleRelease: 0
+  isInHandRH: 0
+  isInHandLH: 0
+  isFullyGrasped: 0
+  isConstrainedMovable: 0
+  isHammerHandleScrew: 0
+  isnotParticipating: 1
+  recMaster: {fileID: 0}
+  fakeInteractable: 0
+  debugstring1: 
+  debugstring2: 
+--- !u!54 &7710136601592957440
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2741248733054246144}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!23 &8032750206525031888
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16642,5 +16726,6 @@ MonoBehaviour:
   isHammerHandleScrew: 0
   isnotParticipating: 0
   recMaster: {fileID: 0}
+  fakeInteractable: 0
   debugstring1: 
   debugstring2: 
