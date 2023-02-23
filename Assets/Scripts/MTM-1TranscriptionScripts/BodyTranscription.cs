@@ -385,7 +385,7 @@ public class BodyTranscription : MonoBehaviour
         Vector3 forwardStart = Vector3.Normalize(Vector3.ProjectOnPlane(rotStart * Vector3.up,Vector3.up));
         Vector3 forwardEnd = Vector3.Normalize(Vector3.ProjectOnPlane(rotEnd * Vector3.up, Vector3.up));
         float angle = Math.Abs(Vector3.Angle(forwardStart, forwardEnd));
-        //Debug.Log("turn" + forwardStart + ""+ forwardEnd +""+ angle);
+        Debug.Log("turn" + forwardStart + ""+ forwardEnd +""+ angle);
 
         if (angle > ThresholdValues.stepAngleTurnMin)
         {

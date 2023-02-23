@@ -15,16 +15,25 @@ public class FootCalibration : MonoBehaviour
         {
             //Debug.Log(gameObject.transform.rotation);
             //Debug.Log(gameObject.transform.position);
+            
             Quaternion rot = gameObject.transform.rotation;
+            Vector3 forewardUncalibrated = gameObject.transform.up;
+            Vector3 correctedForward = new Vector3(forewardUncalibrated.x, 0, forewardUncalibrated.z);
+            /*Vector3 rightUncalibrated = gameObject.transform.right;
+            Vector3 correctedRitght = new Vector3(rightUncalibrated.x, 0, rightUncalibrated.z);*/
+            
             Vector3 pos = gameObject.transform.position;
             float x = pos.x;
             float y = 0.05f;
             float z = pos.z;
-            
-            float rx = rot.eulerAngles.x;
+
+            /*float rx = rot.eulerAngles.x;
             float ry = rot.eulerAngles.y;
-            float rz = rot.eulerAngles.z;
-            rot.eulerAngles = new Vector3(90,ry,rz);
+            float rz = rot.eulerAngles.z;*/
+            
+            /*gameObject.transform.right = correctedRitght;*/
+            //gameObject.transform.up = correctedForward;
+            //rot.eulerAngles = new Vector3(90,ry,rz);
             pos = new Vector3(x, y, z);
             gameObject.transform.rotation = rot;
             gameObject.transform.position = pos;
