@@ -24,9 +24,9 @@ public class InteractableObject : MonoBehaviour
     public int crankAngleRelease = 0;
     public bool isInHandRH;
     public bool isInHandLH;
-    public bool isFullyGrasped;
-    public bool isConstrainedMovable = false;
-    public bool isHammerHandleScrew = false;
+    public bool isFullyGrasped = false;
+    private bool isConstrainedMovable = false;
+    private bool isKnob = false;
     public bool isnotParticipating = false;
     public RecorderMaster recMaster;
     public bool fakeInteractable = false;
@@ -52,7 +52,7 @@ public class InteractableObject : MonoBehaviour
         KnobCollisionHandler handler2 = gameObject.GetComponent(typeof(KnobCollisionHandler)) as KnobCollisionHandler;
         if (handler2 != null)
         {
-            isHammerHandleScrew = true;
+            isKnob = true;
         }
         recMaster = GameObject.Find("Recorder/Player").GetComponent<RecorderMaster>();
 
@@ -79,7 +79,7 @@ public class InteractableObject : MonoBehaviour
         {
             isFullyGrasped = gameObject.GetComponent<ConstrainedMovablesCollisionHandler>().isGrabbed;
         }
-        else if (isHammerHandleScrew)
+        else if (isKnob)
         {
             //TODO what am I doing with the knob collision Hanldler for grasping;
         }

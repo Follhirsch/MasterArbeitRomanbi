@@ -365,7 +365,8 @@ public class TranscriptionMaster : MonoBehaviour
             //get data from recorder
             Vector3[][] recorderDataPos;
             Quaternion[][] recorderDataRot;
-            int column = 7;
+            int columnFinger = 7;
+            int columnWrist = 1;
             if (g.isRightHand)
             {
                 if (transcribeFromReplay)
@@ -393,8 +394,8 @@ public class TranscriptionMaster : MonoBehaviour
                 }
             }
             Tuple<float, float>[] distancesAndAngles = DistanceClassification(
-            CreateSinglePath(recorderDataPos, column, startFrame, g.frame),
-            CreateSingleRotPath(recorderDataRot, column, startFrame, g.frame));
+            CreateSinglePath(recorderDataPos, columnFinger, startFrame, g.frame),
+            CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, g.frame));
         
         float distance = distancesAndAngles.Last().Item1;
         float rotation = distancesAndAngles.Last().Item2;
@@ -454,7 +455,8 @@ public class TranscriptionMaster : MonoBehaviour
         //get data from recorder
         Vector3[][] recorderDataPos;
         Quaternion[][] recorderDataRot;
-        int column = 7;
+        int columnFinger = 7;
+        int columnWrist = 1;
         if (rl.isRightHand)
         {
             if (transcribeFromReplay)
@@ -483,9 +485,10 @@ public class TranscriptionMaster : MonoBehaviour
         }
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         int weight = interactionValues.weight;
-        
+
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
-            CreateSinglePath(recorderDataPos, column, startFrame, rl.frame), CreateSingleRotPath(recorderDataRot, column, startFrame, rl.frame));
+            CreateSinglePath(recorderDataPos, columnFinger, startFrame, rl.frame),
+            CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, rl.frame));
         if (distancesAndAngles is null)
         {
             return null;}
@@ -496,7 +499,8 @@ public class TranscriptionMaster : MonoBehaviour
         Move[] returnArray = new Move[distancesAndAngles.Length];
         for (int i = 0; i < returnArray.Length-1; i++)
         {
-            returnArray[i] = new Move(rl.isRightHand,2,distancesAndAngles[i].Item1,weight,distancesAndAngles[i].Item2,rl.m_object,rl.frame);
+            returnArray[i] = new Move(rl.isRightHand, 2, distancesAndAngles[i].Item1, weight,
+                distancesAndAngles[i].Item2, rl.m_object, rl.frame);
         }
 
         /*if (distance < ThresholdValues.minMoveDistThreshold)

@@ -228,7 +228,9 @@ public class ObjectManipulator : MonoBehaviour
         {
             string n = obj.name;
             if (n.Equals("Button") || n.Equals("PedalButton") || n.Equals("VR Objects-Nail fixed") ||
-                n.Equals("hammerhead-complete") || n.Equals("Handle-complete")||n.Equals("CrankHandle")){continue;}
+                n.Equals("hammerhead-complete") || n.Equals("Handle-complete")||n.Equals("CrankHandle"))
+            {continue;}
+            
             obj.GetComponent<Rigidbody>().useGravity = activate;
             if (activate)
             {
