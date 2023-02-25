@@ -12,7 +12,9 @@ public class ObjectInteractions : MonoBehaviour
     public bool transcribtionOn;
 
     public bool supressNextHandMotion = false;
-    public bool suppressGroupedObjectMotions;
+    public bool suppressGroupedObjectMotions = false;
+    public float timeGroupObjSupression = 1f;
+    private float groupedSuppressionTimeStamp;
     //public GameObject transcriptionDisplay;
     private Dictionary<GameObject, bool> test;
     private TranscriptionMaster transcriptionMaster;
@@ -25,26 +27,33 @@ public class ObjectInteractions : MonoBehaviour
     {
         transcribtionOn = false;
         transcriptionMaster = gameObject.GetComponent<TranscriptionMaster>();
+        groupedSuppressionTimeStamp = Time.realtimeSinceStartup;
     }
+    
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
         //update InteractableObject
         graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
         
+        Debug.Log("teoretical grasp: "+graspedObj.name);
         if (graspedObj.GetComponent<InteractableObject>().isInGroup)
         {
             if (suppressGroupedObjectMotions) {return;}
             suppressGroupedObjectMotions = true;
+            groupedSuppressionTimeStamp = Time.realtimeSinceStartup;
             groupSuppressionObj = graspedObj;
         }
         
         //TranscribeMTM
-        if (!transcribtionOn){return;}
+        if (!transcribtionOn)
+        {
+            return;
+        }
 
         if (supressNextHandMotion)
         {
-            Debug.Log("g suppressed");
+            Debug.Log("g suppressed: "+ graspedObj.name);
             return;
         }
         graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
@@ -56,6 +65,7 @@ public class ObjectInteractions : MonoBehaviour
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
         // update interactableObject
+        Debug.Log("teoretical release: "+releasedObj.name);
         releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
         
         if (suppressGroupedObjectMotions)
@@ -67,7 +77,7 @@ public class ObjectInteractions : MonoBehaviour
         //TranscribeMTM
         if (supressNextHandMotion)
         {
-            Debug.Log("rl suppressed");
+            Debug.Log("rl suppressed" + releasedObj.name);
             supressNextHandMotion = false;
             return;
         }
@@ -109,25 +119,21 @@ public class ObjectInteractions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKeyDown("x"))
+        if (suppressGroupedObjectMotions)
         {
-            AddInteractionToList(2, true,GameObject.Find("CrankHandle"), true);
-            Debug.Log(InteractionList.Count);
-        }
-        if (Input.GetKeyDown("y")) 
-        {
-            for (int i = 0; i < InteractionList.Count; i++)
+            if (timeGroupObjSupression + groupedSuppressionTimeStamp < Time.realtimeSinceStartup)
             {
-                Debug.Log(InteractionList[i].frame);
+                suppressGroupedObjectMotions = false;
             }
-            
-        }*/
+        }
     }
     
     public void turnTranscriptionOn()
     {
         InteractionList.Clear();
         transcribtionOn = true;
+        suppressGroupedObjectMotions = false;
+        supressNextHandMotion = false;
     }
     public void turnTranscriptionOff(string sequenceDir,List<GameObject> objList)
     {
