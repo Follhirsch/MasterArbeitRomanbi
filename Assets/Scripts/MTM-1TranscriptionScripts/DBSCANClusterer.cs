@@ -64,13 +64,26 @@ public class DBSCANClusterer : MonoBehaviour {
             }
             
             posArray = new Vector3[endFrame-startFrame];
-            
-            for (int i = startFrame; i < posArray.Length; i++)
+            int ii = startFrame;
+            for (int i = 0; i < posArray.Length; i++)
             {
-                posArray[i] = demoPosArray[i][index];
+                posArray[i] = demoPosArray[ii][index];
+                ii++;
             }
             Cluster(posArray);
             drawData();
+
+
+            Tuple<int, int>[] frames = classifyMotionFrames(posArray);
+            for (int i = 0; i < frames.Length; i++)
+            {
+                Vector3 pos1 = posArray[frames[i].Item1];
+                Vector3 pos2 = posArray[frames[i].Item2];
+                float delta = (pos2 - pos1).magnitude * 100;
+                Debug.Log("move" + (i+1) + " frame"+frames[i].Item1 +" to"+frames[i].Item2+" from " + pos1 + " to " + pos2 + " dist: " + delta);
+            }
+
+
         }
         if (Input.GetKeyDown("d"))
         {
@@ -141,7 +154,6 @@ public class DBSCANClusterer : MonoBehaviour {
 
     public Tuple<int, int>[] classifyMotionFrames(Vector3[] posData)
     {
-        //Debug.Log("debug 1");
         if (posData.Length < 1) { return null;}
         int numPoints = posData.Length;
         int[] clusterLabels = new int[numPoints];
@@ -167,29 +179,18 @@ public class DBSCANClusterer : MonoBehaviour {
                 ExpandCluster(i, neighbors, clusterIndex, clusterLabels, posData);
             }
         }
-        //Debug.Log("debug 2");
-
-        //nrOfGroups = clusterIndex;
-        //groupIDs = clusterLabels;
 
         bool startMissed = false;
-        bool endmissed = false;
+        int startLabel = -1;
+        bool endMissed = false;
+        int endLabel = -1;
         for (int i = 0; i < Math.Min(10,clusterLabels.Length); i++)
         {
             bool tempBoolS = (clusterLabels[i] != -1);
             if (tempBoolS)
             {
                 startMissed = false;
-                break;
-            }
-            else {startMissed = true; }
-        }
-        for (int i = 0; i < Math.Min(10,clusterLabels.Length); i++)
-        {
-            bool tempBoolE = clusterLabels[^(i+1)] != -1;
-            if (tempBoolE)
-            {
-                startMissed = false;
+                startLabel = clusterLabels[i];
                 break;
             }
             else
@@ -197,13 +198,42 @@ public class DBSCANClusterer : MonoBehaviour {
                 startMissed = true;
             }
         }
+        for (int i = 0; i < Math.Min(10,clusterLabels.Length); i++)
+        {
+            bool tempBoolE = clusterLabels[^(i+1)] != -1;
+            if (tempBoolE)
+            {
+                endMissed = false;
+                endLabel = clusterLabels[^(i + 1)];
+                break;
+            }
+            else
+            {
+                endMissed = true;
+            }
+        }
+        //if both not missed check if they are in the same label if yes assign witch one is missed
+        if (!startMissed && !endMissed)
+        {
+            if (startLabel == endLabel)
+            {
+                if (startLabel != 1)
+                {
+                    startMissed = true;
+                }
+                else
+                {
+                    endMissed = true;
+                }
+            }
+        }
         
-        int addMissedStart = clusterLabels[0] == -1 ? 1 : 0;
-        int addMissedEnd = clusterLabels[^1] == -1 ? 1 : 0;
+        
         int comparisonindex = clusterIndex;
-        if (startMissed) { clusterIndex++;}
-        if (endmissed) { clusterIndex++;}
-        //Debug.Log("comparison " + comparisonindex);
+        if (startMissed) { comparisonindex++;}
+        if (endMissed) { comparisonindex++;}
+
+
         if (comparisonindex < 3)
         {
             Tuple<int, int>[] singleReturnTouples = new Tuple<int, int>[1];
@@ -211,74 +241,65 @@ public class DBSCANClusterer : MonoBehaviour {
             return singleReturnTouples;
         }
         
-        //Debug.Log("debug 3");
-
-        int[] indexframes = new int[clusterIndex];
+        //get detected frames
+        List<int> indexframes = new List<int>();
         for (int i = 1; i < clusterIndex+1; i++)
         {
             for (int j = 0; j < clusterLabels.Length; j++)
             {
                 if (clusterLabels[j] == i)
                 {
-                    indexframes[i - 1] = j;
+                    indexframes.Add(j);
                     break;
                 }
             }
         }
         
-        int[] indexEndFrames = new int[indexframes.Length];
-        for (int i = 0; i < indexEndFrames.Length-1; i++)
+        List<int> indexEndFrames = new List<int>();
+        for (int i = 0; i < indexframes.Count-1; i++)
         {
-            indexEndFrames[i] = indexframes[i + 1];
+            indexEndFrames.Add(indexframes[i + 1]);
         }
 
-        int[] startFrames = new int[comparisonindex - 1];
-        int[] endFrames = new int[startFrames.Length];
+        //int[] startFrames = new int[comparisonindex-1];
+        //int[] endFrames = new int[startFrames.Length];
 
-        int ii = 0;
+        List<int> startFrames = new List<int>();
+        List<int> endFrames = new List<int>(); 
+
         if (startMissed)
         {
-            ii = 1;
-            startFrames[0] = 0;
-            endFrames[0] = indexframes[0];
+            startFrames.Add(0);
+            endFrames.Add(indexframes[0]);
+            startFrames = startFrames.Concat(indexframes).ToList();
+            endFrames = endFrames.Concat(indexEndFrames).ToList();
         }
-        for (int i = 0; i < indexframes.Length; i++)
+        else
         {
-            startFrames[ii] = indexframes[i];
-            endFrames[ii] = indexEndFrames[i];
-            i++;
+            startFrames = indexframes;
+            endFrames = indexEndFrames;
         }
-        if (endmissed)
+        if (endMissed)
         {
-            startFrames[ii] = indexEndFrames[^1];
-            endFrames[ii] = posData.Length - 1;
+            endFrames.Add(posArray.Length-1);
         }
+        else
+        {
+            startFrames.RemoveAt(startFrames.Count-1);
+        }
+        
+        
         startFrames[0] = 0;
         endFrames[^1] = posData.Length - 1;
         
-        //endFrames[^1] = posData.Length-1;
 
-        /*for (int i = 2-addMissedStart; i < clusterIndex+1; i++)
-        {
-            for (int j = 0; j < clusterLabels.Length; j++)
-            {
-                if (clusterLabels[j] == i)
-                {
-                    endFrames[i+addMissedStart - 2] = j;
-                    startFrames[i+addMissedStart-1] = j;
-                    break;
-                }
-            }
-        }*/
-        
-        Tuple<int, int>[] returnTuples = new Tuple<int, int>[startFrames.Length];
-        //Debug.Log("frames calculated start"+startFrames+"end"+endFrames);
+
+        Tuple<int, int>[] returnTuples = new Tuple<int, int>[startFrames.Count];
 
         for (int i = 0; i < returnTuples.Length; i++)
         {
             returnTuples[i] = new Tuple<int, int>(startFrames[i], endFrames[i]);
         }
-        //Debug.Log(returnTuples);
         
         return returnTuples;
     }
