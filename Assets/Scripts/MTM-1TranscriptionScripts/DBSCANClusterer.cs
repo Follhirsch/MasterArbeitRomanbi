@@ -9,6 +9,7 @@ public class DBSCANClusterer : MonoBehaviour {
     
     //https://iopscience.iop.org/article/10.1088/1755-1315/31/1/012012/pdf to find good epsilon
     public float epsilon = 0.02f;  // Radius around each point that determines its neighborhood
+    public int deltaFrames = 10;
     public int minPoints = 20;  // Minimum number of points required to form a dense region
 
     public bool displayRightHand = true;
@@ -308,7 +309,10 @@ public class DBSCANClusterer : MonoBehaviour {
         List<int> neighbors = new List<int>();
         Vector3 point = posData[pointIndex];
 
-        for (int i = 0; i < posData.Length; i++) {
+        int start = Math.Max(0, pointIndex - deltaFrames);
+        int end = Math.Min(posData.Length, pointIndex + deltaFrames);
+
+        for (int i = start; i < end; i++) {
             if (i == pointIndex) {
                 continue;
             }
