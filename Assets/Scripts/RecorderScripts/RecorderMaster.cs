@@ -295,7 +295,6 @@ public class RecorderMaster : MonoBehaviour
     IEnumerator playShadowHands()
     {
         frame = 0;
-        Debug.Log("hello");
         EnableShadowHands(true);
         yield return new WaitForSeconds(0.5f);
 

@@ -37,13 +37,15 @@ public class ConstrainedNailScript : MonoBehaviour
         grabcoefficient = nailHandler.EndGrabCoeff;
     }
 
+    
+
     // Update is called once per frame
     void Update()
     {
         if(!triggerEnabled){return;}
         if (fixedNailMovableHandler.movedDistance >= fixedNailMovableHandler.upperBound)
         {
-            fixedNailMovableHandler.upperBound = fixedNailMovableHandler.upperBound+0.01f;
+            //fixedNailMovableHandler.upperBound = fixedNailMovableHandler.upperBound+0.00001f;
             SwapNails();
         }
         

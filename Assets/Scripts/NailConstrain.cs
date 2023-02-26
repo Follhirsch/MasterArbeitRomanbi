@@ -12,7 +12,7 @@ public class NailConstrain : MonoBehaviour
     public GameObject Nail;
     public float reenterTimeDelay = 1f;
     public float exitTime;
-    public bool triggerEnabled = true;
+    public static bool triggerEnabled = true;
     private MovablesCollisionHandler nailHandler;
     private float grabcoefficient;
     // Start is called before the first frame update
@@ -26,15 +26,19 @@ public class NailConstrain : MonoBehaviour
         triggerEnabled = true;
     }
 
-    void OnEnable()
+    /*void OnEnable()
     {
         exitTime = Time.realtimeSinceStartup;
-    }
+    }*/
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown("space")) //replay everything
+        {
+            exitTime = Time.realtimeSinceStartup-reenterTimeDelay;
+            triggerEnabled = true;
+        }
     }
     void OnTriggerEnter(Collider other)
     {
@@ -77,6 +81,6 @@ public class NailConstrain : MonoBehaviour
 
         ConstrainedNailScript fixNailScript = fixedNail.GetComponent<ConstrainedNailScript>();
         fixNailScript.MoveToHole();
-        fixNailScript.inputNail = Nail;
+        //fixNailScript.inputNail = Nail;
     }
 }

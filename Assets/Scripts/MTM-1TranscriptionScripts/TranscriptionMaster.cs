@@ -145,12 +145,56 @@ public class TranscriptionMaster : MonoBehaviour
     {
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
-
-        lastGraspFrame = frame;
-        
-        //if (supressNextHandMotion){yield break;}
-
+        if (frame == lastGraspFrame){yield break;}
         yield return new WaitForSeconds(1f);
+        lastGraspFrame = frame;
+        //if (supressNextHandMotion){yield break;}
+        //create list of objects thet should be in this hand
+        List<GameObject> specificGraspedObj = new List<GameObject>();
+        foreach (BasicMotion mot in MTMTranscription) // create release List
+        {
+            if (mot is Grasp tempG)
+            {
+                if (tempG.isRightHand == isRightHand)
+                {
+                    specificGraspedObj.Add(tempG.m_object);
+                }
+            }
+        }
+        Debug.Log("graspedobjs");
+        foreach (var tempObj in specificGraspedObj)
+        {
+            Debug.Log(tempObj.name);
+        }
+        foreach (BasicMotion mot in MTMTranscription) // create release List
+        {
+            if (mot is Release tempRl)
+            {
+                foreach (var asdf in specificGraspedObj)
+                {
+                    if (asdf.name.Split("-")[0].Equals(tempRl.m_object.name.Split("-")[0], StringComparison.Ordinal) &&
+                        tempRl.isRightHand == isRightHand)
+                    {
+                        specificGraspedObj.Remove(asdf);
+                        break;
+                    }
+                }
+            }
+        }
+        Debug.Log("releasedobjs");
+        foreach (var tempObj in specificGraspedObj)
+        {
+            Debug.Log(tempObj.name);
+        }
+
+        foreach (var tempObj in specificGraspedObj)
+        {
+            if (obj.name.Split("-")[0].Equals(tempObj.name.Split("-")[0], StringComparison.Ordinal))
+            {yield break;}
+        }
+
+
+        
         Grasp g = CalculateGrasp(isRightHand, obj, frame);
         
         if (g.differentiation != 2) // was not regrasp? -> add reach
@@ -192,13 +236,16 @@ public class TranscriptionMaster : MonoBehaviour
         if (interactionValues.isCrank)
         {
             Crank c = CalculateCrank(rl);
+            MTMTranscription.Add(c);
             MTMTranscription.Add(rl);
+            StartCoroutine(updateCanvas());
             yield break;
         }
 
         bool positioningInvolved = interactionValues.gotPositioned;
         interactionValues.gotPositioned = false;
         bool disengagingInvolved = interactionValues.gotDisengaged;
+        interactionValues.gotDisengaged = false;
 
         if (disengagingInvolved)
         {
@@ -226,11 +273,7 @@ public class TranscriptionMaster : MonoBehaviour
             MTMTranscription.Add(p);
             //TODO: how to takkle positioning and disengaging
         }
-        if (disengagingInvolved)
-        {
-            Disengage d = new Disengage(rl.isRightHand, 2, rl.m_object, rl.frame);
-            MTMTranscription.Add(d);
-        }
+        
         
         
         MTMTranscription.Add(rl);
@@ -705,11 +748,11 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new List<string[]>
         {
-            new [] { "R", "C" }, new [] { "G", "4", "B" }, new [] { "M", "C" }, new [] { "RL", "1" }
+            new [] { "R", "C" }, new [] { "G", "4", "B" }, new [] { "M", "C" },new[] { "P" }, new [] { "RL", "1" }
         }));
         sequenceDict.Add(5, new Svars(false, true, "Hammer Nail", new List<string[]>
         {
-            new[] { "R", "C" }, new[] { "G", "1", "A" }, new[] { "M", "B" }, new[] { "M", "B" }, new[] { "M", "B" },
+            new[] { "R", "B" }, new[] { "G", "1", "A" }, new[] { "M", "B" }, new[] { "M", "B" }, new[] { "M", "B" },
             new[] { "M", "B" }, new[] { "RL", "1" }
         }));
         sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new List<string[]>
