@@ -282,7 +282,7 @@ public class DBSCANClusterer : MonoBehaviour {
         }
         if (endMissed)
         {
-            endFrames.Add(posArray.Length-1);
+            endFrames.Add(posData.Length-1);
         }
         else
         {

@@ -31,11 +31,13 @@ public class TranscriptionMaster : MonoBehaviour
     private int lastGraspFrame = 0;
 
     private bool releaseToShort = false;
-   
+    private int mtmScrollin = 0;
 
     public List<BasicMotion> MTMTranscription;
     private int sequence = 0;
     public Dictionary<int,Svars> sequenceDict = new Dictionary<int, Svars>();
+    public GameObject debugObj;
+    private Quaternion debugQuat;
 
     // Start is called before the first frame update
     void Start()
@@ -59,29 +61,45 @@ public class TranscriptionMaster : MonoBehaviour
         Debug.Log("contact "+testMot.compareMotion(new string[] { "R"}));
         Debug.Log("contact "+testMot.compareMotion(new string[] { "C" }));
         */
-        MTMTranscription.Add(new Reach(true,2,1,35,10));
+        /*MTMTranscription.Add(new Reach(true,2,1,35,10));
         MTMTranscription.Add(new Grasp(true,1,1,new GameObject(),10));
         MTMTranscription.Add(new Release(true,new GameObject(),2,100));
-        MTMTranscription.Add(new Reach(true,1,10,40,20));
+        MTMTranscription.Add(new Reach(true,1,10,40,20));*/
 
         StartCoroutine(updateCanvas());
 
         /*new string[] { "R", "B" }, new string[] { "G", "1", "A" }, new string[] { "R", "A" },
         new string[] { "G", "3", "" }, new string[] { "M", "A" }, new string[] { "RL", "1" },
         new string[] { "M", "B" }, new string[] { "RL", "1" }*/
-
+        debugQuat = debugObj.transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("o"))
+        if (Input.GetKeyDown("up"))
         {
-            for (int i = 0; i < MTMTranscription.Count; i++)
-            {
-                Debug.Log(MTMTranscription[i].GetType() + "frame"+MTMTranscription[i].frame);
-            }
+            mtmScrollin++;
+            StartCoroutine(updateCanvas());
         }
+        if (Input.GetKeyDown("down"))
+        {
+            mtmScrollin--;
+            if (mtmScrollin < 0) { mtmScrollin = 0;}
+            
+            StartCoroutine(updateCanvas());
+        }
+        if (Input.GetKeyDown("t"))
+        {
+            Quaternion newQuat = debugObj.transform.rotation;
+            
+            
+            float asdf = Vector3.Angle(debugQuat * Vector3.up, newQuat * Vector3.up);
+            debugQuat = newQuat;
+            Debug.Log("angle: "+ asdf);
+
+        }
+        
         
     }
     public void turnTranscriptionOn()
@@ -109,13 +127,16 @@ public class TranscriptionMaster : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         string textOutput = "";
 
-        bool[] correctlyDetectedMotions = compareMTMList();
-        
-        for (int i = Math.Max(MTMTranscription.Count-10,0); i < MTMTranscription.Count; i++)
+        bool[] correctlyDetectedMotions = compareMTMList(out int missingMotions);
+
+        int start = Math.Max(MTMTranscription.Count-10-mtmScrollin,0);
+        int end = Math.Max(MTMTranscription.Count-mtmScrollin,0);
+        for (int i = Math.Max(MTMTranscription.Count-10,0); i < end; i++)
         {
             string detected = correctlyDetectedMotions[i] ? "☑" : "☐";
             textOutput += detected +"  "+MTMTranscription[i].createOutputString(false) + "\n";
         }
+        textOutput += missingMotions + " Missing Motions\n";
 
         TranscriptionCanvas.transform.GetChild(0).GetComponent<Text>().text = textOutput;
     }
@@ -312,9 +333,19 @@ public class TranscriptionMaster : MonoBehaviour
             {
                 Grasp tempG = mot as Grasp;
                 if (tempG.isRightHand!=isRightHand){continue;}
-                Debug.Log(obj.name.Split("-")[0]+" "+tempG.m_object.name.Split("-")[0]+" "+obj.name.Split("-")[0].Equals(tempG.m_object.name.Split("-")[0], StringComparison.Ordinal));
+                //Debug.Log(obj.name.Split("-")[0]+" "+tempG.m_object.name.Split("-")[0]+" "+obj.name.Split("-")[0].Equals(tempG.m_object.name.Split("-")[0], StringComparison.Ordinal));
+                
                 if (!obj.name.Split("-")[0].Equals(tempG.m_object.name.Split("-")[0], StringComparison.Ordinal))
                 {
+                    if (obj.name.Split("-")[0].Equals("Hammer"))
+                    {
+                        if (tempG.m_object.name.Split("-")[0].Equals("Handle", StringComparison.Ordinal))
+                        {
+                            g = tempG;
+                            tempFrame = g.frame;
+                            graspfound = true;
+                        }
+                    }
                     continue;
                 }
                 if (tempG.frame > tempFrame)
@@ -393,6 +424,7 @@ public class TranscriptionMaster : MonoBehaviour
                     recorderDataRot = bodyRec.lOriQuaternion.ToArray();
                 }
             }
+            Debug.Log("motion of rH: "+g.isRightHand +"from "+startFrame +"to "+ g.frame);
             Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, columnFinger, startFrame, g.frame),
             CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, g.frame));
@@ -418,8 +450,9 @@ public class TranscriptionMaster : MonoBehaviour
             returnArray[^1] = new Reach(g.isRightHand, 3, distance, rotation, g.frame);
             return returnArray;
         }
-        
-        if (g.m_object.GetComponent<InteractableObject>().isAtKnownLocation)
+
+        InteractableObject intObj = g.m_object.GetComponent<InteractableObject>();
+        if (intObj.isAtKnownLocation||g.differentiation==3)
         {
             returnArray[^1] = new Reach(g.isRightHand,1, distance,rotation ,g.frame);
         }
@@ -485,7 +518,7 @@ public class TranscriptionMaster : MonoBehaviour
         }
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         int weight = interactionValues.weight;
-
+        Debug.Log("move of rH: "+rl.isRightHand +"from "+startFrame +"to "+ rl.frame);
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, columnFinger, startFrame, rl.frame),
             CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, rl.frame));
@@ -668,7 +701,7 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(3, new Svars(false, true, "Push Hammer", new List<string[]>
         {
-            new [] { "R", "B" }, new [] { "G", "5", "C" }, new [] { "M", "B" }, new [] { "RL", "2" }
+            new [] { "R", "B" }, new [] { "G", "5", "" }, new [] { "M", "B" }, new [] { "RL", "2" }
         }));
         sequenceDict.Add(4, new Svars(false, true, "Insert Nail", new List<string[]>
         {
@@ -740,9 +773,10 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
     }
-    bool[] compareMTMList()
+    bool[] compareMTMList(out int amountOfMissingMotions)
     {
         List<string[]> compList = sequenceDict[sequence].expectedMotions;
+        amountOfMissingMotions = compList.Count;
         bool[] expectedMotionsFound = Enumerable.Repeat(false, compList.Count).ToArray();
         bool[] motionsFoundInExpected = Enumerable.Repeat(false, MTMTranscription.Count).ToArray();
         if (compList.Count < 1) { return motionsFoundInExpected;}
@@ -757,6 +791,7 @@ public class TranscriptionMaster : MonoBehaviour
                 {
                     expectedMotionsFound[j] = true;
                     motionsFoundInExpected[i] = true;
+                    amountOfMissingMotions--;
                     break;
                 }
             }

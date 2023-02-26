@@ -118,6 +118,8 @@ public class ObjectRecorder : MonoBehaviour
 
     public void StartRecording(string folderDir)
     {
+        posVectors.Clear();
+        oriQuaternion.Clear();
         folderdir = folderDir;
         framerate = recorderObject.GetComponent<RecorderMaster>().framerate;
         FolderDirectory = folderDir;

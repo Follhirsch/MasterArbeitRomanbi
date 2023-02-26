@@ -100,6 +100,13 @@ public class BodyRecorder : MonoBehaviour
             FolderDirectory = Directory.CreateDirectory("Assets/Resources/Recordings/Recording"+ "_" + System.DateTime.Now.ToString("yyyyMMdd_HHmm"));
             dir = FolderDirectory.ToString();
         }*/
+        bodyRestPosVectors.Clear();
+        bodyRestOriQuaternions.Clear();
+        lPosVectors.Clear();
+        lOriQuaternion.Clear();
+        rPosVectors.Clear();
+        rOriQuaternion.Clear();
+        
 
         if (recordHands) 
         {

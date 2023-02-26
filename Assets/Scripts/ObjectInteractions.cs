@@ -34,9 +34,11 @@ public class ObjectInteractions : MonoBehaviour
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
         //update InteractableObject
-        graspedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,true);
+        InteractableObject intObj = graspedObj.GetComponent<InteractableObject>();
+        if (intObj is null){return;}
+        intObj.UpdateValues(isRightHand, true);
         
-        Debug.Log("teoretical grasp: "+graspedObj.name);
+        //Debug.Log("teoretical grasp: "+graspedObj.name);
         if (graspedObj.GetComponent<InteractableObject>().isInGroup)
         {
             if (suppressGroupedObjectMotions) {return;}
@@ -53,7 +55,7 @@ public class ObjectInteractions : MonoBehaviour
 
         if (supressNextHandMotion)
         {
-            Debug.Log("g suppressed: "+ graspedObj.name);
+            //Debug.Log("g suppressed: "+ graspedObj.name);
             return;
         }
         graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
@@ -65,8 +67,10 @@ public class ObjectInteractions : MonoBehaviour
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
         // update interactableObject
-        Debug.Log("teoretical release: "+releasedObj.name);
-        releasedObj.GetComponent<InteractableObject>().UpdateValues(isRightHand,false);
+       // Debug.Log("teoretical release: "+releasedObj.name);
+        InteractableObject intObj = releasedObj.GetComponent<InteractableObject>();
+        if (intObj is null){return;}
+        intObj.UpdateValues(isRightHand, false);
         
         if (suppressGroupedObjectMotions)
         {
@@ -77,7 +81,7 @@ public class ObjectInteractions : MonoBehaviour
         //TranscribeMTM
         if (supressNextHandMotion)
         {
-            Debug.Log("rl suppressed" + releasedObj.name);
+            //Debug.Log("rl suppressed" + releasedObj.name);
             supressNextHandMotion = false;
             return;
         }
