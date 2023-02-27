@@ -757,7 +757,7 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(6, new Svars(false, true, "Disengage Nail", new List<string[]>
         {
-            new[] { "R", "D" }, new[] { "G", "1", "B" }, new[] { "D" }, new[] { "M", "B" }, new[] { "RL", "1" }
+            new[] { "R", "A" }, new[] { "G", "1", "B" }, new[] { "D" }, new[] { "M", "B" }, new[] { "RL", "1" }
         }));
         sequenceDict.Add(7, new Svars(false, true, "Use Crank", new List<string[]>
         {
@@ -765,7 +765,7 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>
         {
-            new[] { "R", "B" }, new[] { "R", "A" }, new[] { "G", "5" }, new[] { "RL", "2" }
+            new[] { "R", "E" }, new[] { "R", "A" }, new[] { "G", "5" }, new[] { "RL", "2" }
         }));
         sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>
         {

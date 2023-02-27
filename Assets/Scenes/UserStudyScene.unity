@@ -5282,7 +5282,7 @@ MonoBehaviour:
   immediatelyReapplyConstraints: 0
   isGrabbed: 0
   StartGrabCoeff: 5
-  EndGrabCoeff: 2
+  EndGrabCoeff: 4
   debugGrabCoeff: 0
   onGrab:
     m_PersistentCalls:
@@ -11612,7 +11612,6 @@ MonoBehaviour:
   Nail: {fileID: 0}
   reenterTimeDelay: 1
   exitTime: 0
-  triggerEnabled: 1
 --- !u!136 &1311671326
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -12252,7 +12251,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1353422892
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12517,6 +12516,7 @@ MonoBehaviour:
   deltaHammerhit: 0.0225
   maxDistance: -0.0225
   timeBetweenHammering: 1
+  rec: {fileID: 1848330096}
 --- !u!136 &1415207981
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -17980,7 +17980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1da81ad7ca3ad941b37a9d39788a95c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputNail: {fileID: 0}
+  inputNail: {fileID: 820088572}
   fixedNail: {fileID: 0}
   MTMobj: {fileID: 497665591}
   enclavepos: {x: 0, y: 0, z: 0}
@@ -18346,7 +18346,6 @@ MonoBehaviour:
   Nail: {fileID: 0}
   reenterTimeDelay: 1
   exitTime: 0
-  triggerEnabled: 1
 --- !u!136 &2059560279
 CapsuleCollider:
   m_ObjectHideFlags: 0
