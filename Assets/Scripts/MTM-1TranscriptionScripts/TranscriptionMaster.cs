@@ -146,9 +146,15 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
         yield return new WaitForSeconds(1f);
-        if (frame == lastGraspFrame){yield break;}
+        Debug.Log("startcalculating grasp of " + obj.name);
+        if (frame == lastGraspFrame)
+        {
+            Debug.Log("interupted because of of lastgraspframe");
+            yield break;
+        }
         if(releaseToShort)
         {
+            Debug.Log("interupted because of of releaseToShort");
             releaseToShort = false;
             yield break;
         }
@@ -202,6 +208,7 @@ public class TranscriptionMaster : MonoBehaviour
         foreach (var tempObj in specificGraspedObj)
         {
             if (obj.name.Split("-")[0].Equals(tempObj.name.Split("-")[0], StringComparison.Ordinal))
+                Debug.Log("interupted because of obj already grasped");
             {yield break;}
         }
 
@@ -216,7 +223,7 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
         MTMTranscription.Add(g);
-        
+        Debug.Log("ended grasp calculation");
         StartCoroutine( updateCanvas());
     }
     public IEnumerator CalculateReleaseTransition(bool isRightHand, GameObject obj, int frame)
@@ -224,19 +231,24 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
         
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.9f);
+        Debug.Log("start 1 calculating rl of " + obj.name);
         if (lastGraspFrame + 5 >= frame)
         {
+            Debug.Log("interupted because of lastgraspframe");
             releaseToShort = true;
             yield break;
         }
-        yield return new WaitForSeconds(0.9f);
+        Debug.Log("end 1 calculating rl of " + obj.name);
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log("start 2 calculating rl of " + obj.name);
         //calculate Release
         Release rl = CalculateRelease(isRightHand, obj, frame);
 
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         if (interactionValues.isCrank)
         {
+            Debug.Log("interupted because of crank");
             Crank c = CalculateCrank(rl);
             MTMTranscription.Add(c);
             MTMTranscription.Add(rl);
@@ -279,7 +291,7 @@ public class TranscriptionMaster : MonoBehaviour
         
         
         MTMTranscription.Add(rl);
-        
+        Debug.Log("end2 rl");
         StartCoroutine( updateCanvas());
     }
     Disengage CalculateDisengage(Release rl)
@@ -393,6 +405,7 @@ public class TranscriptionMaster : MonoBehaviour
                     }
                     continue;
                 }
+                
                 if (tempG.frame > tempFrame)
                 {
                     g = tempG;
@@ -563,7 +576,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         int weight = interactionValues.weight;
-        Debug.Log("move of rH: "+rl.isRightHand +"from "+startFrame +"to "+ rl.frame);
         Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, columnFinger, startFrame, rl.frame),
             CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, rl.frame));
@@ -652,7 +664,6 @@ public class TranscriptionMaster : MonoBehaviour
 
     float DetermineAngleChange(Quaternion start, Quaternion end)
     {
-        Debug.Log(start * Vector3.up);
         return Vector3.Angle(start * Vector3.up, end * Vector3.up);
     }
 
@@ -768,11 +779,11 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>
         {
-            new[] { "R", "E" }, new[] { "R", "A" }, new[] { "G", "5" }, new[] { "RL", "2" }
+            new[] { "R", "E" }, new[] { "R", "A" }, new[] { "G", "5" },new[] { "M", "B" }, new[] { "RL", "2" }
         }));
         sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>
         {
-            new[] { "LM" }, new[] { "FMP" }, new[] { "FM" }, new[] { "LM" }
+            new[] { "LM" }, new[] { "FM" }, new[] { "FM" }, new[] { "LM" }
         }));
         sequenceDict.Add(10, new Svars(true, false, "Sit & Stand up", new List<string[]>
         {

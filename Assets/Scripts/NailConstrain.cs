@@ -43,8 +43,10 @@ public class NailConstrain : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if(!triggerEnabled){return;}
-        if (exitTime+reenterTimeDelay>Time.realtimeSinceStartup){return;}
+        if (exitTime+reenterTimeDelay > Time.realtimeSinceStartup){return;}
         if (!other.CompareTag(TargetCollider.tag)){return;}
+        Debug.Log("time neil gets fixed"+Time.realtimeSinceStartup+"larger tan " +exitTime+reenterTimeDelay);
+        Debug.Log("!!!movable to fixed Nail!!!!!!!!!!!!!!");
         swapNails();
     }
 

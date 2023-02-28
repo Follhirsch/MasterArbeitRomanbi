@@ -76,6 +76,12 @@ public class BodyTranscription : MonoBehaviour
     // Update is called once per frame
     public void UpdateBodyTranscription()
     {
+        if (recMaster.frame < 2)
+        {
+            resetpossibleMotinos();
+            resetIsMotions();
+        }
+        
         if (framesSteppingsupressed > 0) { framesSteppingsupressed--;}
         
         if (!fullKneel && !possibleKneel && !isKneeling && !possibleSit && !isSitting)

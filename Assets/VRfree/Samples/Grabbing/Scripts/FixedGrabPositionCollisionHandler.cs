@@ -31,7 +31,6 @@ namespace VRfreePluginUnity {
         public HandController setGrabPositionRightHandReference;
 
         protected override void grab(ContactItemList list, HandCollisionMaster handCollisionMaster) {
-            Debug.Log("FixedGrabPositionCollisionHandler grab");
             list.isGrabbed = true;
             isGrabbed = true;
             list.moveWithHand = true;

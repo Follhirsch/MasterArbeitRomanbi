@@ -13,8 +13,10 @@ public class ConstrainedNailScript : MonoBehaviour
     public GameObject MTMobj;
     public Vector3 enclavepos;
     public bool triggerEnabled = true;
+    private float exitTime = 0;
     private ConstrainedMovablesCollisionHandler nailHandler;
-    private float grabcoefficient;
+    private float endGrabcoefficient;
+    private float startGrabcoefficient;
     private bool hanlerfound = false;
 
     public ConstrainedMovable fixedNailMovableHandler;
@@ -34,7 +36,8 @@ public class ConstrainedNailScript : MonoBehaviour
         triggerEnabled = true;
         
         nailHandler = fixedNail.GetComponent<ConstrainedMovablesCollisionHandler>();
-        grabcoefficient = nailHandler.EndGrabCoeff;
+        endGrabcoefficient = nailHandler.EndGrabCoeff;
+        startGrabcoefficient = nailHandler.StartGrabCoeff;
     }
 
     
@@ -42,12 +45,32 @@ public class ConstrainedNailScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!triggerEnabled){return;}
+        if (!triggerEnabled)
+        {
+            if (Time.realtimeSinceStartup > exitTime + 10)
+            {
+                fixedNailMovableHandler.movedDistance = 0;
+                triggerEnabled = true;
+                nailHandler.EndGrabCoeff = endGrabcoefficient;
+                nailHandler.StartGrabCoeff = startGrabcoefficient;
+            }
+            return;
+        }
         if (fixedNailMovableHandler.movedDistance >= fixedNailMovableHandler.upperBound)
         {
-            //fixedNailMovableHandler.upperBound = fixedNailMovableHandler.upperBound+0.00001f;
+            exitTime = Time.realtimeSinceStartup;
+            Debug.Log(exitTime);
+            triggerEnabled = false;
+            //fixedNailMovableHandler.upperBound = fixedNailMovableHandler.upperBound+1f;
             SwapNails();
+            
         }
+        if (Input.GetKeyDown("space")) //replay everything
+        {
+            fixedNailMovableHandler.movedDistance = 0;
+            fixedNailMovableHandler.upperBound = 0.1f;
+        }
+        
         
     }
 
@@ -65,20 +88,20 @@ public class ConstrainedNailScript : MonoBehaviour
 
         Vector3 pos = fixedNail.transform.position;
         Quaternion ori = fixedNail.transform.rotation;
-        fixedNail.GetComponent<ConstrainedMovable>().movedDistance = 0;
+        fixedNailMovableHandler.movedDistance = 0;
         fixedNail.GetComponent<InteractableObject>().gotPositioned = true;
         
-        nailHandler.EndGrabCoeff = 1000f;
-        nailHandler.isGrabbed = false;
-        
+        nailHandler.EndGrabCoeff = 10000f;
+        nailHandler.StartGrabCoeff = 10000f;
+        //nailHandler.isGrabbed = false;
+
         MoveToEnclave();
-            
+        
+        inputNail.transform.GetChild(2).GetComponent<NailConstrain>().exitTime = Time.realtimeSinceStartup+1;
         inputNail.transform.position = pos;
         inputNail.transform.rotation = ori;
-        inputNail.transform.GetChild(2).GetComponent<NailConstrain>().exitTime = Time.realtimeSinceStartup;
         inputNail.GetComponent<InteractableObject>().gotDisengaged = true;
         inputNail.GetComponent<InteractableObject>().disengagingforce = 2;
-        nailHandler.EndGrabCoeff = grabcoefficient;
     }
 
     void MoveToEnclave()

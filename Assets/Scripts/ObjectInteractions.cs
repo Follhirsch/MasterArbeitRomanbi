@@ -21,6 +21,7 @@ public class ObjectInteractions : MonoBehaviour
     private GameObject groupSuppressionObj;
     StreamWriter csvWriter;
     private List<GameObject> recordedObjects;
+    private bool stopBecauseOfFuckingFixedNail = false;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,18 @@ public class ObjectInteractions : MonoBehaviour
     
     public void addGraspedObject(GameObject graspedObj,bool isRightHand)
     {
+        if (transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().sequence == 6 &&
+            graspedObj.name.Equals("VR Objects-Nail fixed"))
+        {
+            if (stopBecauseOfFuckingFixedNail)
+            {
+                return;
+            }
+
+            stopBecauseOfFuckingFixedNail = true;
+        }
+
+        Debug.Log("interaction grasp start with "+ graspedObj.name);
         //update InteractableObject
         InteractableObject intObj = graspedObj.GetComponent<InteractableObject>();
         if (intObj is null){return;}
@@ -41,7 +54,12 @@ public class ObjectInteractions : MonoBehaviour
         //Debug.Log("teoretical grasp: "+graspedObj.name);
         if (graspedObj.GetComponent<InteractableObject>().isInGroup)
         {
-            if (suppressGroupedObjectMotions) {return;}
+            if (suppressGroupedObjectMotions)
+            {
+                Debug.Log("group suppress");
+
+                return;
+            }
             suppressGroupedObjectMotions = true;
             groupedSuppressionTimeStamp = Time.realtimeSinceStartup;
             groupSuppressionObj = graspedObj;
@@ -55,17 +73,28 @@ public class ObjectInteractions : MonoBehaviour
 
         if (supressNextHandMotion)
         {
-            //Debug.Log("g suppressed: "+ graspedObj.name);
+            Debug.Log("motion suppressed: ");
             return;
         }
-        graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
+        //graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
+        Debug.Log("interaction grasp end with "+ graspedObj.name);
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
         AddInteractionToList(frame,isRightHand,graspedObj,true);
+        
     }
     
     public void removeGraspedObj(GameObject releasedObj,bool isRightHand)
     {
+        if (releasedObj.name.Equals("VR Objects-Nail fixed",StringComparison.Ordinal))
+        {
+            if (stopBecauseOfFuckingFixedNail)
+            {
+                return;
+            }
+        }
+        Debug.Log("interaction rl start with "+ releasedObj.name);
+
         // update interactableObject
        // Debug.Log("teoretical release: "+releasedObj.name);
         InteractableObject intObj = releasedObj.GetComponent<InteractableObject>();
@@ -74,6 +103,8 @@ public class ObjectInteractions : MonoBehaviour
         
         if (suppressGroupedObjectMotions)
         {
+            Debug.Log("group suppress");
+
             if (releasedObj.name == groupSuppressionObj.name) { suppressGroupedObjectMotions = false;}
             else if (releasedObj.GetComponent<InteractableObject>().isInGroup){return;}
         }
@@ -81,12 +112,15 @@ public class ObjectInteractions : MonoBehaviour
         //TranscribeMTM
         if (supressNextHandMotion)
         {
+            Debug.Log("motion suppressed: ");
             //Debug.Log("rl suppressed" + releasedObj.name);
             supressNextHandMotion = false;
             return;
         }
         if (!transcribtionOn){return;}
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
+        Debug.Log("interaction rl end with "+ releasedObj.name);
+
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
         AddInteractionToList(frame,isRightHand,releasedObj,false);
     }
@@ -129,6 +163,11 @@ public class ObjectInteractions : MonoBehaviour
             {
                 suppressGroupedObjectMotions = false;
             }
+        }
+
+        if (Input.GetKeyDown("space"))
+        {
+            stopBecauseOfFuckingFixedNail = false;
         }
     }
     
