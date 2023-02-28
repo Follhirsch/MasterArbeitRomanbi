@@ -790,9 +790,9 @@ public class TranscriptionMaster : MonoBehaviour
         {
             new []{"Step","Turn"},new []{"Step","Turn"},new []{"Step","Turn"},new []{"Step","Turn"}
         }));
-        sequenceDict.Add(14, new Svars(true, false, "Walk to Carpet", new List<string[]>
+        sequenceDict.Add(14, new Svars(true, false, "Bend & arise", new List<string[]>
         {
-            new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""},new []{"Step",""}
+            new []{"B","0"},new []{"B","1"}
         }));
         sequenceDict.Add(15, new Svars(true, false, "Kneel on one knee", new List<string[]>
         {

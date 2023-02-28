@@ -57,6 +57,8 @@ public class BodyTranscription : MonoBehaviour
     private bool lFootMoving = false;
     private int lFootMovingStartFrame;
 
+    public int framesSteppingsupressed = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +76,8 @@ public class BodyTranscription : MonoBehaviour
     // Update is called once per frame
     public void UpdateBodyTranscription()
     {
+        if (framesSteppingsupressed > 0) { framesSteppingsupressed--;}
+        
         if (!fullKneel && !possibleKneel && !isKneeling && !possibleSit && !isSitting)
         {
             CheckStepping(recMaster.frame, recMaster.rePlaying);
@@ -248,8 +252,10 @@ public class BodyTranscription : MonoBehaviour
             if (rvelo < ThresholdValues.feetVelocityOut)
             {
                 rFootMoving = false;
-                MTM.MTMTranscription.Add(DetermineFootMotion(true,rFootMovingStartFrame,frame,transcribeFromReplay));
+                MTM.MTMTranscription.Add(DetermineFootMotion(true, rFootMovingStartFrame, frame,
+                    transcribeFromReplay));
                 StartCoroutine(MTM.updateCanvas());
+
             }
         }
         
@@ -264,8 +270,10 @@ public class BodyTranscription : MonoBehaviour
             if (lvelo < ThresholdValues.feetVelocityOut)
             {
                 lFootMoving = false;
-                MTM.MTMTranscription.Add(DetermineFootMotion(false,lFootMovingStartFrame,frame,transcribeFromReplay));
+                MTM.MTMTranscription.Add(DetermineFootMotion(false, lFootMovingStartFrame, frame,
+                    transcribeFromReplay));
                 StartCoroutine(MTM.updateCanvas());
+
             }
         }
     }
@@ -292,7 +300,7 @@ public class BodyTranscription : MonoBehaviour
         }
 
         Vector3 distanceFootMovedVector = posEnd - posStart;
-        Debug.Log("foot motoinwith vector"+distanceFootMovedVector + "and distance"+ distanceFootMovedVector.magnitude);
+        //Debug.Log("foot motoinwith vector"+distanceFootMovedVector + "and distance"+ distanceFootMovedVector.magnitude);
         float distanceFootMoved = (distanceFootMovedVector.magnitude*100);
 
         return new FootMotion(isRightfoot,(int)distanceFootMoved,startFrame);
@@ -301,7 +309,6 @@ public class BodyTranscription : MonoBehaviour
     {
         int frameDelta = ThresholdValues.stepMinMovingFrames;
         if (frame < Math.Max(ThresholdValues.stepFrameDelayCompensation, frameDelta)){ return;} // need at least 10 frames to create average
-        
         
         Vector3 lFootDisp;
         Vector3 rFootDisp;
@@ -337,8 +344,11 @@ public class BodyTranscription : MonoBehaviour
             {
                // Debug.Log("step ended velo = "+ rvelo);
                 rIsStepping = false;
-                MTM.MTMTranscription.Add(DetermineStep(true,rStepStartFrame,frame,transcribeFromReplay));
-                StartCoroutine(MTM.updateCanvas());
+                if (framesSteppingsupressed < 1)
+                {
+                    MTM.MTMTranscription.Add(DetermineStep(true, rStepStartFrame, frame, transcribeFromReplay));
+                    StartCoroutine(MTM.updateCanvas());
+                }
             }
         }
         
@@ -354,8 +364,11 @@ public class BodyTranscription : MonoBehaviour
             if (lvelo < ThresholdValues.stepVelocityOut)
             {
                 lIsStepping = false;
-                MTM.MTMTranscription.Add(DetermineStep(false,lStepStartFrame,frame,transcribeFromReplay));
-                StartCoroutine(MTM.updateCanvas());
+                if (framesSteppingsupressed < 1)
+                {
+                    MTM.MTMTranscription.Add(DetermineStep(false, lStepStartFrame, frame, transcribeFromReplay));
+                    StartCoroutine(MTM.updateCanvas());
+                }
             }
         }
     }
@@ -426,18 +439,21 @@ public class BodyTranscription : MonoBehaviour
         if (fullKneel)
         {
             resetIsMotions();
+            framesSteppingsupressed = ThresholdValues.framesAfterLoweringMotionStepSupressed;
             return new LoweringMotion(true,4,frameIn);
         }
 
         if (isKneeling)
         {
             resetIsMotions();
+            framesSteppingsupressed = ThresholdValues.framesAfterLoweringMotionStepSupressed;
             return new LoweringMotion(true,3,frameIn);
         }
 
         if (isSitting)
         {
             resetIsMotions();
+            framesSteppingsupressed = ThresholdValues.framesAfterLoweringMotionStepSupressed;
             return new LoweringMotion(true,2,frameIn);
         }
 
@@ -500,6 +516,8 @@ public class BodyTranscription : MonoBehaviour
         isBent = false;
         isKneeling = false;
         fullKneel = false;
+        rKneel = false;
+        lKneel = false;
     }
 
     /*bool CheckFootIsMoving(int frame,Vector3[] positions)

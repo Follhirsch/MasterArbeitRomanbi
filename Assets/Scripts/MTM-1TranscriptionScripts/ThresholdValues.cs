@@ -36,6 +36,7 @@ public static class ThresholdValues
     public static int feetFrameDelayCompensation = 20;
     public static float feetVelocityIn = 0.1f;
     public static float feetVelocityOut = 0.025f;
+    public static int framesAfterLoweringMotionStepSupressed = 50;
     
 
 
