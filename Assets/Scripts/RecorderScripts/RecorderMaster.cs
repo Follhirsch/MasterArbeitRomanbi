@@ -307,7 +307,7 @@ public class RecorderMaster : MonoBehaviour
         {
             frame = i;
             if (i < lengthObjects ) {objMani.playFrame(i); }
-            if (i < lengthHands) { handMani.playFrame(i); }
+            //if (i < lengthHands) { handMani.playFrame(i); }
             objInter.replayInteractionFrame(frame);
             
             yield return new WaitForSecondsRealtime(1/(float)framerate);
