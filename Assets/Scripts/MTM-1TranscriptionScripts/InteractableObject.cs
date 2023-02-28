@@ -76,7 +76,7 @@ public class InteractableObject : MonoBehaviour
             return;
         }
         else if (isConstrainedMovable || isCrank)
-        {
+        { if (gameObject.name.Equals("VR Objects-Nail fixed")){return;}
             isFullyGrasped = gameObject.GetComponent<ConstrainedMovablesCollisionHandler>().isGrabbed;
         }
         else if (isKnob)

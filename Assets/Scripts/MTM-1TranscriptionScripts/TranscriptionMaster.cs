@@ -145,8 +145,13 @@ public class TranscriptionMaster : MonoBehaviour
     {
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
-        if (frame == lastGraspFrame){yield break;}
         yield return new WaitForSeconds(1f);
+        if (frame == lastGraspFrame){yield break;}
+        if(releaseToShort)
+        {
+            releaseToShort = false;
+            yield break;
+        }
         lastGraspFrame = frame;
         //if (supressNextHandMotion){yield break;}
         //create list of objects thet should be in this hand
@@ -166,6 +171,8 @@ public class TranscriptionMaster : MonoBehaviour
         {
             Debug.Log(tempObj.name);
         }
+        Debug.Log("releasedobj");
+
         foreach (BasicMotion mot in MTMTranscription) // create release List
         {
             if (mot is Release tempRl)
@@ -176,12 +183,17 @@ public class TranscriptionMaster : MonoBehaviour
                         tempRl.isRightHand == isRightHand)
                     {
                         specificGraspedObj.Remove(asdf);
+                        Debug.Log(tempRl.m_object.name);
                         break;
                     }
                 }
             }
         }
-        Debug.Log("releasedobjs");
+        
+        
+        
+        
+        Debug.Log("graspedobjafter");
         foreach (var tempObj in specificGraspedObj)
         {
             Debug.Log(tempObj.name);
@@ -203,11 +215,6 @@ public class TranscriptionMaster : MonoBehaviour
             MTMTranscription.AddRange(rB);
         }
         
-        if(releaseToShort)
-        {
-            releaseToShort = false;
-            yield break;
-        }
         MTMTranscription.Add(g);
         
         StartCoroutine( updateCanvas());
@@ -216,17 +223,12 @@ public class TranscriptionMaster : MonoBehaviour
     {
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
-
-        /*if (supressNextHandMotion)
-        {
-            supressNextHandMotion = false;
-            yield break;
-        }
-        */
+        
         yield return new WaitForSeconds(0.1f);
-        if (lastGraspFrame == frame)
+        if (lastGraspFrame + 5 >= frame)
         {
             releaseToShort = true;
+            yield break;
         }
         yield return new WaitForSeconds(0.9f);
         //calculate Release
@@ -480,6 +482,13 @@ public class TranscriptionMaster : MonoBehaviour
             returnArray[i] = new Reach(g.isRightHand, 5, distancesAndAngles[i].Item1, distancesAndAngles[i].Item2,
                 g.frame);
         }
+        
+        InteractableObject intObj = g.m_object.GetComponent<InteractableObject>();
+        if (intObj.isAtKnownLocation||g.differentiation==3)
+        {
+            returnArray[^1] = new Reach(g.isRightHand,1, distance,rotation ,g.frame);
+            return returnArray;
+        }
 
 
         if (g.differentiation == 1 && g.specification == 2) // precise Grasp
@@ -493,16 +502,9 @@ public class TranscriptionMaster : MonoBehaviour
             returnArray[^1] = new Reach(g.isRightHand, 3, distance, rotation, g.frame);
             return returnArray;
         }
-
-        InteractableObject intObj = g.m_object.GetComponent<InteractableObject>();
-        if (intObj.isAtKnownLocation||g.differentiation==3)
-        {
-            returnArray[^1] = new Reach(g.isRightHand,1, distance,rotation ,g.frame);
-        }
-        else
-        {
-            returnArray[^1] = new Reach(g.isRightHand,2, distance, rotation,g.frame);
-        }
+        
+        returnArray[^1] = new Reach(g.isRightHand,2, distance, rotation,g.frame);
+        
 
         //Todo: check if moving at start or end
 
@@ -643,13 +645,14 @@ public class TranscriptionMaster : MonoBehaviour
         {
             returnArray[i] =
                 new Tuple<float, float>((path[motions[i].Item2] - path[motions[i].Item1]).magnitude * 100,
-                    DetermineAngleChange(rotPath[motions[i].Item2], rotPath[motions[i].Item2]));
+                    DetermineAngleChange(rotPath[motions[i].Item2], rotPath[motions[i].Item1]));
         }
         return returnArray;//<distance,anglechange>[]
     }
 
     float DetermineAngleChange(Quaternion start, Quaternion end)
     {
+        Debug.Log(start * Vector3.up);
         return Vector3.Angle(start * Vector3.up, end * Vector3.up);
     }
 
