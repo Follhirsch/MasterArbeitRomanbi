@@ -779,7 +779,7 @@ public class TranscriptionMaster : MonoBehaviour
         }));
         sequenceDict.Add(8, new Svars(false, true, "Wave & Press Button", new List<string[]>
         {
-            new[] { "R", "E" }, new[] { "R", "A" }, new[] { "G", "5" },new[] { "M", "B" }, new[] { "RL", "2" }
+            new[] { "R", "E" }, new[] { "R", "A" }, new[] { "G", "5",""},new[] { "M", "B" }, new[] { "RL", "2" }
         }));
         sequenceDict.Add(9, new Svars(true, false, "Press Pedal", new List<string[]>
         {
