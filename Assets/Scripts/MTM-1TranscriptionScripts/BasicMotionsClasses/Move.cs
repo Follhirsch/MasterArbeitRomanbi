@@ -78,11 +78,11 @@ public class Move : BasicMotion
          
         if (forCSV)
         {
-            return (side + bodyPart + "," + BasicMotion +","+ dist+"," + diff +","+ weightStr +","+ obj);
+            return (side + bodyPart + "," + BasicMotion +","+ dist+"," + diff +","+ weightStr +","+ obj +",/T,S," + rotationAngle);
         }
         else
         {
-            return (side + bodyPart + ": " + BasicMotion + dist + diff + weightStr +" ,"+ obj);
+            return (side + bodyPart + ": " + BasicMotion + dist + diff + weightStr +" ,"+ obj+ " or TS" + rotationAngle);
         }
     }
 
@@ -90,7 +90,7 @@ public class Move : BasicMotion
     {
         int ceiledValue = Mathf.CeilToInt(input);
 
-        for (int i = 1; i < lengths.Length; i++) {
+        for (int i = 0; i < lengths.Length; i++) {
             if (ceiledValue < lengths[i])
             {
                 return lengths[i];

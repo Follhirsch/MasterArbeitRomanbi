@@ -9,33 +9,26 @@ public class testHandCollisionrecording : MonoBehaviour
     public GameObject hands;
     public GameObject rightHand;
     public GameObject leftHand;
+    public Quaternion oldrot;
+    public float angle;
 
     // Start is called before the first frame update
     void Start()
     {
-        rightHand = hands.transform.GetChild(0).gameObject;
-        leftHand = hands.transform.GetChild(1).gameObject;
+        rightHand = hands.transform.GetChild(0).GetChild(4).GetChild(1).gameObject;
+        leftHand = hands.transform.GetChild(1).GetChild(4).GetChild(1).gameObject;
+        oldrot = rightHand.transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
-       /* if (Input.GetKeyDown("p"))
+        if (Input.GetKeyDown("w"))
         {
-            Debug.Log(leftHand.GetComponent<HandCollisionMaster>().collisionLists[16]);
-            
+            Quaternion newrot = rightHand.transform.rotation;
+            Debug.Log(Vector3.Angle(oldrot * Vector3.up, newrot * Vector3.up));
+            oldrot = newrot;
         }
-        int nrOfTouchedObjects = leftHand.GetComponent<HandCollisionMaster>().collisionLists.Count;
-        if (nrOfTouchedObjects > 16)
-        {
-            for (int i = 16; i < nrOfTouchedObjects; i++)
-            {
-                CollisionHandler touchedObject =
-                    leftHand.GetComponent<HandCollisionMaster>().collisionLists[i].collisionHandler;
-                Debug.Log(touchedObject.gameObject.name);
-            }
-        }
-        */
 
     }
 }

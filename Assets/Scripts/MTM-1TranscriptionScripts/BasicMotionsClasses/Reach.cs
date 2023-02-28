@@ -81,7 +81,7 @@ public class Reach : BasicMotion
     {
         int ceiledValue = Mathf.CeilToInt(input);
 
-        for (int i = 1; i < lengths.Length; i++) {
+        for (int i = 0; i < lengths.Length; i++) {
             if (ceiledValue < lengths[i])
             {
                 return lengths[i];
