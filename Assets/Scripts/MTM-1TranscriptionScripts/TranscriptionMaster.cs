@@ -96,8 +96,6 @@ public class TranscriptionMaster : MonoBehaviour
             
             float asdf = Vector3.Angle(debugQuat * Vector3.up, newQuat * Vector3.up);
             debugQuat = newQuat;
-            Debug.Log("angle: "+ asdf);
-
         }
         
         
@@ -131,7 +129,7 @@ public class TranscriptionMaster : MonoBehaviour
 
         int start = Math.Max(MTMTranscription.Count-10-mtmScrollin,0);
         int end = Math.Max(MTMTranscription.Count-mtmScrollin,0);
-        for (int i = Math.Max(MTMTranscription.Count-10,0); i < end; i++)
+        for (int i = start; i < end; i++)
         {
             string detected = correctlyDetectedMotions[i] ? "☑" : "☐";
             textOutput += detected +"  "+MTMTranscription[i].createOutputString(false) + "\n";
@@ -146,15 +144,12 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribtionOn) {yield break;}
         if (!transcribeHands) { yield break;}
         yield return new WaitForSeconds(1f);
-        Debug.Log("startcalculating grasp of " + obj.name);
         if (frame == lastGraspFrame)
         {
-            Debug.Log("interupted because of of lastgraspframe");
             yield break;
         }
         if(releaseToShort)
         {
-            Debug.Log("interupted because of of releaseToShort");
             releaseToShort = false;
             yield break;
         }
@@ -172,12 +167,7 @@ public class TranscriptionMaster : MonoBehaviour
                 }
             }
         }
-        Debug.Log("graspedobjs");
-        foreach (var tempObj in specificGraspedObj)
-        {
-            Debug.Log(tempObj.name);
-        }
-        Debug.Log("releasedobj");
+        
 
         foreach (BasicMotion mot in MTMTranscription) // create release List
         {
@@ -189,7 +179,6 @@ public class TranscriptionMaster : MonoBehaviour
                         tempRl.isRightHand == isRightHand)
                     {
                         specificGraspedObj.Remove(asdf);
-                        Debug.Log(tempRl.m_object.name);
                         break;
                     }
                 }
@@ -197,18 +186,10 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
         
-        
-        
-        Debug.Log("graspedobjafter");
-        foreach (var tempObj in specificGraspedObj)
-        {
-            Debug.Log(tempObj.name);
-        }
 
         foreach (var tempObj in specificGraspedObj)
         {
             if (obj.name.Split("-")[0].Equals(tempObj.name.Split("-")[0], StringComparison.Ordinal))
-                Debug.Log("interupted because of obj already grasped");
             {yield break;}
         }
 
@@ -223,7 +204,6 @@ public class TranscriptionMaster : MonoBehaviour
         }
         
         MTMTranscription.Add(g);
-        Debug.Log("ended grasp calculation");
         StartCoroutine( updateCanvas());
     }
     public IEnumerator CalculateReleaseTransition(bool isRightHand, GameObject obj, int frame)
@@ -232,23 +212,18 @@ public class TranscriptionMaster : MonoBehaviour
         if (!transcribeHands) { yield break;}
         
         yield return new WaitForSeconds(0.9f);
-        Debug.Log("start 1 calculating rl of " + obj.name);
         if (lastGraspFrame + 5 >= frame)
         {
-            Debug.Log("interupted because of lastgraspframe");
             releaseToShort = true;
             yield break;
         }
-        Debug.Log("end 1 calculating rl of " + obj.name);
         yield return new WaitForSeconds(0.1f);
-        Debug.Log("start 2 calculating rl of " + obj.name);
         //calculate Release
         Release rl = CalculateRelease(isRightHand, obj, frame);
 
         InteractableObject interactionValues = rl.m_object.GetComponent<InteractableObject>();
         if (interactionValues.isCrank)
         {
-            Debug.Log("interupted because of crank");
             Crank c = CalculateCrank(rl);
             MTMTranscription.Add(c);
             MTMTranscription.Add(rl);
@@ -272,7 +247,6 @@ public class TranscriptionMaster : MonoBehaviour
         if (ms is null)
         {
             releaseToShort = true;
-            Debug.Log("same frame release");
             yield break;
         }
             
@@ -291,7 +265,6 @@ public class TranscriptionMaster : MonoBehaviour
         
         
         MTMTranscription.Add(rl);
-        Debug.Log("end2 rl");
         StartCoroutine( updateCanvas());
     }
     Disengage CalculateDisengage(Release rl)
@@ -482,7 +455,7 @@ public class TranscriptionMaster : MonoBehaviour
                     recorderDataRot = bodyRec.lOriQuaternion.ToArray();
                 }
             }
-            Debug.Log("motion of rH: "+g.isRightHand +"from "+startFrame +"to "+ g.frame);
+            //Debug.Log("motion of rH: "+g.isRightHand +"from "+startFrame +"to "+ g.frame);
             Tuple<float, float>[] distancesAndAngles = DistanceClassification(
             CreateSinglePath(recorderDataPos, columnFinger, startFrame, g.frame),
             CreateSingleRotPath(recorderDataRot, columnWrist, startFrame, g.frame));

@@ -45,7 +45,6 @@ public class ObjectInteractions : MonoBehaviour
             stopBecauseOfFuckingFixedNail = true;
         }
 
-        Debug.Log("interaction grasp start with "+ graspedObj.name);
         //update InteractableObject
         InteractableObject intObj = graspedObj.GetComponent<InteractableObject>();
         if (intObj is null){return;}
@@ -56,7 +55,6 @@ public class ObjectInteractions : MonoBehaviour
         {
             if (suppressGroupedObjectMotions)
             {
-                Debug.Log("group suppress");
 
                 return;
             }
@@ -73,12 +71,10 @@ public class ObjectInteractions : MonoBehaviour
 
         if (supressNextHandMotion)
         {
-            Debug.Log("motion suppressed: ");
             return;
         }
         //graspedObj.GetComponent<InteractableObject>().RemoveDisengaging();
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
-        Debug.Log("interaction grasp end with "+ graspedObj.name);
         StartCoroutine(transcriptionMaster.CalculateGraspTransition(isRightHand,graspedObj,frame));
         AddInteractionToList(frame,isRightHand,graspedObj,true);
         
@@ -93,17 +89,14 @@ public class ObjectInteractions : MonoBehaviour
                 return;
             }
         }
-        Debug.Log("interaction rl start with "+ releasedObj.name);
 
         // update interactableObject
-       // Debug.Log("teoretical release: "+releasedObj.name);
         InteractableObject intObj = releasedObj.GetComponent<InteractableObject>();
         if (intObj is null){return;}
         intObj.UpdateValues(isRightHand, false);
         
         if (suppressGroupedObjectMotions)
         {
-            Debug.Log("group suppress");
 
             if (releasedObj.name == groupSuppressionObj.name) { suppressGroupedObjectMotions = false;}
             else if (releasedObj.GetComponent<InteractableObject>().isInGroup){return;}
@@ -112,14 +105,12 @@ public class ObjectInteractions : MonoBehaviour
         //TranscribeMTM
         if (supressNextHandMotion)
         {
-            Debug.Log("motion suppressed: ");
             //Debug.Log("rl suppressed" + releasedObj.name);
             supressNextHandMotion = false;
             return;
         }
         if (!transcribtionOn){return;}
         int frame = transcriptionMaster.RecorderObject.GetComponent<RecorderMaster>().frame;
-        Debug.Log("interaction rl end with "+ releasedObj.name);
 
         StartCoroutine(transcriptionMaster.CalculateReleaseTransition(isRightHand, releasedObj, frame));
         AddInteractionToList(frame,isRightHand,releasedObj,false);
