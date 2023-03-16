@@ -70,7 +70,7 @@ public class Reach : BasicMotion
 
         if (forCSV)
         {
-            return (side + bodyPart + "," + BasicMotion + "," + dist + "," + diff + ",/T,S," + rotationAngle);
+            return (side + bodyPart + "," + BasicMotion + "," + dist + "," + diff + ",/T,S," + rotationAngle+",frame," + frame);
         }
         else
         {

@@ -52,7 +52,7 @@ public class FootMotion : BasicMotion
         if (forCSV)
         {
             return (isRightfootStr + bodyPart + "," + BasicMotionStr + "," +
-                    specificationStr);
+                    specificationStr+",frame," + frame);
         }
         else
         {

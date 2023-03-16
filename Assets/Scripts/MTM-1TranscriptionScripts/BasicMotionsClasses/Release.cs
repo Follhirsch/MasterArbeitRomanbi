@@ -40,7 +40,7 @@ public class Release : BasicMotion
          
         if (forCSV)
         {
-            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ obj);
+            return (side + bodyPart + "," + BasicMotion +","+ diff +","+ obj+",frame," + frame);
         }
         else
         {

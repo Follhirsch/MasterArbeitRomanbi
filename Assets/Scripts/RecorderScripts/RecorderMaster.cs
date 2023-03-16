@@ -66,7 +66,7 @@ public class RecorderMaster : MonoBehaviour
         samplingInterval = 1 / (float)framerate;
         frame = 0;
         recordingFilesDir = Application.dataPath;
-        recordingFilesDir = recordingFilesDir + "/Resources/Recordings";
+        recordingFilesDir = recordingFilesDir + "/Resources/Recordings";//"/Resources/UserStudyRecordings"; // "/Resources/Recordings";
         
         loadShadowHands();
     }

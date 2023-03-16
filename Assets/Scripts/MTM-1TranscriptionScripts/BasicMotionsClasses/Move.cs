@@ -78,7 +78,7 @@ public class Move : BasicMotion
          
         if (forCSV)
         {
-            return (side + bodyPart + "," + BasicMotion +","+ dist+"," + diff +","+ weightStr +","+ obj +",/T,S," + rotationAngle);
+            return (side + bodyPart + "," + BasicMotion +","+ dist+"," + diff +","+ weightStr +","+ obj +",/T,S," + rotationAngle+",frame," + frame);
         }
         else
         {

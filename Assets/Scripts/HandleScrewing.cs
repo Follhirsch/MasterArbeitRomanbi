@@ -69,8 +69,9 @@ public class HandleScrewing : MonoBehaviour
 
     void SwapHammers()
     {
-        Debug.Log("Motion Apply pressure: AP");
         TranscriptionMaster MTMmaster = FindObjectOfType<TranscriptionMaster>();
+        RecorderMaster recMaster = FindObjectOfType<RecorderMaster>();
+        MTMmaster.MTMTranscription.Add(new ApplyPressure(true,recMaster.frame));
         if (MTMmaster.transcribtionOn)
         {
             if (MTMmaster.transcribeHands)

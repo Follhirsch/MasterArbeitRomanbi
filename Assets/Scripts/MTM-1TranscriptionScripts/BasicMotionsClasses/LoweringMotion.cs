@@ -59,7 +59,7 @@ public class LoweringMotion : BasicMotion
 
         if (forCSV)
         {
-            return (bodyPart + "," + BasicMotionStr);
+            return (bodyPart + "," + BasicMotionStr+",frame," + frame);
         }
         else
         {

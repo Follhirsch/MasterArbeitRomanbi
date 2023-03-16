@@ -53,7 +53,7 @@ public class Step : BasicMotion
         if (forCSV)
         {
             return (isRightfootStr + bodyPart + "," + BasicMotionStr + "," +
-                    differentiationDictionary[differentiation]);
+                    differentiationDictionary[differentiation]+",frame," + frame);
         }
         else
         {

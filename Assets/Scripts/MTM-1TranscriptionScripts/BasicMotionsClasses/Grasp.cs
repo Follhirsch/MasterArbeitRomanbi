@@ -59,7 +59,7 @@ public class Grasp : BasicMotion
          
          if (forCSV)
          {
-             return (side + bodyPart + "," + BasicMotion +","+ diff +","+ spec +","+ obj);
+             return (side + bodyPart + "," + BasicMotion +","+ diff +","+ spec +","+ obj+",frame," + frame);
          }
          else
          {
